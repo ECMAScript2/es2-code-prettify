@@ -3,6 +3,12 @@
  * matches the union of the sets of strings matched by the input RegExp.
  * Since it matches globally, if the input strings have a start-of-input
  * anchor (/^.../), it is ignored for the purposes of unioning.
+ * 
+ * {@link RegExp} 配列が与えられると、入力された RegExp で一致する
+ * 文字列のセットの組合わせにグローバルに一致する {@code RegExp} を返します。
+ * グローバルにマッチするので、入力文字列に入力開始アンカー（/^.../）があっても、
+ * 結合の目的では無視されます。
+ * 
  * @param {Array.<RegExp>} regexs non multiline, non-global regexs.
  * @return {RegExp} a global regex.
  */
@@ -15,8 +21,9 @@ function combinePrefixPatterns(regexs) {
     var regex = regexs[i];
     if (regex.ignoreCase) {
       ignoreCase = true;
-    } else if (/[a-z]/i.test(regex.source.replace(
-                   /\\u[0-9a-f]{4}|\\x[0-9a-f]{2}|\\[^ux]/gi, ''))) {
+    } else if (new RegExpCompat( '[a-z]', 'i' ).test(
+        new RegExpCompat( '\\\\u[0-9a-f]{4}|\\\\x[0-9a-f]{2}|\\\\[^ux]', 'gi' )[Symbol.replace]( regex.source, ''))
+    ) {
       needToFoldCase = true;
       ignoreCase = false;
       break;
@@ -60,8 +67,8 @@ function combinePrefixPatterns(regexs) {
   }
 
   function caseFoldCharset(charSet) {
-    var charsetParts = charSet.substring(1, charSet.length - 1).match(
-        new RegExp(
+    var charsetParts =
+        new RegExpCompat(
             '\\\\u[0-9A-Fa-f]{4}'
             + '|\\\\x[0-9A-Fa-f]{2}'
             + '|\\\\[0-3][0-7]{0,2}'
@@ -69,7 +76,7 @@ function combinePrefixPatterns(regexs) {
             + '|\\\\[\\s\\S]'
             + '|-'
             + '|[^-\\\\]',
-            'g'));
+            'g')[Symbol.match]( charSet.substring(1, charSet.length - 1) );
     var ranges = [];
     var inverse = charsetParts[0] === '^';
 
@@ -78,7 +85,7 @@ function combinePrefixPatterns(regexs) {
 
     for (var i = inverse ? 1 : 0, n = charsetParts.length; i < n; ++i) {
       var p = charsetParts[i];
-      if (/\\[bdsw]/i.test(p)) {  // Don't muck with named groups.
+      if (new RegExpCompat( '\\\\[bdsw]', 'i' ).test(p)) {  // Don't muck with named groups.
         out.push(p);
       } else {
         var start = decodeEscape(p);
@@ -135,8 +142,8 @@ function combinePrefixPatterns(regexs) {
     // Split into character sets, escape sequences, punctuation strings
     // like ('(', '(?:', ')', '^'), and runs of characters that do not
     // include any of the above.
-    var parts = regex.source.match(
-        new RegExp(
+    var parts =
+        new RegExpCompat(
             '(?:'
             + '\\[(?:[^\\x5C\\x5D]|\\\\[\\s\\S])*\\]'  // a character set
             + '|\\\\u[A-Fa-f0-9]{4}'  // a unicode escape
@@ -147,7 +154,7 @@ function combinePrefixPatterns(regexs) {
             + '|[\\(\\)\\^]'  // start/end of a group, or line start
             + '|[^\\x5B\\x5C\\(\\)\\^]+'  // run of other characters
             + ')',
-            'g'));
+            'g')[Symbol.match]( regex.source );
     var n = parts.length;
 
     // Maps captured group numbers to the number they will occupy in
@@ -215,8 +222,9 @@ function combinePrefixPatterns(regexs) {
           parts[i] = caseFoldCharset(p);
         } else if (ch0 !== '\\') {
           // TODO: handle letters in numeric escapes.
-          parts[i] = p.replace(
-              /[a-zA-Z]/g,
+          parts[i] =
+              new RegExpCompat( '[a-zA-Z]', 'g' )[Symbol.replace](
+                p,
               function (ch) {
                 var cc = ch.charCodeAt(0);
                 return '[' + String.fromCharCode(cc & ~32, cc | 32) + ']';
@@ -236,5 +244,5 @@ function combinePrefixPatterns(regexs) {
         '(?:' + allowAnywhereFoldCaseAndRenumberGroups(regex) + ')');
   }
 
-  return new RegExp(rewritten.join('|'), ignoreCase ? 'gi' : 'g');
+  return new RegExpCompat(rewritten.join('|'), ignoreCase ? 'gi' : 'g');
 }

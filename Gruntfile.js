@@ -158,7 +158,7 @@ module.exports = function (grunt) {
       },
       prettify: {
         options: {
-          externs: 'tools/closure-compiler/amd-externs.js',
+          externs: [ 'tools/closure-compiler/amd-externs.js', 'js-modules/externs_rere.js' ],
           define: 'IN_GLOBAL_SCOPE=true',
           output_wrapper: '!function(){%output%}()'
         },
@@ -167,7 +167,7 @@ module.exports = function (grunt) {
       },
       runprettify: {
         options: {
-          externs: 'tools/closure-compiler/amd-externs.js',
+          externs: [ 'tools/closure-compiler/amd-externs.js', 'js-modules/externs_rere.js' ],
           define: 'IN_GLOBAL_SCOPE=false',
           output_wrapper: '!function(){%output%}()'
         },

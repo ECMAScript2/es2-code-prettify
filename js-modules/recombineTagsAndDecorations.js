@@ -5,9 +5,9 @@
  * @private
  */
 function recombineTagsAndDecorations(job) {
-  var isIE8OrEarlier = /\bMSIE\s(\d+)/.exec(navigator.userAgent);
+  var isIE8OrEarlier = new RegExpCompat( '\\bMSIE\\s(\\d+)' ).exec(navigator.userAgent);
   isIE8OrEarlier = isIE8OrEarlier && +isIE8OrEarlier[1] <= 8;
-  var newlineRe = /\n/g;
+  var newlineRe = new RegExpCompat( '\n', 'g' );
 
   var source = job.sourceCode;
   var sourceLength = source.length;
@@ -82,7 +82,7 @@ function recombineTagsAndDecorations(job) {
         // space to appear at the beginning of every line but the first.
         // Emitting an old Mac OS 9 line separator makes everything spiffy.
         if (isIE8OrEarlier) {
-          styledText = styledText.replace(newlineRe, '\r');
+          styledText = newlineRe[Symbol.replace]( styledText, '\r');
         }
         textNode.nodeValue = styledText;
         var document = textNode.ownerDocument;

@@ -14,8 +14,8 @@
  *     be treated as significant.
  */
 function numberLines(node, startLineNum, isPreformatted) {
-  var nocode = /(?:^|\s)nocode(?:\s|$)/;
-  var lineBreak = /\r\n?|\n/;
+  var nocode = new RegExpCompat( '(?:^|\\s)nocode(?:\\s|$)' );
+  var lineBreak = new RegExpCompat( "\\r\\n?|\\n" );
 
   var document = node.ownerDocument;
 
@@ -43,7 +43,7 @@ function numberLines(node, startLineNum, isPreformatted) {
       }
     } else if ((type == 3 || type == 4) && isPreformatted) {  // Text
       var text = node.nodeValue;
-      var match = text.match(lineBreak);
+      var match = lineBreak[Symbol.match]( text );
       if (match) {
         var firstLine = text.substring(0, match.index);
         node.nodeValue = firstLine;
