@@ -51,11 +51,13 @@ table.diff {
 
 /* used in prettify_test.html issue 22 */
 .annot {
+  color : #000;
   background-color: #eef;
   border: 1px dotted #88f;
   margin: 2px 2px 2px 3em;
   padding: 0 2px 0 2px;
 }
 .nocode {
+  color : #000;
   background-color: #f8f8f8;
 }
