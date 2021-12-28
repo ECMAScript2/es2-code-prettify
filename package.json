@@ -58,5 +58,8 @@
     "grunt-preprocess": "^5.1.0",
     "html-to-text": "^8.1.0",
     "zombie": "^6.1.4"
+  },
+  "dependencies": {
+    "gulp": "^4.0.2"
   }
 }
