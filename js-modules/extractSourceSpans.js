@@ -44,7 +44,7 @@
  * @return {SourceSpansT} source code and the nodes in which they occur.
  */
 function extractSourceSpans(node, isPreformatted) {
-  var nocode = RegExpCompat( '(?:^|\\s)nocode(?:\\s|$)' );
+  var nocode = new RegExpCompat( '(?:^|\\s)nocode(?:\\s|$)' );
 
   var chunks = [];
   var length = 0;
