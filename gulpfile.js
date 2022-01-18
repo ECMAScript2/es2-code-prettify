@@ -10,15 +10,20 @@ gulp.task( 'rerejs', gulp.series(
       ).pipe(
           closureCompiler(
               {
-                  // externs           : externs,
-                  // define            : [],
-                  // compilation_level : 'ADVANCED',
+                  externs           : [ '.submodules/rerejs/src.externs/externs.generated.js' ],
+                  define            : [
+                      // 'DEFINE_REGEXP_COMPAT__DEBUG=false',
+                      'DEFINE_REGEXP_COMPAT__MINIFY=true',
+                      'DEFINE_REGEXP_COMPAT__NODEJS=false',
+                      'DEFINE_REGEXP_COMPAT__ES2018=false'
+                  ],
+                  compilation_level : 'ADVANCED',
                   // compilation_level : 'WHITESPACE_ONLY',
                   // env               : 'CUSTOM',
-                  formatting        : 'PRETTY_PRINT',
+                  // formatting        : 'PRETTY_PRINT',
                   warning_level     : 'VERBOSE',
-                  language_in       : 'ECMASCRIPT_2020',
-                  language_out      : 'ECMASCRIPT5',
+                  language_in       : 'ECMASCRIPT3',
+                  language_out      : 'ECMASCRIPT3',
                   output_wrapper    : '(function(){\n%output%\n})()',
                   js_output_file    : 'ReRE.es5.js'
               }
