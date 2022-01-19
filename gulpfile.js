@@ -12,14 +12,14 @@ gulp.task( 'rerejs', gulp.series(
               {
                   externs           : [ '.submodules/rerejs/src.externs/externs.generated.js' ],
                   define            : [
-                      // 'DEFINE_REGEXP_COMPAT__DEBUG=false',
+                      'DEFINE_REGEXP_COMPAT__DEBUG=false',
                       'DEFINE_REGEXP_COMPAT__MINIFY=true',
                       'DEFINE_REGEXP_COMPAT__NODEJS=false',
                       'DEFINE_REGEXP_COMPAT__ES2018=false'
                   ],
                   compilation_level : 'ADVANCED',
                   // compilation_level : 'WHITESPACE_ONLY',
-                  // env               : 'CUSTOM',
+                  env               : 'CUSTOM',
                   // formatting        : 'PRETTY_PRINT',
                   warning_level     : 'VERBOSE',
                   language_in       : 'ECMASCRIPT3',
