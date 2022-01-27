@@ -82,7 +82,7 @@ function recombineTagsAndDecorations(job) {
         // space to appear at the beginning of every line but the first.
         // Emitting an old Mac OS 9 line separator makes everything spiffy.
         if (isIE8OrEarlier) {
-          styledText = newlineRe[Symbol.replace]( styledText, '\r');
+          styledText = newlineRe.replace( styledText, '\r');
         }
         textNode.nodeValue = styledText;
         var document = textNode.ownerDocument;

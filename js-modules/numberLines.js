@@ -43,7 +43,7 @@ function numberLines(node, startLineNum, isPreformatted) {
       }
     } else if ((type == 3 || type == 4) && isPreformatted) {  // Text
       var text = node.nodeValue;
-      var match = lineBreak[Symbol.match]( text );
+      var match = lineBreak.match( text );
       if (match) {
         var firstLine = text.substring(0, match.index);
         node.nodeValue = firstLine;

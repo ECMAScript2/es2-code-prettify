@@ -22,7 +22,7 @@ function combinePrefixPatterns(regexs) {
     if (regex.ignoreCase) {
       ignoreCase = true;
     } else if (new RegExpCompat( '[a-z]', 'i' ).test(
-        new RegExpCompat( '\\\\u[0-9a-f]{4}|\\\\x[0-9a-f]{2}|\\\\[^ux]', 'gi' )[Symbol.replace]( regex.source, ''))
+        new RegExpCompat( '\\\\u[0-9a-f]{4}|\\\\x[0-9a-f]{2}|\\\\[^ux]', 'gi' ).replace( regex.source, ''))
     ) {
       needToFoldCase = true;
       ignoreCase = false;
@@ -76,7 +76,7 @@ function combinePrefixPatterns(regexs) {
             + '|\\\\[\\s\\S]'
             + '|-'
             + '|[^-\\\\]',
-            'g')[Symbol.match]( charSet.substring(1, charSet.length - 1) );
+            'g').match( charSet.substring(1, charSet.length - 1) );
     var ranges = [];
     var inverse = charsetParts[0] === '^';
 
@@ -154,7 +154,7 @@ function combinePrefixPatterns(regexs) {
             + '|[\\(\\)\\^]'  // start/end of a group, or line start
             + '|[^\\x5B\\x5C\\(\\)\\^]+'  // run of other characters
             + ')',
-            'g')[Symbol.match]( regex.source );
+            'g').match( regex.source );
     var n = parts.length;
 
     // Maps captured group numbers to the number they will occupy in
@@ -223,7 +223,7 @@ function combinePrefixPatterns(regexs) {
         } else if (ch0 !== '\\') {
           // TODO: handle letters in numeric escapes.
           parts[i] =
-              new RegExpCompat( '[a-zA-Z]', 'g' )[Symbol.replace](
+              new RegExpCompat( '[a-zA-Z]', 'g' ).replace(
                 p,
               function (ch) {
                 var cc = ch.charCodeAt(0);

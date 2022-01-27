@@ -19,13 +19,13 @@ gulp.task( 'rerejs', gulp.series(
                   ],
                   compilation_level : 'ADVANCED',
                   // compilation_level : 'WHITESPACE_ONLY',
-                  env               : 'CUSTOM',
-                  // formatting        : 'PRETTY_PRINT',
+                  env               : 'CUSTOM', // DEFINE_REGEXP_COMPAT__DEBUG=true の場合はコメントアウト, console を使うのでブラウザモードにする
+                  formatting        : 'PRETTY_PRINT',
                   warning_level     : 'VERBOSE',
                   language_in       : 'ECMASCRIPT3',
                   language_out      : 'ECMASCRIPT3',
                   output_wrapper    : '(function(){\n%output%\n})()',
-                  js_output_file    : 'ReRE.es5.js'
+                  js_output_file    : 'ReRE.es3.js'
               }
           )
       ).pipe( gulp.dest( 'tests' ) );

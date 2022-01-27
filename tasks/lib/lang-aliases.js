@@ -22,6 +22,7 @@ function createSandbox() {
   sandbox.extensions = [];
   // mock prettify.js API
   sandbox.window = {};
+  sandbox.RegExpCompat = RegExp;
   sandbox.window.PR = sandbox.PR = {
     registerLangHandler: function (handler, exts) {
       sandbox.extensions = sandbox.extensions.concat(exts);

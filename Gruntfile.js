@@ -176,7 +176,7 @@ module.exports = function (grunt) {
       },
       langs: {
         options: {
-          externs: 'js-modules/externs.js'
+          externs: [ 'js-modules/externs.js', 'js-modules/externs_rere.js' ],
         },
         files: '<%= uglify.langs.files %>'
       }
@@ -187,7 +187,7 @@ module.exports = function (grunt) {
       // same as 'closure-compiler:langs'
       langs: {
         options: {
-          externs: 'js-modules/externs.js'
+          externs: [ 'js-modules/externs.js', 'js-modules/externs_rere.js' ]
         },
         files: '<%= uglify.langs.files %>'
       }

@@ -68,9 +68,9 @@ function extractSourceSpans(node, isPreformatted) {
       var text = node.nodeValue;
       if (text.length) {
         if (!isPreformatted) {
-          text = new RegExpCompat( "[ \\t\\r\\n]+", 'g' )[Symbol.replace]( text, ' ');
+          text = new RegExpCompat( "[ \\t\\r\\n]+", 'g' ).replace( text, ' ');
         } else {
-          text = new RegExpCompat( "\\r\\n?", 'g' )[Symbol.replace]( text, '\n');  // Normalize newlines.
+          text = new RegExpCompat( "\\r\\n?", 'g' ).replace( text, '\n');  // Normalize newlines.
         }
         // TODO: handle tabs here?
         chunks[k] = text;
@@ -84,7 +84,7 @@ function extractSourceSpans(node, isPreformatted) {
   walk(node);
 
   return {
-    sourceCode: new RegExpCompat( "\\n$" )[Symbol.replace]( chunks.join(''), ''),
+    sourceCode: new RegExpCompat( "\\n$" ).replace( chunks.join(''), ''),
     spans: spans
   };
 }
