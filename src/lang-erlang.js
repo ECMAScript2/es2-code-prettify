@@ -31,21 +31,21 @@ PR['registerLangHandler'](
          // Whitespace
          // whitechar    ->    newline | vertab | space | tab | uniWhite
          // newline      ->    return linefeed | return | linefeed | formfeed
-         [PR['PR_PLAIN'],       /^[\t\n\x0B\x0C\r ]+/, null, '\t\n\x0B\x0C\r '],
+         [PR['PR_PLAIN'],       new RegExpCompat( "^[\\t\\n\\x0B\\x0C\\r ]+" ), null, '\t\n\x0B\x0C\r '],
          // Single line double-quoted strings.
-         [PR['PR_STRING'],      /^\"(?:[^\"\\\n\x0C\r]|\\[\s\S])*(?:\"|$)/,
+         [PR['PR_STRING'],      new RegExpCompat( "^\\\"(?:[^\\\"\\\\\\n\\x0C\\r]|\\\\[\\s\\S])*(?:\\\"|$)" ),
           null, '"'],
          
          // Handle atoms
-         [PR['PR_LITERAL'],      /^[a-z][a-zA-Z0-9_]*/],
+         [PR['PR_LITERAL'],      new RegExpCompat( "^[a-z][a-zA-Z0-9_]*" )],
          // Handle single quoted atoms
-         [PR['PR_LITERAL'],      /^\'(?:[^\'\\\n\x0C\r]|\\[^&])+\'?/,
+         [PR['PR_LITERAL'],      new RegExpCompat( "^\\'(?:[^\\'\\\\\\n\\x0C\\r]|\\\\[^&])+\\'?" ),
           null, "'"],
          
          // Handle macros. Just to be extra clear on this one, it detects the ?
          // then uses the regexp to end it so be very careful about matching
          // all the terminal elements
-         [PR['PR_LITERAL'],      /^\?[^ \t\n({]+/, null, "?"],
+         [PR['PR_LITERAL'],      new RegExpCompat( "^\\?[^ \\t\\n({]+" ), null, "?"],
 
           
          
@@ -59,14 +59,14 @@ PR['registerLangHandler'](
          //               |    decimal exponent
          // exponent     ->    (e | E) [+ | -] decimal
          [PR['PR_LITERAL'],
-          /^(?:0o[0-7]+|0x[\da-f]+|\d+(?:\.\d+)?(?:e[+\-]?\d+)?)/i,
+          new RegExpCompat( "^(?:0o[0-7]+|0x[\\da-f]+|\\d+(?:\\.\\d+)?(?:e[+\\-]?\\d+)?)", 'i' ),
           null, '0123456789']
         ],
         [
          // TODO: catch @declarations inside comments
 
          // Comments in erlang are started with % and go till a newline
-         [PR['PR_COMMENT'], /^%[^\n]*/],
+         [PR['PR_COMMENT'], new RegExpCompat( "^%[^\\n]*" )],
 
          // Catch macros
          //[PR['PR_TAG'], /?[^( \n)]+/],
@@ -77,18 +77,18 @@ PR['registerLangHandler'](
           * 'apply' 'call' 'primop'
           * 'case' 'of' 'end' 'when' 'fun' 'try' 'catch' 'receive' 'after'
           */
-         [PR['PR_KEYWORD'], /^(?:module|attributes|do|let|in|letrec|apply|call|primop|case|of|end|when|fun|try|catch|receive|after|char|integer|float,atom,string,var)\b/],
+         [PR['PR_KEYWORD'], new RegExpCompat( "^(?:module|attributes|do|let|in|letrec|apply|call|primop|case|of|end|when|fun|try|catch|receive|after|char|integer|float,atom,string,var)\\b" )],
          
          /**
           * Catch definitions (usually defined at the top of the file)
           * Anything that starts -something
           */
-         [PR['PR_KEYWORD'], /^-[a-z_]+/],
+         [PR['PR_KEYWORD'], new RegExpCompat( "^-[a-z_]+" )],
 
          // Catch variables
-         [PR['PR_TYPE'], /^[A-Z_][a-zA-Z0-9_]*/],
+         [PR['PR_TYPE'], new RegExpCompat( "^[A-Z_][a-zA-Z0-9_]*" )],
 
          // matches the symbol production
-         [PR['PR_PUNCTUATION'], /^[.,;]/]
+         [PR['PR_PUNCTUATION'], new RegExpCompat( "^[.,;]" )]
         ]),
     ['erlang', 'erl']);

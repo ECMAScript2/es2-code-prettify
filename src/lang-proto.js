@@ -32,6 +32,6 @@ PR['registerLangHandler'](PR['sourceDecorator']({
             + 'group,import,max,message,option,'
             + 'optional,package,repeated,required,returns,rpc,service,'
             + 'syntax,to,true'),
-        'types': /^(bool|(double|s?fixed|[su]?int)(32|64)|float|string)\b/,
+        'types': new RegExpCompat( "^(bool|(double|s?fixed|[su]?int)(32|64)|float|string)\\b" ),
         'cStyleComments': true
       }), ['proto']);

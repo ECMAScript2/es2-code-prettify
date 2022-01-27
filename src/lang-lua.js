@@ -37,24 +37,24 @@ PR['registerLangHandler'](
     PR['createSimpleLexer'](
         [
          // Whitespace
-         [PR['PR_PLAIN'],       /^[\t\n\r \xA0]+/, null, '\t\n\r \xA0'],
+         [PR['PR_PLAIN'],       new RegExpCompat( "^[\\t\\n\\r \\xA0]+" ), null, '\t\n\r \xA0'],
          // A double or single quoted, possibly multi-line, string.
-         [PR['PR_STRING'],      /^(?:\"(?:[^\"\\]|\\[\s\S])*(?:\"|$)|\'(?:[^\'\\]|\\[\s\S])*(?:\'|$))/, null, '"\'']
+         [PR['PR_STRING'],      new RegExpCompat( "^(?:\\\"(?:[^\\\"\\\\]|\\\\[\\s\\S])*(?:\\\"|$)|\\'(?:[^\\'\\\\]|\\\\[\\s\\S])*(?:\\'|$))" ), null, '"\'']
         ],
         [
          // A comment is either a line comment that starts with two dashes, or
          // two dashes preceding a long bracketed block.
-         [PR['PR_COMMENT'], /^--(?:\[(=*)\[[\s\S]*?(?:\]\1\]|$)|[^\r\n]*)/],
+         [PR['PR_COMMENT'], new RegExpCompat( "^--(?:\\[(=*)\\[[\\s\\S]*?(?:\\]\\1\\]|$)|[^\\r\\n]*)" )],
          // A long bracketed block not preceded by -- is a string.
-         [PR['PR_STRING'],  /^\[(=*)\[[\s\S]*?(?:\]\1\]|$)/],
-         [PR['PR_KEYWORD'], /^(?:and|break|do|else|elseif|end|false|for|function|if|in|local|nil|not|or|repeat|return|then|true|until|while)\b/, null],
+         [PR['PR_STRING'],  new RegExpCompat( "^\\[(=*)\\[[\\s\\S]*?(?:\\]\\1\\]|$)" )],
+         [PR['PR_KEYWORD'], new RegExpCompat( "^(?:and|break|do|else|elseif|end|false|for|function|if|in|local|nil|not|or|repeat|return|then|true|until|while)\\b" ), null],
          // A number is a hex integer literal, a decimal real literal, or in
          // scientific notation.
          [PR['PR_LITERAL'],
-          /^[+-]?(?:0x[\da-f]+|(?:(?:\.\d+|\d+(?:\.\d*)?)(?:e[+\-]?\d+)?))/i],
+          new RegExpCompat( "^[+-]?(?:0x[\\da-f]+|(?:(?:\\.\\d+|\\d+(?:\\.\\d*)?)(?:e[+\\-]?\\d+)?))", 'i' )],
          // An identifier
-         [PR['PR_PLAIN'], /^[a-z_]\w*/i],
+         [PR['PR_PLAIN'], new RegExpCompat( "^[a-z_]\\w*", 'i' )],
          // A run of punctuation
-         [PR['PR_PUNCTUATION'], /^[^\w\t\n\r \xA0][^\w\t\n\r \xA0\"\'\-\+=]*/]
+         [PR['PR_PUNCTUATION'], new RegExpCompat( "^[^\\w\\t\\n\\r \\xA0][^\\w\\t\\n\\r \\xA0\\\"\\'\\-\\+=]*" )]
         ]),
     ['lua']);

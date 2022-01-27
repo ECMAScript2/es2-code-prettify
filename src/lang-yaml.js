@@ -28,18 +28,18 @@
 PR['registerLangHandler'](
   PR['createSimpleLexer'](
     [
-      [PR['PR_PUNCTUATION'], /^[:|>?]+/, null, ':|>?'],
-      [PR['PR_DECLARATION'],  /^%(?:YAML|TAG)[^#\r\n]+/, null, '%'],
-      [PR['PR_TYPE'], /^[&]\S+/, null, '&'],
-      [PR['PR_TYPE'], /^!\S*/, null, '!'],
-      [PR['PR_STRING'], /^"(?:[^\\"]|\\.)*(?:"|$)/, null, '"'],
-      [PR['PR_STRING'], /^'(?:[^']|'')*(?:'|$)/, null, "'"],
-      [PR['PR_COMMENT'], /^#[^\r\n]*/, null, '#'],
-      [PR['PR_PLAIN'], /^\s+/, null, ' \t\r\n']
+      [PR['PR_PUNCTUATION'], new RegExpCompat( "^[:|>?]+" ), null, ':|>?'],
+      [PR['PR_DECLARATION'],  new RegExpCompat( "^%(?:YAML|TAG)[^#\\r\\n]+" ), null, '%'],
+      [PR['PR_TYPE'], new RegExpCompat( "^[&]\\S+" ), null, '&'],
+      [PR['PR_TYPE'], new RegExpCompat( "^!\\S*" ), null, '!'],
+      [PR['PR_STRING'], new RegExpCompat( "^\"(?:[^\\\\\"]|\\\\.)*(?:\"|$)" ), null, '"'],
+      [PR['PR_STRING'], new RegExpCompat( "^'(?:[^']|'')*(?:'|$)" ), null, "'"],
+      [PR['PR_COMMENT'], new RegExpCompat( "^#[^\\r\\n]*" ), null, '#'],
+      [PR['PR_PLAIN'], new RegExpCompat( "^\\s+" ), null, ' \t\r\n']
     ],
     [
-      [PR['PR_DECLARATION'], /^(?:---|\.\.\.)(?:[\r\n]|$)/],
-      [PR['PR_PUNCTUATION'], /^-/],
-      [PR['PR_KEYWORD'], /^[\w-]+:[ \r\n]/],
-      [PR['PR_PLAIN'], /^\w+/]
+      [PR['PR_DECLARATION'], new RegExpCompat( "^(?:---|\\.\\.\\.)(?:[\\r\\n]|$)" )],
+      [PR['PR_PUNCTUATION'], new RegExpCompat( "^-" )],
+      [PR['PR_KEYWORD'], new RegExpCompat( "^[\\w-]+:[ \\r\\n]" )],
+      [PR['PR_PLAIN'], new RegExpCompat( "^\\w+" )]
     ]), ['yaml', 'yml']);

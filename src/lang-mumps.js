@@ -114,26 +114,26 @@ var intrinsic = intrinsicVariables + intrinsicFunctions;
 
 var shortcutStylePatterns = [
          // Whitespace
-         [PR['PR_PLAIN'],       /^[\t\n\r \xA0]+/, null, '\t\n\r \xA0'],
+         [PR['PR_PLAIN'],       new RegExpCompat( "^[\\t\\n\\r \\xA0]+" ), null, '\t\n\r \xA0'],
          // A double or single quoted, possibly multi-line, string.
-         [PR['PR_STRING'],      /^(?:"(?:[^"]|\\.)*")/, null, '"']
+         [PR['PR_STRING'],      new RegExpCompat( "^(?:\"(?:[^\"]|\\\\.)*\")" ), null, '"']
   ];
 
 var fallthroughStylePatterns = [
          // A line comment that starts with ;
-         [PR['PR_COMMENT'],     /^;[^\r\n]*/, null, ';'],
+         [PR['PR_COMMENT'],     new RegExpCompat( "^;[^\\r\\n]*" ), null, ';'],
          // Add intrinsic variables and functions as declarations, there not really but it mean
          // they will hilighted differently from commands.
-         [PR['PR_DECLARATION'], new RegExp('^(?:\\$(?:' + intrinsic + '))\\b', 'i'), null],
+         [PR['PR_DECLARATION'], new RegExpCompat('^(?:\\$(?:' + intrinsic + '))\\b', 'i'), null],
          // Add commands as keywords
-         [PR['PR_KEYWORD'], new RegExp('^(?:[^\\$]' + commands + ')\\b', 'i'), null],
+         [PR['PR_KEYWORD'], new RegExpCompat('^(?:[^\\$]' + commands + ')\\b', 'i'), null],
          // A number is a decimal real literal or in scientific notation. 
          [PR['PR_LITERAL'],
-          /^[+-]?(?:(?:\.\d+|\d+(?:\.\d*)?)(?:E[+\-]?\d+)?)/i], 
+          new RegExpCompat( "^[+-]?(?:(?:\\.\\d+|\\d+(?:\\.\\d*)?)(?:E[+\\-]?\\d+)?)", 'i' )], 
          // An identifier
-         [PR['PR_PLAIN'], /^[a-z][a-zA-Z0-9]*/i],
+         [PR['PR_PLAIN'], new RegExpCompat( "^[a-z][a-zA-Z0-9]*", 'i' )],
          // Exclude $ % and ^
-         [PR['PR_PUNCTUATION'], /^[^\w\t\n\r\xA0\"\$;%\^]|_/]
+         [PR['PR_PUNCTUATION'], new RegExpCompat( "^[^\\w\\t\\n\\r\\xA0\\\"\\$;%\\^]|_" )]
   ];
 // Can't use m as its already used for MatLab
 PR.registerLangHandler(PR.createSimpleLexer(shortcutStylePatterns, fallthroughStylePatterns), ['mumps']);

@@ -36,24 +36,24 @@
 PR['registerLangHandler'](
     PR['createSimpleLexer'](
         [
-            [PR['PR_PLAIN'],       /^[\t\n\r \xA0]+/, null, '\t\n\r \xA0'],
-	    [PR['PR_STRING'],      /^\"(?:[^\"\\]|\\[\s\S])*(?:\"|$)/, null, '"'],
-	    [PR['PR_STRING'],      /^\'(?:[^\'\\]|\\[\s\S])*(?:\'|$)/, null, "'"]
+            [PR['PR_PLAIN'],       new RegExpCompat( "^[\\t\\n\\r \\xA0]+" ), null, '\t\n\r \xA0'],
+	    [PR['PR_STRING'],      new RegExpCompat( "^\\\"(?:[^\\\"\\\\]|\\\\[\\s\\S])*(?:\\\"|$)" ), null, '"'],
+	    [PR['PR_STRING'],      new RegExpCompat( "^\\'(?:[^\\'\\\\]|\\\\[\\s\\S])*(?:\\'|$)" ), null, "'"]
         ],
         [
-            [PR['PR_COMMENT'],     /^#.*/],
-	    [PR['PR_KEYWORD'],     /^(?:if|else|for|while|repeat|in|next|break|return|switch|function)(?![A-Za-z0-9_.])/],
+            [PR['PR_COMMENT'],     new RegExpCompat( "^#.*" )],
+	    [PR['PR_KEYWORD'],     new RegExpCompat( "^(?:if|else|for|while|repeat|in|next|break|return|switch|function)(?![A-Za-z0-9_.])" )],
 	    // hex numbes
-	    [PR['PR_LITERAL'], /^0[xX][a-fA-F0-9]+([pP][0-9]+)?[Li]?/],
+	    [PR['PR_LITERAL'], new RegExpCompat( "^0[xX][a-fA-F0-9]+([pP][0-9]+)?[Li]?" )],
 	    // Decimal numbers
-            [PR['PR_LITERAL'], /^[+-]?([0-9]+(\.[0-9]+)?|\.[0-9]+)([eE][+-]?[0-9]+)?[Li]?/],
+            [PR['PR_LITERAL'], new RegExpCompat( "^[+-]?([0-9]+(\\.[0-9]+)?|\\.[0-9]+)([eE][+-]?[0-9]+)?[Li]?" )],
 	    // builtin symbols
-	    [PR['PR_LITERAL'], /^(?:NULL|NA(?:_(?:integer|real|complex|character)_)?|Inf|TRUE|FALSE|NaN|\.\.(?:\.|[0-9]+))(?![A-Za-z0-9_.])/],
+	    [PR['PR_LITERAL'], new RegExpCompat( "^(?:NULL|NA(?:_(?:integer|real|complex|character)_)?|Inf|TRUE|FALSE|NaN|\\.\\.(?:\\.|[0-9]+))(?![A-Za-z0-9_.])" )],
 	    // assignment, operators, and parens, etc.
-	    [PR['PR_PUNCTUATION'], /^(?:<<?-|->>?|-|==|<=|>=|<|>|&&?|!=|\|\|?|\*|\+|\^|\/|!|%.*?%|=|~|\$|@|:{1,3}|[\[\](){};,?])/],
+	    [PR['PR_PUNCTUATION'], new RegExpCompat( "^(?:<<?-|->>?|-|==|<=|>=|<|>|&&?|!=|\\|\\|?|\\*|\\+|\\^|\\/|!|%.*?%|=|~|\\$|@|:{1,3}|[\\[\\](){};,?])" )],
 	    // valid variable names
-	    [PR['PR_PLAIN'], /^(?:[A-Za-z]+[A-Za-z0-9_.]*|\.[a-zA-Z_][0-9a-zA-Z\._]*)(?![A-Za-z0-9_.])/],
+	    [PR['PR_PLAIN'], new RegExpCompat( "^(?:[A-Za-z]+[A-Za-z0-9_.]*|\\.[a-zA-Z_][0-9a-zA-Z\\._]*)(?![A-Za-z0-9_.])" )],
 	    // string backtick
-	    [PR['PR_STRING'], /^`.+`/]
+	    [PR['PR_STRING'], new RegExpCompat( "^`.+`" )]
         ]),
     ['r', 's', 'R', 'S', 'Splus']);

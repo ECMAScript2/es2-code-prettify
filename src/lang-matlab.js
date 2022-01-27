@@ -81,91 +81,91 @@
   // patterns that always start with a known character. Must have a shortcut string.
   var shortcutStylePatterns = [
     // whitespaces: space, tab, carriage return, line feed, line tab, form-feed, non-break space
-    [PR.PR_PLAIN, /^[ \t\r\n\v\f\xA0]+/, null, " \t\r\n\u000b\u000c\u00a0"],
+    [PR.PR_PLAIN, new RegExpCompat( "^[ \\t\\r\\n\\v\\f\\xA0]+" ), null, " \t\r\n\u000b\u000c\u00a0"],
 
     // block comments
     //TODO: chokes on nested block comments
     //TODO: false positives when the lines with %{ and %} contain non-spaces
     //[PR.PR_COMMENT, /^%(?:[^\{].*|\{(?:%|%*[^\}%])*(?:\}+%?)?)/, null],
-    [PR.PR_COMMENT, /^%\{[^%]*%+(?:[^\}%][^%]*%+)*\}/, null],
+    [PR.PR_COMMENT, new RegExpCompat( "^%\\{[^%]*%+(?:[^\\}%][^%]*%+)*\\}" ), null],
 
     // single-line comments
-    [PR.PR_COMMENT, /^%[^\r\n]*/, null, "%"],
+    [PR.PR_COMMENT, new RegExpCompat( "^%[^\\r\\n]*" ), null, "%"],
 
     // system commands
-    [PR_SYSCMD, /^![^\r\n]*/, null, "!"]
+    [PR_SYSCMD, new RegExpCompat( "^![^\\r\\n]*" ), null, "!"]
   ];
 
   // patterns that will be tried in order if the shortcut ones fail. May have shortcuts.
   var fallthroughStylePatterns = [
     // line continuation
-    [PR_LINE_CONTINUATION, /^\.\.\.\s*[\r\n]/, null],
+    [PR_LINE_CONTINUATION, new RegExpCompat( "^\\.\\.\\.\\s*[\\r\\n]" ), null],
 
     // error message
-    [PR_ERROR, /^\?\?\? [^\r\n]*/, null],
+    [PR_ERROR, new RegExpCompat( "^\\?\\?\\? [^\\r\\n]*" ), null],
 
     // warning message
-    [PR_WARNING, /^Warning: [^\r\n]*/, null],
+    [PR_WARNING, new RegExpCompat( "^Warning: [^\\r\\n]*" ), null],
 
     // command prompt/output
     //[PR_CODE_OUTPUT, /^>>\s+[^\r\n]*[\r\n]{1,2}[^=]*=[^\r\n]*[\r\n]{1,2}[^\r\n]*/, null],    // full command output (both loose/compact format): `>> EXP\nVAR =\n VAL`
-    [PR_CODE_OUTPUT, /^>>\s+/, null],      // only the command prompt `>> `
-    [PR_CODE_OUTPUT, /^octave:\d+>\s+/, null],  // Octave command prompt `octave:1> `
+    [PR_CODE_OUTPUT, new RegExpCompat( "^>>\\s+" ), null],      // only the command prompt `>> `
+    [PR_CODE_OUTPUT, new RegExpCompat( "^octave:\\d+>\\s+" ), null],  // Octave command prompt `octave:1> `
 
     // identifier (chain) or closing-parenthesis/brace/bracket, and IS followed by transpose operator
     // this way we dont misdetect the transpose operator ' as the start of a string
-    ["lang-matlab-operators", /^((?:[a-zA-Z][a-zA-Z0-9_]*(?:\.[a-zA-Z][a-zA-Z0-9_]*)*|\)|\]|\}|\.)')/, null],
+    ["lang-matlab-operators", new RegExpCompat( "^((?:[a-zA-Z][a-zA-Z0-9_]*(?:\\.[a-zA-Z][a-zA-Z0-9_]*)*|\\)|\\]|\\}|\\.)')" ), null],
 
     // identifier (chain), and NOT followed by transpose operator
     // this must come AFTER the "is followed by transpose" step (otherwise it chops the last char of identifier)
-    ["lang-matlab-identifiers", /^([a-zA-Z][a-zA-Z0-9_]*(?:\.[a-zA-Z][a-zA-Z0-9_]*)*)(?!')/, null],
+    ["lang-matlab-identifiers", new RegExpCompat( "^([a-zA-Z][a-zA-Z0-9_]*(?:\\.[a-zA-Z][a-zA-Z0-9_]*)*)(?!')" ), null],
 
     // single-quoted strings: allow for escaping with '', no multilines
     //[PR.PR_STRING, /(?:(?<=(?:\(|\[|\{|\s|=|;|,|:))|^)'(?:[^']|'')*'(?=(?:\)|\]|\}|\s|=|;|,|:|~|<|>|&|-|\+|\*|\.|\^|\|))/, null],  // string vs. transpose (check before/after context using negative/positive lookbehind/lookahead)
-    [PR.PR_STRING, /^'(?:[^']|'')*'/, null],  // "'"
+    [PR.PR_STRING, new RegExpCompat( "^'(?:[^']|'')*'" ), null],  // "'"
 
     // floating point numbers: 1, 1.0, 1i, -1.1E-1
-    [PR.PR_LITERAL, /^[+\-]?\.?\d+(?:\.\d*)?(?:[Ee][+\-]?\d+)?[ij]?/, null],
+    [PR.PR_LITERAL, new RegExpCompat( "^[+\\-]?\\.?\\d+(?:\\.\\d*)?(?:[Ee][+\\-]?\\d+)?[ij]?" ), null],
 
     // parentheses, braces, brackets
-    [PR.PR_TAG, /^(?:\{|\}|\(|\)|\[|\])/, null],  // "{}()[]"
+    [PR.PR_TAG, new RegExpCompat( "^(?:\\{|\\}|\\(|\\)|\\[|\\])" ), null],  // "{}()[]"
 
     // other operators
-    [PR.PR_PUNCTUATION, /^(?:<|>|=|~|@|&|;|,|:|!|\-|\+|\*|\^|\.|\||\\|\/)/, null]
+    [PR.PR_PUNCTUATION, new RegExpCompat( "^(?:<|>|=|~|@|&|;|,|:|!|\\-|\\+|\\*|\\^|\\.|\\||\\\\|\\/)" ), null]
   ];
 
   var identifiersPatterns = [
     // list of keywords (`iskeyword`)
-    [PR.PR_KEYWORD, /^\b(?:break|case|catch|classdef|continue|else|elseif|end|for|function|global|if|otherwise|parfor|persistent|return|spmd|switch|try|while)\b/, null],
+    [PR.PR_KEYWORD, new RegExpCompat( "^\\b(?:break|case|catch|classdef|continue|else|elseif|end|for|function|global|if|otherwise|parfor|persistent|return|spmd|switch|try|while)\\b" ), null],
 
     // some specials variables/constants
-    [PR_CONSTANT, /^\b(?:true|false|inf|Inf|nan|NaN|eps|pi|ans|nargin|nargout|varargin|varargout)\b/, null],
+    [PR_CONSTANT, new RegExpCompat( "^\\b(?:true|false|inf|Inf|nan|NaN|eps|pi|ans|nargin|nargout|varargin|varargout)\\b" ), null],
 
     // some data types
-    [PR.PR_TYPE, /^\b(?:cell|struct|char|double|single|logical|u?int(?:8|16|32|64)|sparse)\b/, null],
+    [PR.PR_TYPE, new RegExpCompat( "^\\b(?:cell|struct|char|double|single|logical|u?int(?:8|16|32|64)|sparse)\\b" ), null],
 
     // commonly used builtin functions from core MATLAB and a few popular toolboxes
-    [PR_FUNCTION, new RegExp('^\\b(?:' + coreFunctions + ')\\b'), null],
-    [PR_FUNCTION_TOOLBOX, new RegExp('^\\b(?:' + statsFunctions + ')\\b'), null],
-    [PR_FUNCTION_TOOLBOX, new RegExp('^\\b(?:' + imageFunctions + ')\\b'), null],
-    [PR_FUNCTION_TOOLBOX, new RegExp('^\\b(?:' + optimFunctions + ')\\b'), null],
+    [PR_FUNCTION, new RegExpCompat('^\\b(?:' + coreFunctions + ')\\b'), null],
+    [PR_FUNCTION_TOOLBOX, new RegExpCompat('^\\b(?:' + statsFunctions + ')\\b'), null],
+    [PR_FUNCTION_TOOLBOX, new RegExpCompat('^\\b(?:' + imageFunctions + ')\\b'), null],
+    [PR_FUNCTION_TOOLBOX, new RegExpCompat('^\\b(?:' + optimFunctions + ')\\b'), null],
 
     // plain identifier (user-defined variable/function name)
-    [PR_IDENTIFIER, /^[a-zA-Z][a-zA-Z0-9_]*(?:\.[a-zA-Z][a-zA-Z0-9_]*)*/, null]
+    [PR_IDENTIFIER, new RegExpCompat( "^[a-zA-Z][a-zA-Z0-9_]*(?:\\.[a-zA-Z][a-zA-Z0-9_]*)*" ), null]
   ];
 
   var operatorsPatterns = [
     // forward to identifiers to match
-    ["lang-matlab-identifiers", /^([a-zA-Z][a-zA-Z0-9_]*(?:\.[a-zA-Z][a-zA-Z0-9_]*)*)/, null],
+    ["lang-matlab-identifiers", new RegExpCompat( "^([a-zA-Z][a-zA-Z0-9_]*(?:\\.[a-zA-Z][a-zA-Z0-9_]*)*)" ), null],
 
     // parentheses, braces, brackets
-    [PR.PR_TAG, /^(?:\{|\}|\(|\)|\[|\])/, null],  // "{}()[]"
+    [PR.PR_TAG, new RegExpCompat( "^(?:\\{|\\}|\\(|\\)|\\[|\\])" ), null],  // "{}()[]"
 
     // other operators
-    [PR.PR_PUNCTUATION, /^(?:<|>|=|~|@|&|;|,|:|!|\-|\+|\*|\^|\.|\||\\|\/)/, null],
+    [PR.PR_PUNCTUATION, new RegExpCompat( "^(?:<|>|=|~|@|&|;|,|:|!|\\-|\\+|\\*|\\^|\\.|\\||\\\\|\\/)" ), null],
 
     // transpose operators
-    [PR_TRANSPOSE, /^'/, null]
+    [PR_TRANSPOSE, new RegExpCompat( "^'" ), null]
   ];
 
   PR.registerLangHandler(
