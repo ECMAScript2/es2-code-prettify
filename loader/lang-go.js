@@ -14,4 +14,4 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 */
-PR.registerLangHandler(PR.createSimpleLexer([["pln",/^[\t\n\r \xA0]+/,null,"\t\n\r \u00a0"],["pln",/^(?:"(?:[^"\\]|\\[\s\S])*(?:"|$)|'(?:[^'\\]|\\[\s\S])+(?:'|$)|`[^`]*(?:`|$))/,null,"\"'"]],[["com",/^(?:\/\/[^\r\n]*|\/\*[\s\S]*?\*\/)/],["pln",/^(?:[^\/"'`]|\/(?![\/\*]))+/i]]),["go"]);
+PR.registerLangHandler(PR.createSimpleLexer([["pln",new RegExpCompat("^[\\t\\n\\r \\xA0]+"),null,"\t\n\r \u00a0"],["pln",new RegExpCompat("^(?:\\\"(?:[^\\\"\\\\]|\\\\[\\s\\S])*(?:\\\"|$)|\\'(?:[^\\'\\\\]|\\\\[\\s\\S])+(?:\\'|$)|`[^`]*(?:`|$))"),null,"\"'"]],[["com",new RegExpCompat("^(?:\\/\\/[^\\r\\n]*|\\/\\*[\\s\\S]*?\\*\\/)")],["pln",new RegExpCompat("^(?:[^\\/\\\"\\'`]|\\/(?![\\/\\*]))+","i")]]),["go"]);

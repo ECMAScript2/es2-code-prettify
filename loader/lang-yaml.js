@@ -14,5 +14,5 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 */
-PR.registerLangHandler(PR.createSimpleLexer([["pun",/^[:|>?]+/,null,":|>?"],["dec",/^%(?:YAML|TAG)[^#\r\n]+/,null,"%"],["typ",/^[&]\S+/,null,"&"],["typ",/^!\S*/,null,"!"],["str",/^"(?:[^\\"]|\\.)*(?:"|$)/,null,'"'],["str",/^'(?:[^']|'')*(?:'|$)/,null,"'"],["com",/^#[^\r\n]*/,null,"#"],["pln",/^\s+/,null," \t\r\n"]],[["dec",/^(?:---|\.\.\.)(?:[\r\n]|$)/],["pun",/^-/],["kwd",/^[\w-]+:[ \r\n]/],["pln",
-/^\w+/]]),["yaml","yml"]);
+PR.registerLangHandler(PR.createSimpleLexer([["pun",new RegExpCompat("^[:|>?]+"),null,":|>?"],["dec",new RegExpCompat("^%(?:YAML|TAG)[^#\\r\\n]+"),null,"%"],["typ",new RegExpCompat("^[&]\\S+"),null,"&"],["typ",new RegExpCompat("^!\\S*"),null,"!"],["str",new RegExpCompat('^"(?:[^\\\\"]|\\\\.)*(?:"|$)'),null,'"'],["str",new RegExpCompat("^'(?:[^']|'')*(?:'|$)"),null,"'"],["com",new RegExpCompat("^#[^\\r\\n]*"),null,"#"],["pln",new RegExpCompat("^\\s+"),
+null," \t\r\n"]],[["dec",new RegExpCompat("^(?:---|\\.\\.\\.)(?:[\\r\\n]|$)")],["pun",new RegExpCompat("^-")],["kwd",new RegExpCompat("^[\\w-]+:[ \\r\\n]")],["pln",new RegExpCompat("^\\w+")]]),["yaml","yml"]);

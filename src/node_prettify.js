@@ -297,7 +297,7 @@ var prettyPrint;
       if (regex.ignoreCase) {
         ignoreCase = true;
       } else if (new RegExpCompat( '[a-z]', 'i' ).test(
-          new RegExpCompat( '\\\\u[0-9a-f]{4}|\\\\x[0-9a-f]{2}|\\\\[^ux]', 'gi' )[Symbol.replace]( regex.source, ''))
+          new RegExpCompat( '\\\\u[0-9a-f]{4}|\\\\x[0-9a-f]{2}|\\\\[^ux]', 'gi' ).replace( regex.source, ''))
       ) {
         needToFoldCase = true;
         ignoreCase = false;
@@ -351,7 +351,7 @@ var prettyPrint;
               + '|\\\\[\\s\\S]'
               + '|-'
               + '|[^-\\\\]',
-              'g')[Symbol.match]( charSet.substring(1, charSet.length - 1) );
+              'g').match( charSet.substring(1, charSet.length - 1) );
       var ranges = [];
       var inverse = charsetParts[0] === '^';
 
@@ -429,7 +429,7 @@ var prettyPrint;
               + '|[\\(\\)\\^]'  // start/end of a group, or line start
               + '|[^\\x5B\\x5C\\(\\)\\^]+'  // run of other characters
               + ')',
-              'g')[Symbol.match]( regex.source );
+              'g').match( regex.source );
       var n = parts.length;
 
       // Maps captured group numbers to the number they will occupy in
@@ -498,7 +498,7 @@ var prettyPrint;
           } else if (ch0 !== '\\') {
             // TODO: handle letters in numeric escapes.
             parts[i] =
-                new RegExpCompat( '[a-zA-Z]', 'g' )[Symbol.replace](
+                new RegExpCompat( '[a-zA-Z]', 'g' ).replace(
                   p,
                 function (ch) {
                   var cc = ch.charCodeAt(0);
@@ -593,9 +593,9 @@ var prettyPrint;
         var text = node.nodeValue;
         if (text.length) {
           if (!isPreformatted) {
-            text = new RegExpCompat( "[ \\t\\r\\n]+", 'g' )[Symbol.replace]( text, ' ');
+            text = new RegExpCompat( "[ \\t\\r\\n]+", 'g' ).replace( text, ' ');
           } else {
-            text = new RegExpCompat( "\\r\\n?", 'g' )[Symbol.replace]( text, '\n');  // Normalize newlines.
+            text = new RegExpCompat( "\\r\\n?", 'g' ).replace( text, '\n');  // Normalize newlines.
           }
           // TODO: handle tabs here?
           chunks[k] = text;
@@ -609,7 +609,7 @@ var prettyPrint;
     walk(node);
 
     return {
-      sourceCode: new RegExpCompat( "\\n$" )[Symbol.replace]( chunks.join(''), ''),
+      sourceCode: new RegExpCompat( "\\n$" ).replace( chunks.join(''), ''),
       spans: spans
     };
   }
@@ -796,7 +796,7 @@ var prettyPrint;
         */
       var decorations = [basePos, PR_PLAIN];
       var pos = 0;  // index into sourceCode
-      var tokens = tokenizer[Symbol.match]( sourceCode ) || [];
+      var tokens = tokenizer.match( sourceCode ) || [];
       var styleCache = {};
 
       for (var ti = 0, nTokens = tokens.length; ti < nTokens; ++ti) {
@@ -810,12 +810,12 @@ var prettyPrint;
         } else {
           var patternParts = shortcuts[token.charAt(0)];
           if (patternParts) {
-            match = patternParts[1][Symbol.match](token);
+            match = patternParts[1].match(token);
             style = patternParts[0];
           } else {
             for (var i = 0; i < nPatterns; ++i) {
               patternParts = fallthroughStylePatterns[i];
-              match = patternParts[1][Symbol.match](token);
+              match = patternParts[1].match(token);
               if (match) {
                 style = patternParts[0];
                 break;
@@ -989,11 +989,11 @@ var prettyPrint;
       fallthroughStylePatterns.push([PR_TYPE, types]);
     }
 
-    var keywords = new RegExpCompat( '^ | $', 'g' )[Symbol.replace]( "" + options['keywords'], '');
+    var keywords = new RegExpCompat( '^ | $', 'g' ).replace( "" + options['keywords'], '');
     if (keywords.length) {
       fallthroughStylePatterns.push(
           [PR_KEYWORD,
-           new RegExpCompat('^(?:' + new RegExpCompat( '[\\s,]+', 'g' )[Symbol.replace]( keywords, '|') + ')\\b'),
+           new RegExpCompat('^(?:' + new RegExpCompat( '[\\s,]+', 'g' ).replace( keywords, '|') + ')\\b'),
            null]);
     }
 
@@ -1119,7 +1119,7 @@ var prettyPrint;
         }
       } else if ((type == 3 || type == 4) && isPreformatted) {  // Text
         var text = node.nodeValue;
-        var match = lineBreak[Symbol.match]( text );
+        var match = lineBreak.match( text );
         if (match) {
           var firstLine = text.substring(0, match.index);
           node.nodeValue = firstLine;
@@ -1297,7 +1297,7 @@ var prettyPrint;
           // space to appear at the beginning of every line but the first.
           // Emitting an old Mac OS 9 line separator makes everything spiffy.
           if (isIE8OrEarlier) {
-            styledText = newlineRe[Symbol.replace]( styledText, '\r');
+            styledText = newlineRe.replace( styledText, '\r');
           }
           textNode.nodeValue = styledText;
           var document = textNode.ownerDocument;
@@ -1592,7 +1592,7 @@ var prettyPrint;
             }
             if (value) {
               attrs = {};
-                new RegExpCompat( "\\b(\\w+)=([\\w:.%+-]+)", 'g' )[Symbol.replace]( value,
+                new RegExpCompat( "\\b(\\w+)=([\\w:.%+-]+)", 'g' ).replace( value,
                 function (_, name, value) { attrs[name] = value; });
               break;
             }
@@ -1632,12 +1632,12 @@ var prettyPrint;
             // http://dev.w3.org/html5/spec-author-view/the-code-element.html
             var langExtension = attrs['lang'];
             if (!langExtension) {
-              langExtension = className.match(langExtensionRe);
+              langExtension = langExtensionRe.match( className );
               // Support <pre class="prettyprint"><code class="language-c">
               var wrapper;
               if (!langExtension && (wrapper = childContentWrapper(cs))
                   && codeRe.test(wrapper.tagName)) {
-                langExtension = langExtensionRe[Symbol.match](wrapper.className);
+                langExtension = langExtensionRe.match(wrapper.className);
               }
 
               if (langExtension) { langExtension = langExtension[1]; }
@@ -1665,7 +1665,7 @@ var prettyPrint;
             // 1-indexed number of the first line.
             var lineNums = attrs['linenums'];
             if (!(lineNums = lineNums === 'true' || +lineNums)) {
-              lineNums = new RegExpCompat(  "\\blinenums\\b(?::(\\d+))?" )[Symbol.match]( className );
+              lineNums = new RegExpCompat(  "\\blinenums\\b(?::(\\d+))?" ).match( className );
               lineNums =
                 lineNums
                 ? lineNums[1] && lineNums[1].length
