@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Code Prettifier</title>
-<script type="text/javascript" src="ReRE.es3.js"></script>
+<script type="text/javascript" src="./prettify.es2.js"></script>
 <script type="text/javascript" src="prettify_test_2.js"></script>
 <script type="text/javascript" src="test_base.js"></script>
 <link rel="stylesheet" type="text/css" href="test_styles.css">
@@ -49,7 +49,7 @@
   }
 
   // first load prettify.js
-  injectJS(base + 'prettify.js', function () {
+  //injectJS(base + 'prettify.js', function () {
     // then load all lang-*.js concurrently
     while (sources.length) {
       injectJS(base + sources.shift(),
@@ -63,7 +63,7 @@
           }
         });
     }
-  });
+  //});
 })();
 </script>
 </head>

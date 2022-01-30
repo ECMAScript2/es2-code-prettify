@@ -46,7 +46,7 @@
     "start": "node local-web-server.js"
   },
   "devDependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.2",
     "google-closure-compiler": "^20211107.0.0",
     "grunt": "^1.0.1",
     "grunt-cli": "^1.4.3",
@@ -56,10 +56,9 @@
     "grunt-contrib-cssmin": "^4.0.0",
     "grunt-contrib-uglify": "^5.0.1",
     "grunt-preprocess": "^5.1.0",
+    "gulp": "^4.0.2",
+    "gulp-diamond-princess-zoning": "^0.9.11",
     "html-to-text": "^8.1.0",
     "zombie": "^6.1.4"
-  },
-  "dependencies": {
-    "gulp": "^4.0.2"
   }
 }
