@@ -7,12 +7,16 @@ gulp.task( 'rerejs', gulp.series(
     function(){
         return gulp.src(
             [
-                '.submodules/rerejs/src.js/**/*.js'
+                '.submodules/rerejs/src.js/**/*.js',
+               '!.submodules/rerejs/src.js/1_packageGlobal/1_variable.js'
             ]
         ).pipe(
             closureCompiler(
                 {
-                    externs           : [ '.submodules/rerejs/src.externs/externs.generated.js' ],
+                    externs           : [
+                        '.submodules/rerejs/src.externs/externs.generated.js',
+                        './src.js/externs/externs_rere.js'
+                    ],
                     define            : [
                         'DEFINE_REGEXP_COMPAT__DEBUG=false',
                         'DEFINE_REGEXP_COMPAT__MINIFY=true',
@@ -26,11 +30,11 @@ gulp.task( 'rerejs', gulp.series(
                     warning_level     : 'VERBOSE',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
-                    output_wrapper    : '(function(){\n%output%\n})()',
-                    js_output_file    : 'ReRE.es3.js'
+                    output_wrapper    : 'var /** @constructor */ RegExpCompat; if( DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT ){(function(Math,Infinity,undefined){\n%output%\n;})(Math,1/0,void 0);};',
+                    js_output_file    : 'rerejs.es2.generated.js'
                 }
             )
-        ).pipe( gulp.dest( 'tests' ) );
+        ).pipe( gulp.dest( 'src.js/js/2_packageGlobal' ) );
     }
 ) );
 
@@ -50,7 +54,7 @@ gulp.task( 'js', gulp.series(
             //   '!../web-doc-base/src/js/7_Patch/**/*.js',
             //   '!../web-doc-base/src/js/graph/**/*.js',
                 // ReRe.js
-                '.submodules/rerejs/src.js/**/*.js',
+                // '.submodules/rerejs/src.js/**/*.js',
                 // Google Code Prettify
                 './src.js/js/**/*.js',
                '!./src.js/js/5_run/*.js',
@@ -73,16 +77,18 @@ gulp.task( 'js', gulp.series(
                         '../web-doc-base/node_modules/google-closure-compiler/contrib/externs/svg.js',
                         '../web-doc-base/src/js-externs/externs.js',
                         // ReRe.js
-                        '.submodules/rerejs/src.externs/externs.generated.js'
+                        '.submodules/rerejs/src.externs/externs.generated.js',
+                        './src.js/externs/externs_rere.js'
                     ],
                     define            : [
                         // Snow daifuku
                         'DEFINE_WHAT_BROWSER_AM_I__MINIFY=true',
                         // ReRe.js
+                        /*
                         'DEFINE_REGEXP_COMPAT__DEBUG=false',
                         'DEFINE_REGEXP_COMPAT__MINIFY=true',
                         'DEFINE_REGEXP_COMPAT__NODEJS=false',
-                        'DEFINE_REGEXP_COMPAT__ES2018=false'
+                        'DEFINE_REGEXP_COMPAT__ES2018=false' */
                     ],
                     compilation_level : 'ADVANCED',
                     // compilation_level : 'WHITESPACE_ONLY',
