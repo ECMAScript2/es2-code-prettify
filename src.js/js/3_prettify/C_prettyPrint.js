@@ -67,6 +67,16 @@ function $prettyPrintOne(sourceCodeHtml, opt_langExtension, opt_numberLines) {
   return container.innerHTML;
 }
 
+var langExtensionRe = new RegExpCompat(  "\\blang(?:uage)?-([\\w.]+)(?!\\S)" );
+var prettyPrintRe = new RegExpCompat( "\\bprettyprint\\b" );
+var prettyPrintedRe = new RegExpCompat( '\\bprettyprinted\\b' );
+var preformattedTagNameRe = new RegExpCompat( 'pre|xmp', 'i' );
+var codeRe = new RegExpCompat( '^code$', 'i' );
+var preCodeXmpRe = new RegExpCompat( '^(?:pre|code|xmp)$', 'i' );
+
+var reCommentLike = new RegExpCompat(  "^\\??prettify\\b" );
+var reCorrectHTMLAttrValue = new RegExpCompat( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
+var reLinenumValue = new RegExpCompat(  "\\blinenums\\b(?::(\\d+))?" );
  /**
   * Find all the {@code <pre>} and {@code <code>} tags in the DOM with
   * {@code class=prettyprint} and prettify them.
@@ -99,12 +109,6 @@ function $prettyPrint(opt_whenDone, opt_root) {
   // don't make the browser unresponsive when rewriting a large page.
   var k = 0;
 
-  var langExtensionRe = new RegExpCompat(  "\\blang(?:uage)?-([\\w.]+)(?!\\S)" );
-  var prettyPrintRe = new RegExpCompat( "\\bprettyprint\\b" );
-  var prettyPrintedRe = new RegExpCompat( '\\bprettyprinted\\b' );
-  var preformattedTagNameRe = new RegExpCompat( 'pre|xmp', 'i' );
-  var codeRe = new RegExpCompat( '^code$', 'i' );
-  var preCodeXmpRe = new RegExpCompat( '^(?:pre|code|xmp)$', 'i' );
   var EMPTY = {};
 
   function doWork() {
@@ -124,14 +128,14 @@ function $prettyPrint(opt_whenDone, opt_root) {
           // like <!--?foo?-->, but in XML is a processing instruction
           var value = (nt === 7 || nt === 8) && preceder.nodeValue;
           if (value
-              ? !new RegExpCompat(  "^\\??prettify\\b" ).test(value)
-              : (nt !== 3 || new RegExpCompat( '\\S' ).test(preceder.nodeValue))) {
+              ? !reCommentLike.test(value)
+              : (nt !== 3 || notWs.test(preceder.nodeValue))) {
             // Skip over white-space text nodes but not others.
             break;
           }
           if (value) {
             attrs = {};
-              new RegExpCompat( "\\b(\\w+)=([\\w:.%+-]+)", 'g' ).replace( value,
+            reCorrectHTMLAttrValue.replace( value,
               function (_, name, value) { attrs[name] = value; });
             break;
           }
@@ -204,7 +208,7 @@ function $prettyPrint(opt_whenDone, opt_root) {
           // 1-indexed number of the first line.
           var lineNums = attrs['linenums'];
           if (!(lineNums = lineNums === 'true' || +lineNums)) {
-            lineNums = new RegExpCompat(  "\\blinenums\\b(?::(\\d+))?" ).match( className );
+            lineNums = reLinenumValue.match( className );
             lineNums =
               lineNums
               ? lineNums[1] && lineNums[1].length

@@ -1,3 +1,5 @@
+var nocode = new RegExpCompat( '(?:^|\\s)nocode(?:\\s|$)' );
+var lineBreak = new RegExpCompat( "\\r\\n?|\\n" );
 /**
  * Given a DOM subtree, wraps it in a list, and puts each line into its own
  * list item.
@@ -14,8 +16,7 @@
  *     be treated as significant.
  */
 function numberLines(node, startLineNum, isPreformatted) {
-  var nocode = new RegExpCompat( '(?:^|\\s)nocode(?:\\s|$)' );
-  var lineBreak = new RegExpCompat( "\\r\\n?|\\n" );
+
 
   var document = node.ownerDocument;
 

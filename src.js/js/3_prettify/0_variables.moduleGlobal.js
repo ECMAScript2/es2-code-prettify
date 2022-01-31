@@ -8,6 +8,9 @@
    window['PR_SHOULD_USE_CONTINUATION'] = PR_SHOULD_USE_CONTINUATION;
  }
  
+/** @type {Object.<string,JobT>} Maps language-specific file extensions to handlers. */
+var langHandlerRegistry = {};
+
  /**
   * Pretty print a chunk of code.
   * @param {string} sourceCodeHtml The HTML to pretty print.

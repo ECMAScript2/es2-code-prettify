@@ -1,3 +1,6 @@
+var isIE8OrEarlier = new RegExpCompat( '\\bMSIE\\s(\\d+)' ).exec(navigator.userAgent);
+isIE8OrEarlier = isIE8OrEarlier && +isIE8OrEarlier[1] <= 8;
+var newlineRe = isIE8OrEarlier && new RegExpCompat( '\n', 'g' );
 /**
  * Breaks {@code job.sourceCode} around style boundaries in
  * {@code job.decorations} and modifies {@code job.sourceNode} in place.
@@ -5,10 +8,6 @@
  * @private
  */
 function recombineTagsAndDecorations(job) {
-  var isIE8OrEarlier = new RegExpCompat( '\\bMSIE\\s(\\d+)' ).exec(navigator.userAgent);
-  isIE8OrEarlier = isIE8OrEarlier && +isIE8OrEarlier[1] <= 8;
-  var newlineRe = new RegExpCompat( '\n', 'g' );
-
   var source = job.sourceCode;
   var sourceLength = source.length;
   // Index into source after the last code-unit recombined.

@@ -1,5 +1,5 @@
-var /** @constructor */ RegExpCompat; if( DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT ){(function(Math,Infinity,undefined){
-var n = String.fromCharCode, q = Math.floor, r = [], t, u, v, w, x, z, A, B, C, D, E, F, aa;
+var RegExpCompat; if( DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT ){(function(Math,Infinity){
+var n = String.fromCharCode, q = Math.floor, r = [], t, u, v, w, x, z, A, B, C, D, E, F;
 function G(a) {
   var b = a.length;
   if (!(0 >= b)) {
@@ -22,7 +22,7 @@ function J(a, b) {
   }
   return d;
 }
-function ba(a, b) {
+function aa(a, b) {
   for (var c = (a.length >>> 0) - 1, d = a[c--]; 0 <= c; --c) {
     d = b(d, a[c]);
   }
@@ -62,7 +62,7 @@ t.prototype.add = function(a, b) {
     a <= c[2 * e + 1] ? g = e : f = e;
   }
   f = g;
-  g = c.splice(2 * f, 2 * (ca(c, d) - f + 1));
+  g = c.splice(2 * f, 2 * (ba(c, d) - f + 1));
   0 < g.length && (a = Math.min(a, g[0]), d = Math.max(d, g[g.length - 1]));
   c.splice(2 * f, 0, a, d);
 };
@@ -82,14 +82,14 @@ t.prototype.s = function() {
   return new t(I(this.t));
 };
 t.prototype.has = function(a) {
-  var b = this.t, c = ca(b, a);
+  var b = this.t, c = ba(b, a);
   if (0 > c || b.length <= 2 * c) {
     return !1;
   }
   var d = b[2 * c + 1];
   return b[2 * c] <= a && a < d;
 };
-function ca(a, b) {
+function ba(a, b) {
   for (var c = -1, d = a.length / 2; 1 < d - c;) {
     var f = c + q((d - c) / 2);
     a[2 * f] <= b ? c = f : d = f;
@@ -102,7 +102,7 @@ w = new t([48, 58, 65, 91, 95, 96, 97, 123]);
 x = w.s().f();
 z = new t([9, 14, 32, 33, 160, 161, 5760, 5761, 8192, 8203, 8239, 8240, 8287, 8288, 12288, 12289, 65279, 65280]);
 A = z.s().f();
-var da;
+var ca;
 function K(a) {
   switch(a) {
     case "\n":
@@ -116,7 +116,7 @@ function K(a) {
   }
   return a;
 }
-function ea(a) {
+function da(a) {
   switch(a.c) {
     case 15:
       return K(a.raw);
@@ -165,9 +165,9 @@ B = function(a) {
     case 15:
       return a = K(a.raw), "/" === a ? "\\/" : a;
     case 16:
-      return ea(a);
+      return da(a);
     case 17:
-      return "[" + (a.f ? "^" : "") + J(a.h, ea).join("") + "]";
+      return "[" + (a.f ? "^" : "") + J(a.h, da).join("") + "]";
     case 19:
       return ".";
     case 20:
@@ -184,11 +184,7 @@ C = function(a) {
   a.sticky && (b += "y");
   return b;
 };
-D = function(a) {
-  var b = "/", c = B(a.e);
-  return b = b + ("" === c ? "(?:)" : c) + "/" + C(a.i);
-};
-da = new t([48, 58, 65, 91, 95, 96, 97, 123, 170, 171, 181, 182, 183, 184, 186, 187, 192, 215, 216, 247, 248, 706, 710, 722, 736, 741, 748, 749, 750, 751, 768, 885, 886, 888, 890, 894, 895, 896, 902, 907, 908, 909, 910, 930, 931, 1014, 1015, 1154, 1155, 1160, 1162, 1328, 1329, 1367, 1369, 1370, 1376, 1417, 1425, 1470, 1471, 1472, 1473, 1475, 1476, 1478, 1479, 1480, 1488, 1515, 1519, 1523, 1552, 1563, 1568, 1642, 1646, 1748, 1749, 1757, 1759, 1769, 1770, 1789, 1791, 1792, 1808, 1867, 1869, 1970, 1984, 
+ca = new t([48, 58, 65, 91, 95, 96, 97, 123, 170, 171, 181, 182, 183, 184, 186, 187, 192, 215, 216, 247, 248, 706, 710, 722, 736, 741, 748, 749, 750, 751, 768, 885, 886, 888, 890, 894, 895, 896, 902, 907, 908, 909, 910, 930, 931, 1014, 1015, 1154, 1155, 1160, 1162, 1328, 1329, 1367, 1369, 1370, 1376, 1417, 1425, 1470, 1471, 1472, 1473, 1475, 1476, 1478, 1479, 1480, 1488, 1515, 1519, 1523, 1552, 1563, 1568, 1642, 1646, 1748, 1749, 1757, 1759, 1769, 1770, 1789, 1791, 1792, 1808, 1867, 1869, 1970, 1984, 
 2038, 2042, 2043, 2045, 2046, 2048, 2094, 2112, 2140, 2144, 2155, 2208, 2229, 2230, 2238, 2259, 2274, 2275, 2404, 2406, 2416, 2417, 2436, 2437, 2445, 2447, 2449, 2451, 2473, 2474, 2481, 2482, 2483, 2486, 2490, 2492, 2501, 2503, 2505, 2507, 2511, 2519, 2520, 2524, 2526, 2527, 2532, 2534, 2546, 2556, 2557, 2558, 2559, 2561, 2564, 2565, 2571, 2575, 2577, 2579, 2601, 2602, 2609, 2610, 2612, 2613, 2615, 2616, 2618, 2620, 2621, 2622, 2627, 2631, 2633, 2635, 2638, 2641, 2642, 2649, 2653, 2654, 2655, 2662, 
 2678, 2689, 2692, 2693, 2702, 2703, 2706, 2707, 2729, 2730, 2737, 2738, 2740, 2741, 2746, 2748, 2758, 2759, 2762, 2763, 2766, 2768, 2769, 2784, 2788, 2790, 2800, 2809, 2816, 2817, 2820, 2821, 2829, 2831, 2833, 2835, 2857, 2858, 2865, 2866, 2868, 2869, 2874, 2876, 2885, 2887, 2889, 2891, 2894, 2902, 2904, 2908, 2910, 2911, 2916, 2918, 2928, 2929, 2930, 2946, 2948, 2949, 2955, 2958, 2961, 2962, 2966, 2969, 2971, 2972, 2973, 2974, 2976, 2979, 2981, 2984, 2987, 2990, 3002, 3006, 3011, 3014, 3017, 3018, 
 3022, 3024, 3025, 3031, 3032, 3046, 3056, 3072, 3085, 3086, 3089, 3090, 3113, 3114, 3130, 3133, 3141, 3142, 3145, 3146, 3150, 3157, 3159, 3160, 3163, 3168, 3172, 3174, 3184, 3200, 3204, 3205, 3213, 3214, 3217, 3218, 3241, 3242, 3252, 3253, 3258, 3260, 3269, 3270, 3273, 3274, 3278, 3285, 3287, 3294, 3295, 3296, 3300, 3302, 3312, 3313, 3315, 3328, 3332, 3333, 3341, 3342, 3345, 3346, 3397, 3398, 3401, 3402, 3407, 3412, 3416, 3423, 3428, 3430, 3440, 3450, 3456, 3458, 3460, 3461, 3479, 3482, 3506, 3507, 
@@ -207,19 +203,19 @@ da = new t([48, 58, 65, 91, 95, 96, 97, 123, 170, 171, 181, 182, 183, 184, 186, 
 119893, 119894, 119965, 119966, 119968, 119970, 119971, 119973, 119975, 119977, 119981, 119982, 119994, 119995, 119996, 119997, 120004, 120005, 120070, 120071, 120075, 120077, 120085, 120086, 120093, 120094, 120122, 120123, 120127, 120128, 120133, 120134, 120135, 120138, 120145, 120146, 120486, 120488, 120513, 120514, 120539, 120540, 120571, 120572, 120597, 120598, 120629, 120630, 120655, 120656, 120687, 120688, 120713, 120714, 120745, 120746, 120771, 120772, 120780, 120782, 120832, 121344, 121399, 
 121403, 121453, 121461, 121462, 121476, 121477, 121499, 121504, 121505, 121520, 122880, 122887, 122888, 122905, 122907, 122914, 122915, 122917, 122918, 122923, 123136, 123181, 123184, 123198, 123200, 123210, 123214, 123215, 123584, 123642, 124928, 125125, 125136, 125143, 125184, 125260, 125264, 125274, 126464, 126468, 126469, 126496, 126497, 126499, 126500, 126501, 126503, 126504, 126505, 126515, 126516, 126520, 126521, 126522, 126523, 126524, 126530, 126531, 126535, 126536, 126537, 126538, 126539, 
 126540, 126541, 126544, 126545, 126547, 126548, 126549, 126551, 126552, 126553, 126554, 126555, 126556, 126557, 126558, 126559, 126560, 126561, 126563, 126564, 126565, 126567, 126571, 126572, 126579, 126580, 126584, 126585, 126589, 126590, 126591, 126592, 126602, 126603, 126620, 126625, 126628, 126629, 126634, 126635, 126652, 131072, 173783, 173824, 177973, 177984, 178206, 178208, 183970, 183984, 191457, 194560, 195102, 917760, 918E3]);
-function fa(a) {
+function ea(a) {
   return "|" === a || ")" === a || "" === a;
 }
 function L(a) {
   return "0" <= a && "9" >= a;
 }
-E = function(a, b) {
+D = function(a, b) {
   this.q = this.a = this.o = 0;
   this.source = a;
   this.flags = b || "";
   this.l = !0;
 };
-E.prototype.parse = function() {
+D.prototype.parse = function() {
   var a = {global:!1, ignoreCase:!1, multiline:!1, sticky:!1};
   for (var b = this.flags.length; b;) {
     switch(this.flags.charAt(--b)) {
@@ -273,19 +269,19 @@ E.prototype.parse = function() {
   return {c:0, i:this.i, o:this.o, e:a, d:[0, this.a]};
 };
 function N(a) {
-  for (var b = a.a, c = [ha(a)]; "|" === M(a);) {
-    ++a.a, c.push(ha(a));
+  for (var b = a.a, c = [fa(a)]; "|" === M(a);) {
+    ++a.a, c.push(fa(a));
   }
   return 1 === c.length ? c[0] : {c:1, h:c, d:[b, a.a]};
 }
-function ha(a) {
-  for (var b = a.a, c = []; !fa(M(a));) {
-    c.push(ia(a));
+function fa(a) {
+  for (var b = a.a, c = []; !ea(M(a));) {
+    c.push(ha(a));
   }
   return 1 === c.length ? c[0] : {c:2, h:c, d:[b, a.a]};
 }
-function ia(a) {
-  var b = a.a, c = ja(a);
+function ha(a) {
+  var b = a.a, c = ia(a);
   a: {
     switch(c.c) {
       case 10:
@@ -309,7 +305,7 @@ function ia(a) {
       return O(a, 8, b, c);
     case "{":
       d = a.a;
-      var f = ka(a);
+      var f = ja(a);
       if (!f && a.l) {
         a.a = d, a = c;
       } else {
@@ -329,7 +325,7 @@ function O(a, b, c, d) {
   "?" === M(a) && (++a.a, f = !0);
   return {c:b, j:f, e:d, d:[c, a.a]};
 }
-function ka(a) {
+function ja(a) {
   var b = a.a;
   ++a.a;
   var c = P(a);
@@ -354,7 +350,7 @@ function ka(a) {
     }
   }
 }
-function ja(a) {
+function ia(a) {
   var b = a.a, c = M(a);
   switch(c) {
     case ".":
@@ -369,25 +365,25 @@ function ja(a) {
       c = !1;
       "^" === M(a) && (++a.a, c = !0);
       for (var d = []; "]" !== M(a);) {
-        d.push(la(a));
+        d.push(ka(a));
       }
       ++a.a;
       return {c:17, f:c, h:d, d:[b, a.a]};
     case "\\":
-      return ma(a);
+      return la(a);
     case "(":
-      return na(a);
+      return ma(a);
     case "*":
     case "+":
     case "?":
     case "{":
-      a.l && ka(a);
+      a.l && ja(a);
   }
   a.a += c.length;
   return {c:15, value:G(c), raw:c, d:[b, a.a]};
 }
-function la(a) {
-  var b = a.a, c = oa(a);
+function ka(a) {
+  var b = a.a, c = na(a);
   if ("-" !== M(a) || H(a.source, "-]", a.a)) {
     return c;
   }
@@ -396,10 +392,10 @@ function la(a) {
   }
   var d = a.a;
   ++a.a;
-  var f = oa(a);
+  var f = na(a);
   return 16 === f.c && a.l ? (a.a = d, c) : {c:18, h:[c, f], d:[b, a.a]};
 }
-function oa(a) {
+function na(a) {
   var b = a.a, c = M(a);
   if ("\\" !== c) {
     return a.a += c.length, {c:15, value:G(c), raw:c, d:[b, a.a]};
@@ -410,14 +406,14 @@ function oa(a) {
   if (H(a.source, "\\b", a.a)) {
     return a.a += 2, {c:15, value:8, raw:"\\b", d:[b, a.a]};
   }
-  if (b = pa(a)) {
+  if (b = oa(a)) {
     return b;
   }
-  if (a = qa(a)) {
+  if (a = pa(a)) {
     return a;
   }
 }
-function ma(a) {
+function la(a) {
   var b = a.a;
   H(a.source, "\\b", a.a) ? (a.a += 2, b = {c:10, f:!1, d:[b, a.a]}) : H(a.source, "\\B", a.a) ? (a.a += 2, b = {c:10, f:!0, d:[b, a.a]}) : b = void 0;
   if (b) {
@@ -443,14 +439,14 @@ function ma(a) {
     a.a = b;
     b = void 0;
   }
-  if (b || (b = pa(a))) {
+  if (b || (b = oa(a))) {
     return b;
   }
-  if (a = qa(a)) {
+  if (a = pa(a)) {
     return a;
   }
 }
-function qa(a) {
+function pa(a) {
   var b = a.a;
   var c = a.a;
   ++a.a;
@@ -458,7 +454,7 @@ function qa(a) {
     a.a = c, c = "";
   } else {
     ++a.a;
-    var d = ra(a, 4);
+    var d = qa(a, 4);
     0 > d && a.l ? (a.a = c, c = "") : c = n(d);
   }
   if ("" !== c) {
@@ -491,7 +487,7 @@ function qa(a) {
       return {c:15, value:c, raw:a.source.slice(b, a.a), d:[b, a.a]};
     case "x":
       ++a.a;
-      c = ra(a, 2);
+      c = qa(a, 2);
       if (0 > c) {
         --a.a;
         break;
@@ -517,13 +513,13 @@ function qa(a) {
       return a.a += d.length, {c:15, value:c, raw:"\\" + d, d:[b, a.a]};
     }
   } else {
-    if (!da.has(c)) {
+    if (!ca.has(c)) {
       return a.a += d.length, {c:15, value:c, raw:"\\" + d, d:[b, a.a]};
     }
   }
   a.a = b;
 }
-function pa(a) {
+function oa(a) {
   var b = a.a;
   ++a.a;
   var c = M(a);
@@ -540,7 +536,7 @@ function pa(a) {
   }
   a.a = b;
 }
-function na(a) {
+function ma(a) {
   var b = a.a;
   if (!H(a.source, "(?", a.a)) {
     ++a.a;
@@ -565,7 +561,7 @@ function P(a) {
   }
   return "" === b ? -1 : parseInt(b, 10);
 }
-function ra(a, b) {
+function qa(a, b) {
   for (var c = a.a, d = ""; 0 < b--;) {
     var f = M(a);
     if (!(L(f) || "a" <= f && "f" >= f || "A" <= f && "F" >= f)) {
@@ -580,7 +576,7 @@ function M(a) {
   a = a.source.charCodeAt(a.a);
   return a !== a ? "" : n(a);
 }
-;var Q, R, sa;
+;var Q, R, ra;
 Q = function(a, b) {
   this.input = a;
   this.x = b;
@@ -606,26 +602,26 @@ R = function(a) {
   b = b.charCodeAt(0);
   return 128 <= a && 128 > b ? a : b;
 };
-sa = function(a) {
+ra = function(a) {
   var b = r[a];
   return b ? b : [n(a).toLowerCase().charCodeAt(0)];
 };
-F = function(a) {
+E = function(a) {
   this.g = !1;
   this.p = this.q = 1;
   this.y = a;
   this.ignoreCase = a.i.ignoreCase;
   this.o = a.o;
 };
-F.prototype.compile = function() {
+E.prototype.compile = function() {
   var a = S(this, this.y.e);
   a = T([], {b:2, index:0}, a, {b:3, index:0}, {b:17});
-  return new aa(this.y, a);
+  return new F(this.y, a);
 };
 function S(a, b) {
   switch(b.c) {
     case 1:
-      return ta(a, b);
+      return sa(a, b);
     case 2:
       var c = I(b.h);
       if (2 === a.p) {
@@ -664,7 +660,7 @@ function S(a, b) {
     case 15:
       return c = b.value, a.ignoreCase && (c = R(c)), a.g = !0, W(a, [{b:5, value:c}]);
     case 16:
-      return c = ua(b), a.g = !0, W(a, [{b:6, set:c}]);
+      return c = ta(b), a.g = !0, W(a, [{b:6, set:c}]);
     case 17:
       c = new t();
       d = b.h;
@@ -675,7 +671,7 @@ function S(a, b) {
             break;
           case 16:
             g = c;
-            for (var l = ua(e).t, h = -1, m = l.length - 1; h < m;) {
+            for (var l = ta(e).t, h = -1, m = l.length - 1; h < m;) {
               var k = l[++h];
               e = l[++h];
               g.add(k, e);
@@ -692,15 +688,15 @@ function S(a, b) {
     case 20:
       return a.g = !1, [{b:2 === a.p ? 23 : 22, index:b.index}];
     case 21:
-      return c = a.F[b.name], a.g = !1, [{b:2 === a.p ? 23 : 22, index:c}];
+      return c = a.D[b.name], a.g = !1, [{b:2 === a.p ? 23 : 22, index:c}];
   }
 }
-function ta(a, b) {
+function sa(a, b) {
   for (var c = b.h, d = c.length, f = [], g = !0, e = 0; e < d; ++e) {
     f.push(S(a, c[e])), g = g && a.g;
   }
   a.g = g;
-  return ba(f, function(l, h) {
+  return aa(f, function(l, h) {
     return T([], {b:11, next:h.length + 1}, h, {b:13, r:l.length}, l);
   });
 }
@@ -708,9 +704,9 @@ function U(a, b) {
   return a.g ? b : T([], {b:20}, b, {b:9});
 }
 function V(a, b, c) {
-  return b === a.q ? c : T([], {b:4, from:b, D:a.q}, c);
+  return b === a.q ? c : T([], {b:4, from:b, B:a.q}, c);
 }
-function ua(a) {
+function ta(a) {
   switch(a.u) {
     case 1:
       return a.f ? v : u;
@@ -752,8 +748,8 @@ function Z(a, b, c, d, f) {
 Z.prototype.s = function() {
   return new Z(this.a, this.k, I(this.stack), this.n, I(this.m));
 };
-aa = function(a, b) {
-  this.A = b;
+F = function(a, b) {
+  this.z = b;
   for (var c = -1, d, f = 0, g = 0; d = b[++c];) {
     switch(d.b) {
       case 19:
@@ -769,16 +765,15 @@ aa = function(a, b) {
     }
     g = Math.max(f, g);
   }
-  this.B = g;
+  this.A = g;
   this.ignoreCase = a.i.ignoreCase;
   this.multiline = a.i.multiline;
   this.sticky = a.i.sticky;
   this.o = a.o;
 };
 RegExpCompat = function(a, b) {
-  var c = (new E(a, b)).parse();
-  this.v = D(c);
-  this.z = (new F(c)).compile();
+  var c = (new D(a, b)).parse();
+  this.v = (new E(c)).compile();
   var d = B(c.e);
   this.source = "" === d ? "(?:)" : d;
   this.flags = C(c.i);
@@ -788,14 +783,14 @@ RegExpCompat = function(a, b) {
   this.sticky = c.i.sticky;
 };
 RegExpCompat.prototype.toString = function() {
-  return this.v;
+  return "/" + this.source + "/" + this.flags;
 };
 RegExpCompat.prototype.exec = function(a) {
   var b = this.global || this.sticky, c = 0;
   b && (c = this.lastIndex);
   a: {
-    for (var d = this.z; c <= a.length;) {
-      for (var f = [], g = f, e = g.push, l = c, h = d.B, m = [], k = 2 * (d.o + 1), p = 0; p < k; ++p) {
+    for (var d = this.v; c <= a.length;) {
+      for (var f = [], g = f, e = g.push, l = c, h = d.A, m = [], k = 2 * (d.o + 1), p = 0; p < k; ++p) {
         m.push(-1);
       }
       k = [];
@@ -804,7 +799,7 @@ RegExpCompat.prototype.exec = function(a) {
       }
       for (e.call(g, new Z(l, 0, k, 0, m)); 0 < f.length;) {
         e = f[f.length - 1];
-        l = d.A[e.k];
+        l = d.z[e.k];
         g = !1;
         ++e.k;
         switch(l.b) {
@@ -823,7 +818,7 @@ RegExpCompat.prototype.exec = function(a) {
             e.m[2 * l.index + 1] = e.a;
             break;
           case 4:
-            for (k = l.from; k < l.D; ++k) {
+            for (k = l.from; k < l.B; ++k) {
               e.m[2 * k] = e.m[2 * k + 1] = -1;
             }
             break;
@@ -844,9 +839,9 @@ RegExpCompat.prototype.exec = function(a) {
             k = l.set.has(p);
             var y = 6 === l.b;
             if (d.ignoreCase) {
-              p = sa(p);
-              var va = p.length;
-              for (m = 0; m < va; ++m) {
+              p = ra(p);
+              var ua = p.length;
+              for (m = 0; m < ua; ++m) {
                 k = k || l.set.has(p[m]);
               }
             }
@@ -1049,4 +1044,4 @@ RegExpCompat.prototype.replace = function(a, b) {
 };
 this.RegExpCompat = RegExpCompat;
 
-;})(Math,1/0,void 0);};
+})(Math,1/0)};

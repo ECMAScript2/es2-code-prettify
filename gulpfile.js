@@ -30,7 +30,7 @@ gulp.task( 'rerejs', gulp.series(
                     warning_level     : 'VERBOSE',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
-                    output_wrapper    : 'var /** @constructor */ RegExpCompat; if( DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT ){(function(Math,Infinity,undefined){\n%output%\n;})(Math,1/0,void 0);};',
+                    output_wrapper    : 'var RegExpCompat; if( DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT ){(function(Math,Infinity){\n%output%\n})(Math,1/0)};',
                     js_output_file    : 'rerejs.es2.generated.js'
                 }
             )

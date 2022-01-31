@@ -22,12 +22,12 @@
  *
  * @const
  */
-var _REGEXP_PRECEDER_PATTERN =
+var REGEXP_PRECEDER_PATTERN =
             '(?:^^\\.?|[+-]|' + // match at beginning, a dot that is not part of a number, or sign.
                  '[!=]=?=?|'  + // "!", "!=", "!==", "=", "==", "===",
                  '\\#|'       +
                  '%=?|'       + // "%", "%=",
-                 '&&?=?'      + // "&", "&&", "&&=", "&=",
+                 '&&?=?|'     + // "&", "&&", "&&=", "&=",
                  '\\(|'       +
                  '\\*=?|'     + // "*", "*=",
                  '[+\\-]=|'   + // +=, -=.  + and - handled below.
@@ -49,6 +49,3 @@ var _REGEXP_PRECEDER_PATTERN =
                  'do|else|finally|instanceof|' +
                  'return|throw|try|typeof' +
             ')\\s*';            // matches at end, and matches empty string
-
-var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[+\\-]=|->|\\/=?|::?|<<?=?|>>?>?=?|,|;|\\?|@|\\[|~|{|\\^\\^?=?|\\|\\|?=?|break|case|continue|delete|do|else|finally|instanceof|return|throw|try|typeof)\\s*';
-
