@@ -1,6 +1,6 @@
-var isIE8OrEarlier = new RegExpCompat( '\\bMSIE\\s(\\d+)' ).exec(navigator.userAgent);
-isIE8OrEarlier = isIE8OrEarlier && +isIE8OrEarlier[1] <= 8;
-var newlineRe = isIE8OrEarlier && new RegExpCompat( '\n', 'g' );
+var isIE8OrEarlier = new RegExpCompat( '\\bMSIE\\s(\\d+)' ).exec( navigator.userAgent );
+isIE8OrEarlier = isIE8OrEarlier && +isIE8OrEarlier[ 1 ] <= 8;
+
 /**
  * Breaks {@code job.sourceCode} around style boundaries in
  * {@code job.decorations} and modifies {@code job.sourceNode} in place.
@@ -80,7 +80,7 @@ function recombineTagsAndDecorations( job ){
             // space to appear at the beginning of every line but the first.
             // Emitting an old Mac OS 9 line separator makes everything spiffy.
             if( isIE8OrEarlier ){
-                styledText = newlineRe.replace( styledText, '\r' );
+                styledText = styledText.split( '\n' ).join( '\r' );
             };
             textNode.nodeValue = styledText;
             var document = textNode.ownerDocument;

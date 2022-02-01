@@ -1,6 +1,3 @@
-var nocode = new RegExpCompat( '(?:^|\\s)nocode(?:\\s|$)' );
-var lineBreak = new RegExpCompat( "\\r\\n?|\\n" );
-
 /**
  * Given a DOM subtree, wraps it in a list, and puts each line into its own
  * list item.
@@ -29,7 +26,7 @@ function numberLines( node, startLineNum, isPreformatted ){
 
     function walk( node ){
         var type = node.nodeType;
-        if( type === 1 && !nocode.test( node.className ) ){  // Element
+        if( type === 1 && ( ' ' + node.className + ' ' ).indexOf( ' nocode ' ) === -1 ){  // Element
             if( 'br' === node.nodeName.toLowerCase() ){
                 breakAfter( node );
                 // Discard the <BR> since it is now flush against a </LI>.
@@ -43,7 +40,7 @@ function numberLines( node, startLineNum, isPreformatted ){
             };
         } else if( ( type === 3 || type === 4 ) && isPreformatted ){  // Text
             var text = node.nodeValue;
-            var match = lineBreak.match( text );
+            var match = text.match( '\r' ) || text.match( '\n' );
             if( match ){
                 var firstLine = text.substring( 0, match.index );
                 node.nodeValue = firstLine;

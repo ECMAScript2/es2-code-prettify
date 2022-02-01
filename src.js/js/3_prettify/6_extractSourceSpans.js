@@ -1,7 +1,3 @@
-var reNocode = new RegExpCompat( '(?:^|\\s)nocode(?:\\s|$)' );
-var reNewLine = new RegExpCompat( "[ \\t\\r\\n]+", 'g' );
-var reNewLinePreformatted = new RegExpCompat( "\\r\\n?", 'g' );
-var reNewLine$ = new RegExpCompat( "\\n$" );
 /**
  * Split markup into a string of source code and an array mapping ranges in
  * that string to the text nodes in which they appear.
@@ -48,7 +44,6 @@ var reNewLine$ = new RegExpCompat( "\\n$" );
  * @return {SourceSpansT} source code and the nodes in which they occur.
  */
 function extractSourceSpans( node, isPreformatted ){
-    var nocode = reNocode;
     var chunks = [];
     var length = 0;
     var spans = [];
@@ -56,8 +51,8 @@ function extractSourceSpans( node, isPreformatted ){
 
     function walk( node ){
         var type = node.nodeType;
-        if( type == 1 ){  // Element
-            if( nocode.test( node.className ) ){
+        if( type === 1 ){  // Element
+            if( 0 <= ( ' ' + node.className + ' ' ).indexOf( ' nocode ' ) ){
                 return;
             };
             for( var child = node.firstChild; child; child = child.nextSibling ){
@@ -69,13 +64,13 @@ function extractSourceSpans( node, isPreformatted ){
                 spans[ k << 1 ] = length++;
                 spans[ ( k++ << 1 ) | 1 ] = node;
             };
-        } else if( type == 3 || type == 4 ){ // Text
+        } else if( type === 3 || type === 4 ){ // Text
             var text = node.nodeValue;
             if( text.length ){
                 if( !isPreformatted ){
-                    text = reNewLine.replace( text, ' ' );
+                    text = text.split( '\t' ).join( ' ' ).split( '\r' ).join( ' ' ).split( '\n' ).join( ' ' );
                 } else {
-                    text = reNewLinePreformatted.replace( text, '\n' );  // Normalize newlines.
+                    text = text.split( '\r\n' ).join( '\n' ).split( '\r' ).join( '\n' );  // Normalize newlines.
                 };
                 // TODO: handle tabs here?
                 chunks[ k ] = text;
@@ -88,8 +83,13 @@ function extractSourceSpans( node, isPreformatted ){
 
     walk( node );
 
+    var text = chunks.join( '' );
+    if( text.charAt( text.length - 1 ) === '\n' ){
+        text = text.substr( 0, text.length - 1 );
+    };
+
     return {
-        sourceCode : reNewLine$.replace( chunks.join( '' ), '' ),
+        sourceCode : text,
         spans      : spans
     };
 };
