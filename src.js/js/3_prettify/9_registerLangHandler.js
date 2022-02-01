@@ -1,15 +1,15 @@
 /** Register a language handler for the given file extensions.
-  * @param {function (JobT)} handler a function from source code to a list
+  * @param {SimpleLexer} simpleLexer a function from source code to a list
   *      of decorations.  Takes a single argument job which describes the
   *      state of the computation and attaches the decorations to it.
   * @param {Array.<string>} fileExtensions
   */
-function registerLangHandler( handler, fileExtensions ){
+function registerLangHandler( simpleLexer, fileExtensions ){
     console.log( fileExtensions + '' );
     for( var i = fileExtensions.length; --i >= 0; ){
         var ext = fileExtensions[ i ];
         if( !langHandlerRegistry[ ext ] ){
-            langHandlerRegistry[ ext ] = handler;
+            langHandlerRegistry[ ext ] = simpleLexer;
         } else if( !DEFINE_CODE_PRETTIFY__ECMASCRIPT2 && window[ 'console' ] ){
             console['warn']('cannot override language handler %s', ext);
         };

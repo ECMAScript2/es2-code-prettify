@@ -5,7 +5,7 @@
   */
 var PR_SHOULD_USE_CONTINUATION = true;
  
-/** @type {Object.<string,JobT>} Maps language-specific file extensions to handlers. */
+/** @type {Object.<string,SimpleLexer>} Maps language-specific file extensions to handlers. */
 var langHandlerRegistry = {};
 
 /**

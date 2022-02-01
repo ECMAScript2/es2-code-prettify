@@ -1,8 +1,8 @@
 /**
  * {@type !{
- *   'createSimpleLexer': function (Array, Array): (function (JobT)),
- *   'registerLangHandler': function (function (JobT), Array.<string>),
- *   'sourceDecorator': function (Object): (function (JobT)),
+ *   'createSimpleLexer': function (Array, Array): SimpleLexer),
+ *   'registerLangHandler': function (SimpleLexer, Array.<string>),
+ *   'sourceDecorator': function (Object): SimpleLexer),
  *   'PR_ATTRIB_NAME': string,
  *   'PR_ATTRIB_NAME': string,
  *   'PR_ATTRIB_VALUE': string,

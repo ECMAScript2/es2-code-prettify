@@ -77,7 +77,7 @@
   *
   *   ショートカットのものが失敗した場合に、順に試していくパターン。 ショートカットがある場合もあります。
   *
-  * @return {function (JobT)} a function that takes an undecorated job and
+  * @return {SimpleLexer} a function that takes an undecorated job and
   *   attaches a list of decorations.
   */
 function createLangHandler( shortcutStylePatterns, fallthroughStylePatterns ){
@@ -102,7 +102,7 @@ function createLangHandler( shortcutStylePatterns, fallthroughStylePatterns ){
     };
     allRegexs.push( reAllChars );
 
-    return getLangHandler( shortcuts, combinePrefixPatterns( allRegexs ), fallthroughStylePatterns );
+    return [ shortcuts, combinePrefixPatterns( allRegexs ), fallthroughStylePatterns ];
 };
 
 var reAllChars = new RegExpCompat( '[\0-\uffff]' );
@@ -111,22 +111,7 @@ var reAllChars = new RegExpCompat( '[\0-\uffff]' );
  * Lexes job.sourceCode and attaches an output array job.decorations of
  * style classes preceded by the position at which they start in
  * job.sourceCode in order.
- *
- * @param {Object<string,StylePattern>} shortcuts 
- * @param {RegExp|RegExpCompat} tokenizer 
- * @param {Array.<StylePattern>} fallthroughStylePatterns 
- * @returns {function (JobT)}
  */
-function getLangHandler( shortcuts, tokenizer, fallthroughStylePatterns ){
-    console.dir( shortcuts );
-    console.dir( tokenizer );
-    console.dir( fallthroughStylePatterns );
-    function langhandler( job ){
-        decorate( job, shortcuts, tokenizer, fallthroughStylePatterns, langhandler );
-    };
-    return langhandler;
-};
-
 
 /** @type {StylePattern} */
 var stylePatternTripleQuotedStrings =
@@ -361,7 +346,7 @@ var rePunctuationMulti = new RegExpCompat( punctuation + '(?!\s*\/)' );
   * It recognizes C, C++, and shell style comments.
   *
   * @param {Object} options a set of optional parameters.
-  * @return {function (JobT)} a function that examines the source code
+  * @return {SimpleLexer} a function that examines the source code
   *     in the input job and builds a decoration list which it attaches to
   *     the job.
   */

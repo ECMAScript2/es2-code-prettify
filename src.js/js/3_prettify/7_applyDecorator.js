@@ -1,5 +1,5 @@
 /** @param {JobT} job */
-function applyDecorator(job) {
+function applyDecorator( job ){
     var opt_langExtension = job.langExtension;
 
     try {
@@ -12,7 +12,8 @@ function applyDecorator(job) {
         job.basePos = 0;
 
         // Apply the appropriate language handler
-        langHandlerForExtension( opt_langExtension, source )( job );
+        var simpleLexer = getSimpleLexer( opt_langExtension, source );
+        decorate( job, simpleLexer );
 
         // Integrate the decorations and tags back into the source code,
         // modifying the sourceNode in place.
@@ -26,7 +27,12 @@ function applyDecorator(job) {
 
 var reIsMarkup = new RegExpCompat( "^\\s*<" );
 
-function langHandlerForExtension( extension, source ){
+/**
+ * @param {string|null} extension
+ * @param {string} source 
+ * @returns {SimpleLexer}
+ */
+function getSimpleLexer( extension, source ){
     if( !( extension && langHandlerRegistry[ extension ] ) ){
       // Treat it as markup if the first non whitespace character is a < and
       // the last non-whitespace character is a >.
@@ -38,13 +44,13 @@ function langHandlerForExtension( extension, source ){
 };
 
 /**
- * @param {JobT} job 
- * @param {Object<string,StylePattern>} shortcuts 
- * @param {RegExp|RegExpCompat} tokenizer 
- * @param {Array.<StylePattern>} fallthroughStylePatterns 
- * @param {function (JobT)} langhandler
+ * @param {JobT} job
+ * @param {SimpleLexer} simpleLexer
  */
-function decorate( job, shortcuts, tokenizer, fallthroughStylePatterns, langhandler ){
+function decorate( job, simpleLexer ){
+    var shortcuts = /** @type {Object<string,StylePattern>} */ (simpleLexer[ 0 ]);
+    var tokenizer = /** @type {RegExp|RegExpCompat} */ (simpleLexer[ 1 ]);
+    var fallthroughStylePatterns = /** @type {Array.<StylePattern>} */ (simpleLexer[ 2 ]);
     var sourceCode = job.sourceCode, basePos = job.basePos;
     var sourceNode = job.sourceNode;
     /** Even entries are positions in source in ascending order.  Odd enties
@@ -52,7 +58,7 @@ function decorate( job, shortcuts, tokenizer, fallthroughStylePatterns, langhand
       * the end.
       * @type {DecorationsT}
       */
-    var decorations = [basePos, PR_PLAIN];
+    var decorations = [ basePos, PR_PLAIN ];
     var pos = 0;  // index into sourceCode
     var tokens = tokenizer.match( sourceCode ) || [];
     var styleCache = {};
@@ -118,21 +124,21 @@ function decorate( job, shortcuts, tokenizer, fallthroughStylePatterns, langhand
                 sourceNode,
                 basePos + tokenStart,
                 token.substring( 0, embeddedSourceStart ),
-                langhandler, decorations
+                simpleLexer, decorations
             );
             // Decorate the embedded source
             appendDecorations(
                 sourceNode,
                 basePos + tokenStart + embeddedSourceStart,
                 embeddedSource,
-                langHandlerForExtension( lang, embeddedSource ), decorations
+                getSimpleLexer( lang, embeddedSource ), decorations
             );
             // Decorate the right of the embedded section
             appendDecorations(
                 sourceNode,
                 basePos + tokenStart + embeddedSourceEnd,
                 token.substring( embeddedSourceEnd ),
-                langhandler, decorations
+                simpleLexer, decorations
             );
         };
     };
@@ -146,10 +152,10 @@ function decorate( job, shortcuts, tokenizer, fallthroughStylePatterns, langhand
  * @param {number} basePos the index of sourceCode within the chunk of source
  *    whose decorations are already present on out.
  * @param {string} sourceCode
- * @param {function(JobT)} langHandler
+ * @param {SimpleLexer} simpleLexer
  * @param {DecorationsT} out
  */
-function appendDecorations( sourceNode, basePos, sourceCode, langHandler, out ){
+function appendDecorations( sourceNode, basePos, sourceCode, simpleLexer, out ){
     if( sourceCode ){
         /** @type {JobT} */
         var job = {
@@ -162,7 +168,7 @@ function appendDecorations( sourceNode, basePos, sourceCode, langHandler, out ){
                 basePos       : basePos,
                 decorations   : null
             };
-        langHandler( job );
+        decorate( job, simpleLexer );
         out.push.apply( out, job.decorations ); // TODO .apply
     };
 };

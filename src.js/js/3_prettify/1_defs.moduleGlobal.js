@@ -51,3 +51,8 @@ var SourceSpansT;
  * @typedef {Array.<string|RegExp|RegExpCompat|null|undefined>}
  */
 var StylePattern;
+
+/**
+ * @typedef {Array.<Object.<string,Array.<StylePattern>>|RegExp|RegExpCompat|Array.<StylePattern>>}
+ */
+ var SimpleLexer;
