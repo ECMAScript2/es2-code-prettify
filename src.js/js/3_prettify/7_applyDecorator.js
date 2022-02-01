@@ -33,14 +33,14 @@ var reIsMarkup = new RegExpCompat( "^\\s*<" );
  * @returns {SimpleLexer}
  */
 function getSimpleLexer( extension, source ){
-    if( !( extension && langHandlerRegistry[ extension ] ) ){
+    if( !( extension && simpleLexerRegistry[ extension ] ) ){
       // Treat it as markup if the first non whitespace character is a < and
       // the last non-whitespace character is a >.
       extension = reIsMarkup.test( source )
           ? 'default-markup'
           : 'default-code';
     };
-    return langHandlerRegistry[ extension ];
+    return simpleLexerRegistry[ extension ];
 };
 
 /**

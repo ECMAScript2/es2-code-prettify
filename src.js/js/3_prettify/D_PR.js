@@ -3,9 +3,9 @@
   * @type {Object}
   */
 window[ 'PR' ] = {
-    'createSimpleLexer'   : createLangHandler,
+    'createSimpleLexer'   : createSimpleLexer,
     'registerLangHandler' : registerLangHandler,
-    'sourceDecorator'     : createLangHandlerFromOptionalParameters,
+    'sourceDecorator'     : createSimpleLexerFromOptionalParameters,
     'PR_ATTRIB_NAME'      : PR_ATTRIB_NAME,
     'PR_ATTRIB_VALUE'     : PR_ATTRIB_VALUE,
     'PR_COMMENT'          : PR_COMMENT,

@@ -5,8 +5,8 @@
   */
 var PR_SHOULD_USE_CONTINUATION = true;
  
-/** @type {Object.<string,SimpleLexer>} Maps language-specific file extensions to handlers. */
-var langHandlerRegistry = {};
+/** @type {Object.<string, SimpleLexer>} Maps language-specific file extensions to handlers. */
+var simpleLexerRegistry = {};
 
 /**
   * Pretty print a chunk of code.

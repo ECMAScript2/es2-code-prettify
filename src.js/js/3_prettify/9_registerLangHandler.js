@@ -8,8 +8,8 @@ function registerLangHandler( simpleLexer, fileExtensions ){
     console.log( fileExtensions + '' );
     for( var i = fileExtensions.length; --i >= 0; ){
         var ext = fileExtensions[ i ];
-        if( !langHandlerRegistry[ ext ] ){
-            langHandlerRegistry[ ext ] = simpleLexer;
+        if( !simpleLexerRegistry[ ext ] ){
+            simpleLexerRegistry[ ext ] = simpleLexer;
         } else if( !DEFINE_CODE_PRETTIFY__ECMASCRIPT2 && window[ 'console' ] ){
             console['warn']('cannot override language handler %s', ext);
         };
@@ -17,7 +17,7 @@ function registerLangHandler( simpleLexer, fileExtensions ){
 };
 
 registerLangHandler(
-    createLangHandlerFromOptionalParameters(
+    createSimpleLexerFromOptionalParameters(
         {
             'keywords'         : ALL_KEYWORDS,
             'hashComments'     : true,
@@ -29,7 +29,7 @@ registerLangHandler(
 );
 
 registerLangHandler(
-    createLangHandler(
+    createSimpleLexer(
         [],
         [
           [ PR_PLAIN,       new RegExpCompat( '^[^<?]+' ) ],
@@ -50,7 +50,7 @@ registerLangHandler(
 );
 
 registerLangHandler(
-    createLangHandler(
+    createSimpleLexer(
         [
             [ PR_PLAIN,        new RegExpCompat( "^[\\s]+" ), null, ' \t\r\n' ],
             [ PR_ATTRIB_VALUE, new RegExpCompat(  "^(?:\\\"[^\\\"]*\\\"?|\\'[^\\']*\\'?)" ), null, '\"\'' ]
@@ -71,7 +71,7 @@ registerLangHandler(
 );
 
 registerLangHandler(
-    createLangHandler(
+    createSimpleLexer(
         [], 
         [ [ PR_ATTRIB_VALUE, new RegExpCompat(  "^[\\s\\S]+" ) ] ]
     ), [ 'uq.val' ]
@@ -80,7 +80,7 @@ registerLangHandler(
 var C_TYPES = new RegExpCompat( '^(DIR|FILE|array|vector|(de|priority_)?queue|(forward_)?list|stack|(const_)?(reverse_)?iterator|(unordered_)?(multi)?(set|map)|bitset|u?(int|float)\\d*)\\b' );
 
 registerLangHandler(
-    createLangHandlerFromOptionalParameters( {
+    createSimpleLexerFromOptionalParameters( {
         'keywords'       : CPP_KEYWORDS,
         'hashComments'   : true,
         'cStyleComments' : true,
@@ -89,13 +89,13 @@ registerLangHandler(
 );
 
 registerLangHandler(
-    createLangHandlerFromOptionalParameters( {
+    createSimpleLexerFromOptionalParameters( {
         'keywords' : 'null,true,false'
     } ), [ 'json' ]
 );
 
 registerLangHandler(
-    createLangHandlerFromOptionalParameters( {
+    createSimpleLexerFromOptionalParameters( {
         'keywords'        : CSHARP_KEYWORDS,
         'hashComments'    : true,
         'cStyleComments'  : true,
@@ -105,14 +105,14 @@ registerLangHandler(
 );
 
 registerLangHandler(
-    createLangHandlerFromOptionalParameters( {
+    createSimpleLexerFromOptionalParameters( {
         'keywords'       : JAVA_KEYWORDS,
         'cStyleComments' : true
     } ), [ 'java' ]
 );
 
 registerLangHandler(
-    createLangHandlerFromOptionalParameters( {
+    createSimpleLexerFromOptionalParameters( {
         'keywords'         : SH_KEYWORDS,
         'hashComments'     : true,
         'multiLineStrings' : true
@@ -120,7 +120,7 @@ registerLangHandler(
 );
 
 registerLangHandler(
-    createLangHandlerFromOptionalParameters( {
+    createSimpleLexerFromOptionalParameters( {
         'keywords'            : PYTHON_KEYWORDS,
         'hashComments'        : true,
         'multiLineStrings'    : true,
@@ -129,7 +129,7 @@ registerLangHandler(
 );
 
 registerLangHandler(
-    createLangHandlerFromOptionalParameters( {
+    createSimpleLexerFromOptionalParameters( {
         'keywords'         : PERL_KEYWORDS,
         'hashComments'     : true,
         'multiLineStrings' : true,
@@ -138,7 +138,7 @@ registerLangHandler(
 );
 
 registerLangHandler(
-    createLangHandlerFromOptionalParameters( {
+    createSimpleLexerFromOptionalParameters( {
         'keywords'         : RUBY_KEYWORDS,
         'hashComments'     : true,
         'multiLineStrings' : true,
@@ -147,7 +147,7 @@ registerLangHandler(
 );
 
 registerLangHandler(
-    createLangHandlerFromOptionalParameters( {
+    createSimpleLexerFromOptionalParameters( {
         'keywords'       : JSCRIPT_KEYWORDS,
         'cStyleComments' : true,
         'regexLiterals'  : true
@@ -155,7 +155,7 @@ registerLangHandler(
 );
 
 registerLangHandler(
-    createLangHandlerFromOptionalParameters( {
+    createSimpleLexerFromOptionalParameters( {
         'keywords'            : COFFEE_KEYWORDS,
         'hashComments'        : 3,  // ### style block comments
         'cStyleComments'      : true,
@@ -166,7 +166,7 @@ registerLangHandler(
 );
 
 registerLangHandler(
-    createLangHandler(
+    createSimpleLexer(
         [],
         [ [ PR_STRING, new RegExpCompat(  "^[\\s\\S]+" ) ] ]
     ), [ 'regex' ]

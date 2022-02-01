@@ -80,7 +80,7 @@
   * @return {SimpleLexer} a function that takes an undecorated job and
   *   attaches a list of decorations.
   */
-function createLangHandler( shortcutStylePatterns, fallthroughStylePatterns ){
+function createSimpleLexer( shortcutStylePatterns, fallthroughStylePatterns ){
     var shortcuts = {};
     var allPatterns = shortcutStylePatterns.concat( fallthroughStylePatterns );
     var allRegexs = [];
@@ -350,7 +350,7 @@ var rePunctuationMulti = new RegExpCompat( punctuation + '(?!\s*\/)' );
   *     in the input job and builds a decoration list which it attaches to
   *     the job.
   */
-function createLangHandlerFromOptionalParameters( options ){
+function createSimpleLexerFromOptionalParameters( options ){
     var shortcutStylePatterns = [],
         fallthroughStylePatterns = [];
 
@@ -423,5 +423,5 @@ function createLangHandlerFromOptionalParameters( options ){
         [ PR_PUNCTUATION, regexLiterals ? rePunctuationMulti : rePunctuation, null ]
     );
 
-    return createLangHandler( shortcutStylePatterns, fallthroughStylePatterns );
+    return createSimpleLexer( shortcutStylePatterns, fallthroughStylePatterns );
 };
