@@ -2,6 +2,7 @@
  * {@type !{
  *   'createSimpleLexer': function (Array, Array): (function (JobT)),
  *   'registerLangHandler': function (function (JobT), Array.<string>),
+ *   'sourceDecorator': function (Object): (function (JobT)),
  *   'PR_ATTRIB_NAME': string,
  *   'PR_ATTRIB_NAME': string,
  *   'PR_ATTRIB_VALUE': string,

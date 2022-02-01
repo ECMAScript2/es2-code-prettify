@@ -63,7 +63,7 @@ function decorate( job, shortcuts, tokenizer, fallthroughStylePatterns, langhand
         var match = undefined;
 
         var isEmbedded;
-        if( typeof style === 'string' ){
+        if( m_isString( style ) ){
             isEmbedded = false;
         } else {
             var patternParts = shortcuts[ token.charAt( 0 ) ];
@@ -86,7 +86,7 @@ function decorate( job, shortcuts, tokenizer, fallthroughStylePatterns, langhand
             };
 
             isEmbedded = 5 <= style.length && 'lang-' === style.substring( 0, 5 );
-            if( isEmbedded && !( match && typeof match[ 1 ] === 'string' ) ){
+            if( isEmbedded && !( match && m_isString( match[ 1 ] ) ) ){
                 isEmbedded = false;
                 style = PR_SOURCE;
             };

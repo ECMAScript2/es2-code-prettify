@@ -3,15 +3,12 @@
   * UI events.
   * If set to {@code false}, {@code prettyPrint()} is synchronous.
   */
- var PR_SHOULD_USE_CONTINUATION = true
- if (typeof window !== 'undefined') {
-   window['PR_SHOULD_USE_CONTINUATION'] = PR_SHOULD_USE_CONTINUATION;
- }
+var PR_SHOULD_USE_CONTINUATION = true;
  
 /** @type {Object.<string,JobT>} Maps language-specific file extensions to handlers. */
 var langHandlerRegistry = {};
 
- /**
+/**
   * Pretty print a chunk of code.
   * @param {string} sourceCodeHtml The HTML to pretty print.
   * @param {string} opt_langExtension The language name to use.
@@ -20,8 +17,9 @@ var langHandlerRegistry = {};
   *     or the 1-indexed number of the first line in sourceCodeHtml.
   * @return {string} code as html, but prettier
   */
- var prettyPrintOne;
- /**
+var prettyPrintOne;
+
+/**
   * Find all the {@code <pre>} and {@code <code>} tags in the DOM with
   * {@code class=prettyprint} and prettify them.
   *
@@ -30,6 +28,14 @@ var langHandlerRegistry = {};
   *   containing all the elements to pretty print.
   *   Defaults to {@code document.body}.
   */
- var prettyPrint;
+var prettyPrint;
 
- var combinePrefixPatterns;
+var combinePrefixPatterns;
+
+/**
+ * @param {*} test
+ * @return {boolean}
+ */
+function m_isString( test ){
+    return test === '' + test;
+};
