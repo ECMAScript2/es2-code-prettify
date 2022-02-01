@@ -1,4 +1,52 @@
 var RegExpCompat; if( DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT ){(function(Math,Infinity){
+Function.prototype.apply || (Function.prototype.apply = function(a, b) {
+  var c;
+  a = a || {};
+  b = b || [];
+  a.__apply = this;
+  a.__apply || (a.constructor.prototype.__apply = this);
+  var d = b.length;
+  switch(d) {
+    case 0:
+      var f = a.__apply();
+      break;
+    case 1:
+      f = a.__apply(b[0]);
+      break;
+    case 2:
+      f = a.__apply(b[0], b[1]);
+      break;
+    case 3:
+      f = a.__apply(b[0], b[1], b[2]);
+      break;
+    case 4:
+      f = a.__apply(b[0], b[1], b[2], b[3]);
+      break;
+    case 5:
+      f = a.__apply(b[0], b[1], b[2], b[3], b[4]);
+      break;
+    case 6:
+      f = a.__apply(b[0], b[1], b[2], b[3], b[4], b[5]);
+      break;
+    case 7:
+      f = a.__apply(b[0], b[1], b[2], b[3], b[4], b[5], b[6]);
+      break;
+    case 8:
+      f = a.__apply(b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7]);
+      break;
+    case 9:
+      f = a.__apply(b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8]);
+      break;
+    default:
+      f = [];
+      for (c = 0; c < d; ++c) {
+        f[c] = "y[" + c + "]";
+      }
+      f = (new Function("x,y", "return x.__apply(" + f.join(",") + ")"))(a, b);
+  }
+  a.constructor && a.constructor.prototype.__apply ? delete a.constructor.prototype.__apply : a.__apply && delete a.__apply;
+  return f;
+});
 var n = String.fromCharCode, q = Math.floor, r = [], t, u, v, w, x, z, A, B, C, D, E, F;
 function G(a) {
   var b = a.length;

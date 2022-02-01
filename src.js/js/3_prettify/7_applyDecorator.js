@@ -2,7 +2,7 @@
 function applyDecorator( job ){
     var opt_langExtension = job.langExtension;
 
-    try {
+    //try {
         // Extract tags, and convert the source code to plain text.
         var sourceAndSpans = extractSourceSpans( job.sourceNode, job.pre );
         /** Plain text. @type {string} */
@@ -18,11 +18,11 @@ function applyDecorator( job ){
         // Integrate the decorations and tags back into the source code,
         // modifying the sourceNode in place.
         recombineTagsAndDecorations( job );
-    } catch( e ){
+    /* } catch( e ){
         if( window[ 'console' ] ){
             console['log'](e && e['stack'] || e);
         };
-    };
+    }; */
 };
 
 var reIsMarkup = new RegExpCompat( "^\\s*<" );
@@ -169,6 +169,13 @@ function appendDecorations( sourceNode, basePos, sourceCode, simpleLexer, out ){
                 decorations   : null
             };
         decorate( job, simpleLexer );
-        out.push.apply( out, job.decorations ); // TODO .apply
+
+        var decorations = job.decorations;
+
+        if( decorations ){
+            for( var i = 0, l = decorations.length; i < l; ++i ){
+                out.push( decorations[ i ] );
+            };
+        };
     };
 };
