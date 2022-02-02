@@ -43,7 +43,7 @@
  *    text nodes should be considered significant.
  * @return {SourceSpansT} source code and the nodes in which they occur.
  */
- function extractSourceSpans( node, isPreformatted ){
+function extractSourceSpans( node, isPreformatted ){
     var chunks = [];
     var length = 0;
     var spans = [];
@@ -52,21 +52,21 @@
     function walk( node ){
         var type = node.nodeType;
         if( type === 1 ){  // Element
-            if( 0 <= ( ' ' + node.className + ' ' ).indexOf( ' nocode ' ) ){
+            if( p_DOM_hasClassName( node, 'nocode' ) ){
                 return;
             };
             for( var child = node.firstChild; child; child = child.nextSibling ){
                 walk( child );
             };
-            var nodeName = node.nodeName.toLowerCase();
-            if( 'br' === nodeName || 'li' === nodeName ){
+            var nodeName = p_DOM_getTagName( node );
+            if( 'BR' === nodeName || 'LI' === nodeName ){
                 chunks[ k ] = '\n';
                 spans[ k << 1 ] = length++;
                 spans[ ( k++ << 1 ) | 1 ] = node;
             };
         } else if( type === 3 || type === 4 ){ // Text
             var text = node.nodeValue;
-            if( text.length ){
+            if( text ){
                 if( !isPreformatted ){
                     text = text.split( '\t' ).join( ' ' ).split( '\r' ).join( ' ' ).split( '\n' ).join( ' ' );
                 } else {

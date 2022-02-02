@@ -1,6 +1,3 @@
-var isIE8OrEarlier = new RegExpCompat( '\\bMSIE\\s(\\d+)' ).exec( navigator.userAgent );
-isIE8OrEarlier = isIE8OrEarlier && +isIE8OrEarlier[ 1 ] <= 8;
-
 /**
  * Breaks {@code job.sourceCode} around style boundaries in
  * {@code job.decorations} and modifies {@code job.sourceNode} in place.
@@ -57,7 +54,7 @@ function recombineTagsAndDecorations( job ){
     var oldDisplay = '';
     if( sourceNode ){
         oldDisplay = sourceNode.style.display;
-        sourceNode.style.display = 'none';
+        p_DOM_setStyle( sourceNode, 'display', 'none' );
     };
     // try {
     //  var decoration = null;
@@ -84,21 +81,16 @@ function recombineTagsAndDecorations( job ){
             //   IE で LF を出すと、コードが改行されずにスペースで表示されます。
             //   Windows 標準の改行（CRLF）を出すと、先頭以外のすべての行の先頭に空白が表示されます。
             //   Mac OS 9 時代の古いラインセパレータを使うと、すべてがピッカピカになります。
-            if( isIE8OrEarlier ){
+            if( p_Trident < 9 ){
                 styledText = styledText.split( '\n' ).join( '\r' );
             };
-            textNode.nodeValue = styledText;
-            var document = textNode.ownerDocument;
-            var span = document.createElement( 'span' );
-            span.className = decorations[ decorationIndex + 1 ];
-            var parentNode = textNode.parentNode;
-            parentNode.replaceChild( span, textNode );
-            span.appendChild( textNode );
+            var span = p_DOM_insertElementBefore( textNode, 'span', { className : decorations[ decorationIndex + 1 ] }, styledText );
+            p_DOM_remove( textNode );
+
             if( sourceIndex < spanEnd ){  // Split off a text node.
                 spans[ spanIndex + 1 ] = textNode
                     // TODO: Possibly optimize by using '' if there's no flicker.
-                    = document.createTextNode( source.substring( end, spanEnd ) );
-                parentNode.insertBefore( textNode, span.nextSibling );
+                    = p_DOM_insertTextNodeAfter( span, source.substring( end, spanEnd ) );
             };
         };
 
@@ -113,7 +105,7 @@ function recombineTagsAndDecorations( job ){
     };
     // } finally {
     if( sourceNode ){
-        sourceNode.style.display = oldDisplay;
+        p_DOM_setStyle( sourceNode, 'display', oldDisplay );
     };
     //}
 };

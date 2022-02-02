@@ -13,9 +13,7 @@
  * @param {boolean} isPreformatted true iff white-space in text nodes should
  *     be treated as significant.
  */
- function numberLines( node, startLineNum, isPreformatted ){
-    var document = node.ownerDocument;
-
+function numberLines( node, startLineNum, isPreformatted ){
     var li = document.createElement( 'li' );
     while( node.firstChild ){
         li.appendChild( node.firstChild );
@@ -26,15 +24,15 @@
 
     function walk( node ){
         var type = node.nodeType;
-        if( type === 1 && ( ' ' + node.className + ' ' ).indexOf( ' nocode ' ) === -1 ){  // Element
-            if( 'br' === node.nodeName.toLowerCase() ){
+        if( type === 1 && !p_DOM_hasClassName( node, 'nocode' ) ){  // Element
+            if( 'BR' === p_DOM_getTagName( node ) ){
                 breakAfter( node );
                 // Discard the <BR> since it is now flush against a </LI>.
                 if( node.parentNode ){
-                    node.parentNode.removeChild( node );
+                    p_DOM_remove( node );
                 };
             } else {
-                for( var child = node.firstChild; child; child = child.nextSibling ){
+            	for( var child = node.firstChild; child; child = child.nextSibling ){
                     walk( child );
                 };
             };
@@ -46,13 +44,12 @@
                 node.nodeValue = firstLine;
                 var tail = text.substring( match.index + match[ 0 ].length );
                 if( tail ){
-                    var parent = node.parentNode;
-                    parent.insertBefore( document.createTextNode( tail ), node.nextSibling );
+                    p_DOM_insertTextNodeAfter( node, tail );
                 };
                 breakAfter( node );
                 if( !firstLine ){
                     // Don't leave blank text nodes in the DOM.
-                    node.parentNode.removeChild( node );
+                    p_DOM_remove( node );
                 };
             };
         };
@@ -111,23 +108,22 @@
 
     // Make sure numeric indices show correctly.
     if( startLineNum === ( startLineNum | 0 ) ){
-        listItems[ 0 ].setAttribute( 'value', startLineNum );
+        p_DOM_setAttribute( li, 'value', startLineNum  );
     };
 
-    var ol = document.createElement( 'ol' );
-    ol.className = 'linenums';
+    var ol = p_DOM_insertElement( node, 'ol', { className : 'linenums' } );
     var offset = Math.max( 0, ( ( startLineNum - 1 /* zero index */) ) | 0 ) || 0;
     for( var i = 0, n = listItems.length; i < n; ++i ){
         li = listItems[ i ];
         // Stick a class on the LIs so that stylesheets can
         // color odd/even rows, or any other row pattern that
         // is co-prime with 10.
-        li.className = 'L' + ( ( i + offset ) % 10 );
+        p_DOM_setClassName( li, 'L' + ( ( i + offset ) % 10 ) );
         if( !li.firstChild ){
-            li.appendChild( document.createTextNode( '\xA0' ) );
+            p_DOM_insertTextNode( li, '\xA0' );
+        } else if( p_Presto < 9.5 || p_Gecko < 0.8 ){ // https://twitter.com/itozyun/status/1488924003070742535
+            li.firstChild.nodeValue = li.firstChild.nodeValue.split( '\n' ).join( '' ).split( '\r' ).join( '' );
         };
         ol.appendChild( li );
     };
-
-    node.appendChild( ol );
 };

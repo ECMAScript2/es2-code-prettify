@@ -5,7 +5,6 @@
   * @param {Array.<string>} fileExtensions
   */
 function registerLangHandler( simpleLexer, fileExtensions ){
-    console.log( fileExtensions + '' );
     for( var i = fileExtensions.length; --i >= 0; ){
         var ext = fileExtensions[ i ];
         if( !simpleLexerRegistry[ ext ] ){
