@@ -13,7 +13,7 @@
  * @param {boolean} isPreformatted true iff white-space in text nodes should
  *     be treated as significant.
  */
-function numberLines( node, startLineNum, isPreformatted ){
+ function numberLines( node, startLineNum, isPreformatted ){
     var document = node.ownerDocument;
 
     var li = document.createElement( 'li' );
@@ -90,7 +90,7 @@ function numberLines( node, startLineNum, isPreformatted ){
             return rightSide;
         };
 
-        var copiedListItem = breakLeftOf(lineEndNode.nextSibling, 0);
+        var copiedListItem = breakLeftOf( lineEndNode.nextSibling, 0 );
 
         // Walk the parent chain until we reach an unattached LI.
         for( var parent;

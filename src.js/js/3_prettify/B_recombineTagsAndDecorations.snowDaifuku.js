@@ -39,7 +39,7 @@ function recombineTagsAndDecorations( job ){
 
     // Simplify decorations.
     for( i = decPos = 0; i < nDecorations; ){
-        var startPos = decorations [i ];
+        var startPos = decorations[ i ];
         // Conflate all adjacent decorations that use the same style.
         var startDec = decorations[ i + 1 ];
         var end = i + 2;
@@ -73,12 +73,17 @@ function recombineTagsAndDecorations( job ){
         var styledText;
         if( textNode.nodeType !== 1  // Don't muck with <BR>s or <LI>s
             // Don't introduce spans around empty text nodes.
-            && ( styledText = source.substring( sourceIndex, end ) ) ){
+            && ( styledText = source.substring( sourceIndex, end ) )
+        ){
             // This may seem bizarre, and it is.  Emitting LF on IE causes the
             // code to display with spaces instead of line breaks.
             // Emitting Windows standard issue linebreaks (CRLF) causes a blank
             // space to appear at the beginning of every line but the first.
             // Emitting an old Mac OS 9 line separator makes everything spiffy.
+            //   これは奇妙に思えるかもしれませんし、実際そうなのです。
+            //   IE で LF を出すと、コードが改行されずにスペースで表示されます。
+            //   Windows 標準の改行（CRLF）を出すと、先頭以外のすべての行の先頭に空白が表示されます。
+            //   Mac OS 9 時代の古いラインセパレータを使うと、すべてがピッカピカになります。
             if( isIE8OrEarlier ){
                 styledText = styledText.split( '\n' ).join( '\r' );
             };

@@ -111,16 +111,16 @@ function $prettyPrint( opt_whenDone, opt_root ){
     var EMPTY = {};
 
     function doWork(){
-        var endTime = PR_SHOULD_USE_CONTINUATION ? clock.now() + 250 /* ms */ : Infinity;
+        var endTime = window[ 'PR_SHOULD_USE_CONTINUATION' ] ? clock.now() + 250 /* ms */ : Infinity;
 
         for( ; k < elements.length && clock.now() < endTime; ++k ){
-            var cs = elements[ k ];
+            var codeSegment = elements[ k ];
 
             // Look for a preceding comment like
             // <?prettify lang="..." linenums="..."?>
             var attrs = EMPTY;
 
-            for( var preceder = cs; preceder = preceder.previousSibling; ){
+            for( var preceder = codeSegment; preceder = preceder.previousSibling; ){
                 var nt = preceder.nodeType;
                 // <?foo?> is parsed by HTML 5 to a comment node (8)
                 // like <!--?foo?-->, but in XML is a processing instruction
@@ -143,7 +143,7 @@ function $prettyPrint( opt_whenDone, opt_root ){
                 };
             };
 
-            var className = cs.className;
+            var className = codeSegment.className;
             if( ( attrs !== EMPTY || 0 <= ( ' ' + className + ' ' ).indexOf( ' prettyprint ' ) )
                 // Don't redo this if we've already done it.
                 // This allows recalling pretty print to just prettyprint elements
@@ -153,7 +153,7 @@ function $prettyPrint( opt_whenDone, opt_root ){
 
                 // make sure this is not nested in an already prettified element
                 var nested = false;
-                for( var p = cs.parentNode; p; p = p.parentNode ){
+                for( var p = codeSegment.parentNode; p; p = p.parentNode ){
                     var tn = p.tagName;
                     if( tn // <!DOCTYPE> で undefined -> RegExpCompat でエラー
                         && ( tn.toLowerCase() === 'pre' || tn.toLowerCase() === 'xmp' || tn.toLowerCase() === 'code' )
@@ -166,7 +166,7 @@ function $prettyPrint( opt_whenDone, opt_root ){
                 if( !nested ){
                     // Mark done.  If we fail to prettyprint for whatever reason,
                     // we shouldn't try again.
-                    cs.className += ' prettyprinted';
+                    codeSegment.className += ' prettyprinted';
 
                     // If the classes includes a language extensions, use it.
                     // Language extensions can be specified like
@@ -181,7 +181,7 @@ function $prettyPrint( opt_whenDone, opt_root ){
                         langExtension = langExtensionRe.match( className );
                         // Support <pre class="prettyprint"><code class="language-c">
                         var wrapper;
-                        if( !langExtension && ( wrapper = childContentWrapper( cs ) )
+                        if( !langExtension && ( wrapper = childContentWrapper( codeSegment ) )
                             && wrapper.tagName.toLowerCase() === 'code'
                         ){
                             langExtension = langExtensionRe.match( wrapper.className );
@@ -193,16 +193,16 @@ function $prettyPrint( opt_whenDone, opt_root ){
                     };
 
                     var preformatted;
-                    if( cs.tagName.toLowerCase() === 'pre' || cs.tagName.toLowerCase() === 'xmp' ){
+                    if( codeSegment.tagName.toLowerCase() === 'pre' || codeSegment.tagName.toLowerCase() === 'xmp' ){
                         preformatted = 1;
                     } else {
-                        var currentStyle = cs[ 'currentStyle' ];
+                        var currentStyle = codeSegment[ 'currentStyle' ];
                         var defaultView = doc.defaultView;
                         var whitespace = (
                                 currentStyle
                                 ? currentStyle[ 'whiteSpace' ]
                                 : ( defaultView && defaultView.getComputedStyle )
-                                ? defaultView.getComputedStyle( cs, null ).getPropertyValue( 'white-space' )
+                                ? defaultView.getComputedStyle( codeSegment, null ).getPropertyValue( 'white-space' )
                                 : 0
                             );
                         preformatted = whitespace && 'pre' === whitespace.substring( 0, 3 );
@@ -219,13 +219,13 @@ function $prettyPrint( opt_whenDone, opt_root ){
                                    : false;
                     };
                     if( lineNums ){
-                        numberLines( cs, lineNums, preformatted );
+                        numberLines( codeSegment, lineNums, preformatted );
                     };
 
                     // do the pretty printing
                     var prettyPrintingJob = {
                         langExtension : langExtension,
-                        sourceNode    : cs,
+                        sourceNode    : codeSegment,
                         numberLines   : lineNums,
                         pre           : preformatted,
                         sourceCode    : null,
