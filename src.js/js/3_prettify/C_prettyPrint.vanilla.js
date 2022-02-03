@@ -59,7 +59,7 @@ function $prettyPrintOne( sourceCodeHtml, opt_langExtension, opt_numberLines ){
         numberLines   : nl,
         sourceNode    : container,
         pre           : 1,
-        sourceCode    : null,
+        sourceCode    : '',
         basePos       : null,
         spans         : null,
         decorations   : null
@@ -228,7 +228,7 @@ function $prettyPrint( opt_whenDone, opt_root ){
                         sourceNode    : codeSegment,
                         numberLines   : lineNums,
                         pre           : preformatted,
-                        sourceCode    : null,
+                        sourceCode    : '',
                         basePos       : null,
                         spans         : null,
                         decorations   : null

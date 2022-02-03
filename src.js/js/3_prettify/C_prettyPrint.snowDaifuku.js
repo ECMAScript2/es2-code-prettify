@@ -176,7 +176,7 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
                         sourceNode    : codeSegment,
                         numberLines   : lineNums,
                         pre           : preformatted,
-                        sourceCode    : null,
+                        sourceCode    : '',
                         basePos       : null,
                         spans         : null,
                         decorations   : null
