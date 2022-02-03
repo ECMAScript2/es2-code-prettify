@@ -38,11 +38,21 @@ function numberLines( node, startLineNum, isPreformatted ){
             };
         } else if( ( type === 3 || type === 4 ) && isPreformatted ){  // Text
             var text = node.nodeValue;
-            var match = text.match( '\r' ) || text.match( '\n' );
-            if( match ){
-                var firstLine = text.substring( 0, match.index );
+            // https://twitter.com/itozyun/status/1489195155802320897
+            //   Opera < 9.5, Gecko < 0.8 の str.match(str) の戻り値の RegExpResult が不正の為、indexOf を使う。 
+            var newlineIndex = text.indexOf( '\r\n' );
+            var newlineChar  = 2;
+            if( newlineIndex === -1 ){
+                newlineIndex = text.indexOf( '\n' );
+                newlineChar  = 1;
+            };
+            if( newlineIndex === -1 ){
+                newlineIndex = text.indexOf( '\r' );
+            };
+            if( newlineIndex !== -1 ){
+                var firstLine = text.substr( 0, newlineIndex );
                 node.nodeValue = firstLine;
-                var tail = text.substring( match.index + match[ 0 ].length );
+                var tail = text.substr( newlineIndex + newlineChar );
                 if( tail ){
                     p_DOM_insertTextNodeAfter( node, tail );
                 };
@@ -108,9 +118,15 @@ function numberLines( node, startLineNum, isPreformatted ){
 
     // Make sure numeric indices show correctly.
     if( startLineNum === ( startLineNum | 0 ) ){
-        p_DOM_setAttribute( li, 'value', startLineNum  );
+        // https://twitter.com/itozyun/status/1489192881105502214
+        if( 10 <= startLineNum && p_Presto < 7.2 ){
+            var ol = document.createElement( 'ol' );
+            ol.innerHTML = '<li value="' + startLineNum + '">' + li.innerHTML + '</li>';
+            listItems[ 0 ] = ol.firstChild;
+        } else {
+            p_DOM_setAttribute( li, 'value', startLineNum  );
+        };
     };
-
     var ol = p_DOM_insertElement( node, 'ol', { className : 'linenums' } );
     var offset = Math.max( 0, ( ( startLineNum - 1 /* zero index */) ) | 0 ) || 0;
     for( var i = 0, n = listItems.length; i < n; ++i ){
@@ -121,8 +137,6 @@ function numberLines( node, startLineNum, isPreformatted ){
         p_DOM_setClassName( li, 'L' + ( ( i + offset ) % 10 ) );
         if( !li.firstChild ){
             p_DOM_insertTextNode( li, '\xA0' );
-        } else if( p_Presto < 9.5 || p_Gecko < 0.8 ){ // https://twitter.com/itozyun/status/1488924003070742535
-            li.firstChild.nodeValue = li.firstChild.nodeValue.split( '\n' ).join( '' ).split( '\r' ).join( '' );
         };
         ol.appendChild( li );
     };

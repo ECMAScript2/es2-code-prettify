@@ -68,12 +68,10 @@ function $prettyPrintOne( sourceCodeHtml, opt_langExtension, opt_numberLines ){
     return container.innerHTML;
 };
 
-var langExtensionRe = new RegExpCompat(  "\\blang(?:uage)?-([\\w.]+)(?!\\S)" );
-
 var reCommentLike = new RegExpCompat(  "^\\??prettify\\b" );
-var reCorrectHTMLAttrValue = new RegExpCompat( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
-var reLinenumValue = new RegExpCompat(  "\\blinenums\\b(?::(\\d+))?" );
- /**
+var reCorrectCommentAttrValue = new RegExpCompat( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
+
+/**
   * Find all the {@code <pre>} and {@code <code>} tags in the DOM with
   * {@code class=prettyprint} and prettify them.
   *
@@ -113,6 +111,10 @@ function $prettyPrint( opt_whenDone, opt_root ){
     function doWork(){
         var endTime = window[ 'PR_SHOULD_USE_CONTINUATION' ] ? clock.now() + 250 /* ms */ : Infinity;
 
+        function getAttributeValueFromClassName( className, attr ){
+            return ( className.split( attr )[ 1 ] || ''  ).split( ' ' )[ 0 ];
+        };
+
         for( ; k < elements.length && clock.now() < endTime; ++k ){
             var codeSegment = elements[ k ];
 
@@ -133,7 +135,7 @@ function $prettyPrint( opt_whenDone, opt_root ){
                 };
                 if( value ){
                     attrs = {};
-                    reCorrectHTMLAttrValue.replace(
+                    reCorrectCommentAttrValue.replace(
                         value,
                         function( _, name, value ){
                             attrs[ name ] = value;
@@ -178,17 +180,13 @@ function $prettyPrint( opt_whenDone, opt_root ){
                     // http://dev.w3.org/html5/spec-author-view/the-code-element.html
                     var langExtension = attrs[ 'lang' ];
                     if( !langExtension ){
-                        langExtension = langExtensionRe.match( className );
+                        langExtension = getAttributeValueFromClassName( className, 'lang-' ) || getAttributeValueFromClassName( className, 'language-' );
                         // Support <pre class="prettyprint"><code class="language-c">
                         var wrapper;
                         if( !langExtension && ( wrapper = childContentWrapper( codeSegment ) )
                             && wrapper.tagName.toLowerCase() === 'code'
                         ){
-                            langExtension = langExtensionRe.match( wrapper.className );
-                        };
-
-                        if( langExtension ){
-                            langExtension = langExtension[ 1 ];
+                            langExtension = getAttributeValueFromClassName( wrapper.className, 'lang-' ) || getAttributeValueFromClassName( wrapper.className, 'language-' );
                         };
                     };
 
@@ -212,11 +210,8 @@ function $prettyPrint( opt_whenDone, opt_root ){
                     // 1-indexed number of the first line.
                     var lineNums = attrs[ 'linenums' ];
                     if( !( lineNums = lineNums === 'true' || +lineNums ) ){
-                        lineNums = reLinenumValue.match( className );
-                        lineNums = lineNums
-                                   ? lineNums[ 1 ] && lineNums[ 1 ].length
-                                       ? +lineNums[ 1 ] : true
-                                   : false;
+                        lineNums = getAttributeValueFromClassName( className, 'linenums:' ) || !!( ' ' + className + ' ' ).match( ' linenums ' );
+                        lineNums = lineNums.length ? +lineNums : lineNums;
                     };
                     if( lineNums ){
                         numberLines( codeSegment, lineNums, preformatted );

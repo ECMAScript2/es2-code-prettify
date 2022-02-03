@@ -40,14 +40,23 @@ function numberLines( node, startLineNum, isPreformatted ){
             };
         } else if( ( type === 3 || type === 4 ) && isPreformatted ){  // Text
             var text = node.nodeValue;
-            var match = text.match( '\r' ) || text.match( '\n' );
-            if( match ){
-                var firstLine = text.substring( 0, match.index );
+            // https://twitter.com/itozyun/status/1489195155802320897
+            //   Opera < 9.5, Gecko < 0.8 の str.match(str) の戻り値の RegExpResult が不正の為、indexOf を使う。 
+            var newlineIndex = text.indexOf( '\r\n' );
+            var newlineChar  = 2;
+            if( newlineIndex === -1 ){
+                newlineIndex = text.indexOf( '\n' );
+                newlineChar  = 1;
+            };
+            if( newlineIndex === -1 ){
+                newlineIndex = text.indexOf( '\r' );
+            };
+            if( newlineIndex !== -1 ){
+                var firstLine = text.substr( 0, newlineIndex );
                 node.nodeValue = firstLine;
-                var tail = text.substring( match.index + match[ 0 ].length );
+                var tail = text.substr( newlineIndex + newlineChar );
                 if( tail ){
-                    var parent = node.parentNode;
-                    parent.insertBefore( document.createTextNode( tail ), node.nextSibling );
+                    node.parentNode.insertBefore( document.createTextNode( tail ), node.nextSibling );
                 };
                 breakAfter( node );
                 if( !firstLine ){

@@ -25,11 +25,8 @@ function childContentWrapper( element ){
     return wrapper === element ? undefined : wrapper;
 };
 
-var langExtensionRe = new RegExpCompat(  "\\blang(?:uage)?-([\\w.]+)(?!\\S)" );
-
 var reCommentLike = new RegExpCompat(  "^\\??prettify\\b" );
-var reCorrectHTMLAttrValue = new RegExpCompat( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
-var reLinenumValue = new RegExpCompat(  "\\blinenums\\b(?::(\\d+))?" );
+var reCorrectCommentAttrValue = new RegExpCompat( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
 
 var prettifyElements = [];
 
@@ -63,6 +60,10 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
         var endTime = PR_SHOULD_USE_CONTINUATION ? now() + 250 /* ms */ : Infinity;
         var EMPTY = {};
 
+        function getAttributeValueFromClassName( className, attr ){
+            return ( className.split( attr )[ 1 ] || ''  ).split( ' ' )[ 0 ];
+        };
+
         for( ; prettifyElements.length && now() < endTime; ){
             var codeSegment = prettifyElements.shift();
 
@@ -83,7 +84,7 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
                 };
                 if( value ){
                     attrs = {};
-                    reCorrectHTMLAttrValue.replace(
+                    reCorrectCommentAttrValue.replace(
                         value,
                         function( _, name, value ){
                             attrs[ name ] = value;
@@ -124,18 +125,15 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
                     // as the prefix instead.  Google Code Prettify supports both.
                     // http://dev.w3.org/html5/spec-author-view/the-code-element.html
                     var langExtension = attrs[ 'lang' ];
+
                     if( !langExtension ){
-                        langExtension = langExtensionRe.match( className );
+                        langExtension = getAttributeValueFromClassName( className, 'lang-' ) || getAttributeValueFromClassName( className, 'language-' );
                         // Support <pre class="prettyprint"><code class="language-c">
                         var wrapper;
                         if( !langExtension && ( wrapper = childContentWrapper( codeSegment ) )
                             && p_DOM_getTagName( wrapper ) === 'CODE'
                         ){
-                            langExtension = langExtensionRe.match( wrapper.className );
-                        };
-
-                        if( langExtension ){
-                            langExtension = langExtension[ 1 ];
+                            langExtension = getAttributeValueFromClassName( wrapper.className, 'lang-' ) || getAttributeValueFromClassName( wrapper.className, 'language-' );
                         };
                     };
 
@@ -160,11 +158,8 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
                     // 1-indexed number of the first line.
                     var lineNums = attrs[ 'linenums' ];
                     if( !( lineNums = lineNums === 'true' || +lineNums ) ){
-                        lineNums = reLinenumValue.match( className );
-                        lineNums = lineNums
-                                       ? lineNums[ 1 ] && lineNums[ 1 ].length
-                                           ? +lineNums[ 1 ] : true
-                                       : false;
+                        lineNums = getAttributeValueFromClassName( className, 'linenums:' ) || !!( ' ' + className + ' ' ).match( ' linenums ' );
+                        lineNums = lineNums.length ? +lineNums : lineNums;
                     };
                     if( lineNums ){
                         numberLines( codeSegment, lineNums, preformatted );

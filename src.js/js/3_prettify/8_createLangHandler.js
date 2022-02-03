@@ -237,9 +237,6 @@ var stylePatternRegexLiteralsSingleLine =
         )
     ];
 
-var reFormatKeywords1 = new RegExpCompat( '^ | $', 'g' );
-var reFormatKeywords2 = new RegExpCompat( '[\\s,]+', 'g' );
-
 /** @type {StylePattern} */
 var stylePatternWhiteSpace =
     [
@@ -408,12 +405,18 @@ function createSimpleLexerFromOptionalParameters( options ){
         fallthroughStylePatterns.push( [ PR_TYPE, types ] );
     };
 
-    var keywords = reFormatKeywords1.replace( '' + options[ 'keywords' ], '' );
+    var keywords = '' + options[ 'keywords' ];
+    if( keywords.charAt( 0 ) === ' ' ){
+        keywords = keywords.substr( 1 );
+    };
+    if( keywords.charAt( keywords.length - 1 ) === ' ' ){
+        keywords = keywords.substr( 0, keywords.length - 1 );
+    };
     if( keywords ){
         fallthroughStylePatterns.push(
             [
                 PR_KEYWORD,
-                new RegExpCompat( '^(?:' + reFormatKeywords2.replace( keywords, '|' ) + ')\\b' ),
+                new RegExpCompat( '^(?:' + keywords.split( ',' ).join( '|' ).split( ' ' ).join( '|' )  + ')\\b' ),
                 null
             ]
         );

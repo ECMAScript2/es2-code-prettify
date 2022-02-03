@@ -70,7 +70,7 @@ function extractSourceSpans( node, isPreformatted ){
                 if( !isPreformatted ){
                     text = text.split( '\t' ).join( ' ' ).split( '\r' ).join( ' ' ).split( '\n' ).join( ' ' );
                 } else {
-                    text = text.split( '\r\n' ).join( '\n' ).split( '\r' ).join( '\n' );  // Normalize newlines.
+                    text = text.split( '\r\n' ).join( '\n' ).split( '\r' ).join( '\n' );  // Normalize newlines. TODO .split( '\n\r' ).join( '\n' ) ??
                 };
                 // TODO: handle tabs here?
                 chunks[ k ] = text;
