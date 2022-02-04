@@ -73,9 +73,9 @@ combinePrefixPatterns = function( regexs ){
         if( cc0 ){
             return cc0;
         } else if( '0' <= c1 && c1 <= '7' ){
-            return parseInt( charsetPart.substring( 1 ), 8 );
+            return parseInt( charsetPart.substr( 1 ), 8 );
         } else if( c1 === 'u' || c1 === 'x' ){
-            return parseInt( charsetPart.substring( 2 ), 16 );
+            return parseInt( charsetPart.substr( 2 ), 16 );
         } else {
             return charsetPart.charCodeAt( 1 );
         };
@@ -180,7 +180,7 @@ combinePrefixPatterns = function( regexs ){
                 // groups are 1-indexed, so max group index is count of '('
                 ++groupIndex;
             } else if( '\\' === p.charAt( 0 ) ){
-                var decimalValue = +p.substring( 1 );
+                var decimalValue = +p.substr( 1 );
                 if( decimalValue ){
                     if( decimalValue <= groupIndex ){
                         capturedGroups[ decimalValue ] = -1;
@@ -209,7 +209,7 @@ combinePrefixPatterns = function( regexs ){
                     parts[ i ] = '(?:';
                 };
             } else if( '\\' === p.charAt( 0 ) ){
-                var decimalValue = +p.substring( 1 );
+                var decimalValue = +p.substr( 1 );
                 if( decimalValue && decimalValue <= groupIndex ){
                     parts[ i ] = '\\' + capturedGroups[ decimalValue ];
                 };

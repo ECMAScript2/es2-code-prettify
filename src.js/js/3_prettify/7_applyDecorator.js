@@ -91,7 +91,7 @@ function decorate( job, simpleLexer ){
                 };
             };
 
-            isEmbedded = 5 <= style.length && 'lang-' === style.substring( 0, 5 );
+            isEmbedded = 5 <= style.length && 'lang-' === style.substr( 0, 5 );
             if( isEmbedded && !( match && m_isString( match[ 1 ] ) ) ){
                 isEmbedded = false;
                 style = PR_SOURCE;
@@ -118,12 +118,12 @@ function decorate( job, simpleLexer ){
                 embeddedSourceEnd = token.length - match[ 2 ].length;
                 embeddedSourceStart = embeddedSourceEnd - embeddedSource.length;
             };
-            var lang = style.substring( 5 );
+            var lang = style.substr( 5 );
             // Decorate the left of the embedded source
             appendDecorations(
                 sourceNode,
                 basePos + tokenStart,
-                token.substring( 0, embeddedSourceStart ),
+                token.substr( 0, embeddedSourceStart ),
                 simpleLexer, decorations
             );
             // Decorate the embedded source
@@ -137,7 +137,7 @@ function decorate( job, simpleLexer ){
             appendDecorations(
                 sourceNode,
                 basePos + tokenStart + embeddedSourceEnd,
-                token.substring( embeddedSourceEnd ),
+                token.substr( embeddedSourceEnd ),
                 simpleLexer, decorations
             );
         };

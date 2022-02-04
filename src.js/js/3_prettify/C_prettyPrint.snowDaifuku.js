@@ -151,7 +151,7 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
                                 ? defaultView.getComputedStyle( codeSegment, null ).getPropertyValue( 'white-space' )
                                 : 0
                             );
-                        preformatted = whitespace && 'pre' === whitespace.substring( 0, 3 );
+                        preformatted = whitespace && 'pre' === whitespace.substr( 0, 3 );
                     };
 
                     // Look for a class like linenums or linenums:<n> where <n> is the
