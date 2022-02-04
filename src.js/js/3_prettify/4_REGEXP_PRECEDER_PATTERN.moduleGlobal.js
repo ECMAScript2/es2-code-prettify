@@ -45,7 +45,7 @@ var REGEXP_PRECEDER_PATTERN =
                  '{|'         +
                  '\\^\\^?=?|' + // "^", "^=", "^^", "^^=",
                  '\\|\\|?=?|' + // "|", "|=", "||", "||=",
-                 'break|case|continue|delete|' +
-                 'do|else|finally|instanceof|' +
-                 'return|throw|try|typeof' +
+'break|case|continue|delete|' +
+'do|else|finally|instanceof|' +
+    'return|throw|try|typeof' +
             ')\\s*';            // matches at end, and matches empty string
