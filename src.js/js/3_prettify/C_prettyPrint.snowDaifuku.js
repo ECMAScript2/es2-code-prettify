@@ -25,8 +25,10 @@ function childContentWrapper( element ){
     return wrapper === element ? undefined : wrapper;
 };
 
-var reCommentLike = new RegExpCompat(  "^\\??prettify\\b" );
-var reCorrectCommentAttrValue = new RegExpCompat( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
+if( DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ){
+    var reCommentLike = new RegExpCompat(  "^\\??prettify\\b" );
+    var reCorrectCommentAttrValue = new RegExpCompat( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
+};
 
 var prettifyElements = [];
 
@@ -69,32 +71,35 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
 
             // Look for a preceding comment like
             // <?prettify lang="..." linenums="..."?>
-            var attrs = EMPTY;
+            if( DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ){
+                var attrs = EMPTY;
 
-            for( var preceder = codeSegment; preceder = preceder.previousSibling; ){
-                var nt = preceder.nodeType;
-                // <?foo?> is parsed by HTML 5 to a comment node (8)
-                // like <!--?foo?-->, but in XML is a processing instruction
-                var value = ( nt === 7 || nt === 8 ) && preceder.nodeValue;
-                if( value
-                    ? !reCommentLike.test( value )
-                    : ( nt !== 3 || notWs.test( preceder.nodeValue ) ) ){
-                    // Skip over white-space text nodes but not others.
-                    break;
-                };
-                if( value ){
-                    attrs = {};
-                    reCorrectCommentAttrValue.replace(
-                        value,
-                        function( _, name, value ){
-                            attrs[ name ] = value;
-                        }
-                    );
-                    break;
+                for( var preceder = codeSegment; preceder = preceder.previousSibling; ){
+                    var nt = preceder.nodeType;
+                    // <?foo?> is parsed by HTML 5 to a comment node (8)
+                    // like <!--?foo?-->, but in XML is a processing instruction
+                    var value = ( nt === 7 || nt === 8 ) && preceder.nodeValue;
+                    if( value
+                        ? !reCommentLike.test( value )
+                        : ( nt !== 3 || notWs.test( preceder.nodeValue ) ) ){
+                        // Skip over white-space text nodes but not others.
+                        break;
+                    };
+                    if( value ){
+                        attrs = {};
+                        reCorrectCommentAttrValue.replace(
+                            value,
+                            function( _, name, value ){
+                                attrs[ name ] = value;
+                            }
+                        );
+                        break;
+                    };
                 };
             };
 
-            if( ( attrs !== EMPTY || p_DOM_hasClassName( codeSegment, 'prettyprint' ) )
+            if( ( DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT && attrs !== EMPTY )
+                || p_DOM_hasClassName( codeSegment, 'prettyprint' )
                 // Don't redo this if we've already done it.
                 // This allows recalling pretty print to just prettyprint elements
                 // that have been added to the page since last call.
@@ -124,7 +129,7 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
                     // HTML5 recommends that a language be specified using "language-"
                     // as the prefix instead.  Google Code Prettify supports both.
                     // http://dev.w3.org/html5/spec-author-view/the-code-element.html
-                    var langExtension = attrs[ 'lang' ];
+                    var langExtension = DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ? attrs[ 'lang' ] : false;
 
                     if( !langExtension ){
                         langExtension = getAttributeValueFromClassName( className, 'lang-' ) || getAttributeValueFromClassName( className, 'language-' );
@@ -154,15 +159,17 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
                         preformatted = whitespace && 'pre' === whitespace.substr( 0, 3 );
                     };
 
-                    // Look for a class like linenums or linenums:<n> where <n> is the
-                    // 1-indexed number of the first line.
-                    var lineNums = attrs[ 'linenums' ];
-                    if( !( lineNums = lineNums === 'true' || +lineNums ) ){
-                        lineNums = getAttributeValueFromClassName( className, 'linenums:' ) || !!( ' ' + className + ' ' ).match( ' linenums ' );
-                        lineNums = lineNums.length ? +lineNums : lineNums;
-                    };
-                    if( lineNums ){
-                        numberLines( codeSegment, lineNums, preformatted );
+                    if( DEFINE_CODE_PRETTIFY__NUMBER_LINE_SUPPORT ){
+                        // Look for a class like linenums or linenums:<n> where <n> is the
+                        // 1-indexed number of the first line.
+                        var lineNums = DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ? attrs[ 'linenums' ] : false;
+                        if( !( lineNums = lineNums === 'true' || +lineNums ) ){
+                            lineNums = getAttributeValueFromClassName( className, 'linenums:' ) || p_DOM_hasClassName( codeSegment, 'linenums' );
+                            lineNums = lineNums.length ? +lineNums : lineNums;
+                        };
+                        if( lineNums ){
+                            numberLines( codeSegment, lineNums, preformatted );
+                        };
                     };
 
                     // do the pretty printing
