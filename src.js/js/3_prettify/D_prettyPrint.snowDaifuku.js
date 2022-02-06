@@ -36,13 +36,12 @@ var prettifyElements = [];
 
 p_listenCssAvailabilityChange( function( cssAvailability ){
     if( !cssAvailability ) return;
-    if( !p_elmMain ) return true;
 
     // fetch a list of nodes to rewrite
     var codeSegments = [
-                            p_DOM_getElementsByTagName( p_elmMain, 'pre' ),
-                            p_DOM_getElementsByTagName( p_elmMain, 'code' ),
-                            p_DOM_getElementsByTagName( p_elmMain, 'xmp' )
+                            p_DOM_getElementsByTagNameFromDocument( 'pre' ),
+                            p_DOM_getElementsByTagNameFromDocument( 'code' ),
+                            p_DOM_getElementsByTagNameFromDocument( 'xmp' )
                        ];
 
     for( var i = 0; i < codeSegments.length; ++i ){
@@ -110,7 +109,7 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
 
                 // make sure this is not nested in an already prettified element
                 var nested = false;
-                for( var p = codeSegment.parentNode; p !== p_elmMain; p = p.parentNode ){
+                for( var p = codeSegment.parentNode; p !== p_body; p = p.parentNode ){
                     var tn = p_DOM_getTagName( p );
                     if( ( tn === 'PRE' || tn === 'XMP' || tn === 'CODE' ) && p_DOM_hasClassName( p, 'prettyprint' ) ){
                         nested = true;
