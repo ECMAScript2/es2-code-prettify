@@ -1,9 +1,9 @@
-/** @type {RegExpCompat} */
-var reSmallAlphabet = new RegExpCompat( '[a-z]', 'i' );
-/** @type {RegExpCompat} */
-var reUnicode = new RegExpCompat( '\\\\u[0-9a-f]{4}|\\\\x[0-9a-f]{2}|\\\\[^ux]', 'gi' );
-/** @type {RegExpCompat} */
-var reCharsetParts = new RegExpCompat(
+/** @type {RegExp|RegExpCompat} */
+var reSmallAlphabet = RegExpProxy( '[a-z]', 'i' );
+/** @type {RegExp|RegExpCompat} */
+var reUnicode = RegExpProxy( '\\\\u[0-9a-f]{4}|\\\\x[0-9a-f]{2}|\\\\[^ux]', 'gi' );
+/** @type {RegExp|RegExpCompat} */
+var reCharsetParts = RegExpProxy(
         '\\\\u[0-9A-Fa-f]{4}'
         + '|\\\\x[0-9A-Fa-f]{2}'
         + '|\\\\[0-3][0-7]{0,2}'
@@ -11,10 +11,10 @@ var reCharsetParts = new RegExpCompat(
         + '|\\\\[\\s\\S]'
         + '|-'
         + '|[^-\\\\]', 'g' );
-/** @type {RegExpCompat} */
-var reNoMatchNamedGroup = new RegExpCompat( '\\\\[bdsw]', 'i' );
-/** @type {RegExpCompat} */
-var reParts = new RegExpCompat(
+/** @type {RegExp|RegExpCompat} */
+var reNoMatchNamedGroup = RegExpProxy( '\\\\[bdsw]', 'i' );
+/** @type {RegExp|RegExpCompat} */
+var reParts = RegExpProxy(
         '(?:'
         + '\\[(?:[^\\x5C\\x5D]|\\\\[\\s\\S])*\\]'  // a character set
         + '|\\\\u[A-Fa-f0-9]{4}'  // a unicode escape
@@ -25,8 +25,8 @@ var reParts = new RegExpCompat(
         + '|[\\(\\)\\^]'  // start/end of a group, or line start
         + '|[^\\x5B\\x5C\\(\\)\\^]+'  // run of other characters
         + ')', 'g');
-/** @type {RegExpCompat} */
-var reAlphabet = new RegExpCompat( '[a-zA-Z]', 'g' );
+/** @type {RegExp|RegExpCompat} */
+var reAlphabet = RegExpProxy( '[a-zA-Z]', 'g' );
 
 /**
  * Given a group of {@link RegExp}s, returns a {@code RegExp} that globally
@@ -52,7 +52,7 @@ combinePrefixPatterns = function( regexs ){
         var regex = regexs[ i ];
         if( regex.ignoreCase ){
             ignoreCase = true;
-        } else if( reSmallAlphabet.test( reUnicode.replace( regex.source, '' ) ) ){
+        } else if( reSmallAlphabet.test( RegExpProxy_replace( reUnicode, regex.source, '' ) ) ){
             needToFoldCase = true;
             ignoreCase = false;
             break;
@@ -97,7 +97,7 @@ combinePrefixPatterns = function( regexs ){
     };
 
     function caseFoldCharset( charSet ){
-        var charsetParts = reCharsetParts.match( charSet.substring( 1, charSet.length - 1 ) );
+        var charsetParts = RegExpProxy_match( reCharsetParts, charSet.substring( 1, charSet.length - 1 ) );
         var ranges = [];
         var inverse = charsetParts[ 0 ] === '^';
 
@@ -170,7 +170,7 @@ combinePrefixPatterns = function( regexs ){
         // Split into character sets, escape sequences, punctuation strings
         // like ('(', '(?:', ')', '^'), and runs of characters that do not
         // include any of the above.
-        var parts = reParts.match( regex.source );
+        var parts = RegExpProxy_match( reParts, regex.source );
         var n = parts.length;
 
         // Maps captured group numbers to the number they will occupy in
@@ -240,7 +240,8 @@ combinePrefixPatterns = function( regexs ){
                     parts[ i ] = caseFoldCharset( p );
                 } else if( ch0 !== '\\' ){
                     // TODO: handle letters in numeric escapes.
-                    parts[ i ] = reAlphabet.replace(
+                    parts[ i ] = RegExpProxy_replace(
+                            reAlphabet,
                             p,
                             function( ch ){
                                 var cc = ch.charCodeAt( 0 );
@@ -263,5 +264,5 @@ combinePrefixPatterns = function( regexs ){
         };
         rewritten.push( '(?:' + allowAnywhereFoldCaseAndRenumberGroups( regex ) + ')' );
     };
-    return new RegExpCompat( rewritten.join( '|' ), ignoreCase ? 'gi' : 'g' );
+    return RegExpProxy( rewritten.join( '|' ), ignoreCase ? 'gi' : 'g' );
 };

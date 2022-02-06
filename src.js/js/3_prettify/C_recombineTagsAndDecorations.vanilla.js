@@ -1,4 +1,4 @@
-var isIE8OrEarlier = new RegExpCompat( '\\bMSIE\\s(\\d+)' ).exec( navigator.userAgent );
+var isIE8OrEarlier = RegExpProxy( '\\bMSIE\\s(\\d+)' ).exec( navigator.userAgent );
 isIE8OrEarlier = isIE8OrEarlier && +isIE8OrEarlier[ 1 ] <= 8;
 
 /**

@@ -8,7 +8,8 @@ var USE_REGEXPCOMPAT = DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT === 1 ||
  * @return {RegExp|RegExpCompat}
  */
 function RegExpProxy( source, flags ){
-    return USE_REGEXPCOMPAT ? new RegExpCompat( source, flags ) : new RegExp( source, flags );
+    return USE_REGEXPCOMPAT ? /** @type {RegExpCompat} */ (new RegExpCompat( source, flags )) :
+                              /** @type {RegExp} */ (new RegExp( source, flags ));
 };
 
 /**

@@ -25,7 +25,7 @@ function applyDecorator( job ){
     }; */
 };
 
-var reIsMarkup = new RegExpCompat( "^\\s*<" );
+var reIsMarkup = RegExpProxy( "^\\s*<" );
 
 /**
  * @param {string|null} extension
@@ -60,7 +60,7 @@ function decorate( job, simpleLexer ){
       */
     var decorations = [ basePos, PR_PLAIN ];
     var pos = 0;  // index into sourceCode
-    var tokens = tokenizer.match( sourceCode ) || [];
+    var tokens = RegExpProxy_match( tokenizer, sourceCode ) || [];
     var styleCache = {};
 
     for( var ti = 0, nTokens = tokens.length; ti < nTokens; ++ti ){
@@ -74,12 +74,12 @@ function decorate( job, simpleLexer ){
         } else {
             var patternParts = shortcuts[ token.charAt( 0 ) ];
             if( patternParts ){
-                match = patternParts[ 1 ].match( token );
+                match = RegExpProxy_match( /** @type {RegExp|RegExpCompat} */ (patternParts[ 1 ]), token );
                 style = patternParts[ 0 ];
             } else {
                 for( var i = 0, l = fallthroughStylePatterns.length; i < l; ++i ){
                     patternParts = fallthroughStylePatterns[ i ];
-                    match = patternParts[ 1 ].match( token );
+                    match = RegExpProxy_match( /** @type {RegExp|RegExpCompat} */ (patternParts[ 1 ]), token );
                     if( match ){
                         style = patternParts[ 0 ];
                         break;

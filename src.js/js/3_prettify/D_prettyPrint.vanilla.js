@@ -1,4 +1,4 @@
-var notWs = new RegExpCompat( '\\S' );
+var notWs = RegExpProxy( '\\S' );
 
 /**
  * Given an element, if it contains only one child element and any text nodes
@@ -70,10 +70,10 @@ function $prettyPrintOne( sourceCodeHtml, opt_langExtension, opt_numberLines ){
 };
 
 if( DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ){
-    /** @type {RegExpCompat} */
-    var reCommentLike = new RegExpCompat(  "^\\??prettify\\b" );
-    /** @type {RegExpCompat} */
-    var reCorrectCommentAttrValue = new RegExpCompat( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
+    /** @type {RegExp|RegExpCompat} */
+    var reCommentLike = RegExpProxy(  "^\\??prettify\\b" );
+    /** @type {RegExp|RegExpCompat} */
+    var reCorrectCommentAttrValue = RegExpProxy( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
 };
 
 /**
@@ -141,7 +141,8 @@ function $prettyPrint( opt_whenDone, opt_root ){
                     };
                     if( value ){
                         attrs = {};
-                        reCorrectCommentAttrValue.replace(
+                        RegExpProxy_replace(
+                            reCorrectCommentAttrValue,
                             value,
                             function( _, name, value ){
                                 attrs[ name ] = value;

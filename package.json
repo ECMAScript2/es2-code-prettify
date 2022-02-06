@@ -59,6 +59,8 @@
     "gulp": "^4.0.2",
     "gulp-diamond-princess-zoning": "^0.9.11",
     "html-to-text": "^8.1.0",
+    "plugin-error": "^1.0.1",
+    "stream": "0.0.2",
     "zombie": "^6.1.4"
   }
 }

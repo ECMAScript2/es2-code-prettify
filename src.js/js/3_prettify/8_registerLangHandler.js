@@ -31,19 +31,19 @@ registerLangHandler(
     createSimpleLexer(
         [],
         [
-          [ PR_PLAIN,       new RegExpCompat( '^[^<?]+' ) ],
-          [ PR_DECLARATION, new RegExpCompat( "^<!\\w[^>]*(?:>|$)" ) ],
-          [ PR_COMMENT,     new RegExpCompat( "^<\\!--[\\s\\S]*?(?:-\\->|$)" ) ],
+          [ PR_PLAIN,       RegExpProxy( '^[^<?]+' ) ],
+          [ PR_DECLARATION, RegExpProxy( "^<!\\w[^>]*(?:>|$)" ) ],
+          [ PR_COMMENT,     RegExpProxy( "^<\\!--[\\s\\S]*?(?:-\\->|$)" ) ],
           // Unescaped content in an unknown language
-          [ 'lang-',        new RegExpCompat( "^<\\?([\\s\\S]+?)(?:\\?>|$)" ) ],
-          [ 'lang-',        new RegExpCompat( "^<%([\\s\\S]+?)(?:%>|$)" ) ],
-          [ PR_PUNCTUATION, new RegExpCompat( "^(?:<[%?]|[%?]>)" ) ],
-          [ 'lang-',        new RegExpCompat( "^<xmp\\b[^>]*>([\\s\\S]+?)<\\/xmp\\b[^>]*>", 'i' ) ],
+          [ 'lang-',        RegExpProxy( "^<\\?([\\s\\S]+?)(?:\\?>|$)" ) ],
+          [ 'lang-',        RegExpProxy( "^<%([\\s\\S]+?)(?:%>|$)" ) ],
+          [ PR_PUNCTUATION, RegExpProxy( "^(?:<[%?]|[%?]>)" ) ],
+          [ 'lang-',        RegExpProxy( "^<xmp\\b[^>]*>([\\s\\S]+?)<\\/xmp\\b[^>]*>", 'i' ) ],
           // Unescaped content in javascript.  (Or possibly vbscript).
-          [ 'lang-js',      new RegExpCompat(  "^<script\\b[^>]*>([\\s\\S]*?)(<\\/script\\b[^>]*>)", 'i' ) ],
+          [ 'lang-js',      RegExpProxy(  "^<script\\b[^>]*>([\\s\\S]*?)(<\\/script\\b[^>]*>)", 'i' ) ],
           // Contains unescaped stylesheet content
-          [ 'lang-css',     new RegExpCompat( "^<style\\b[^>]*>([\\s\\S]*?)(<\\/style\\b[^>]*>)", 'i' ) ],
-          [ 'lang-in.tag',  new RegExpCompat( "^(<\\/?[a-z][^<>]*>)", 'i' )]
+          [ 'lang-css',     RegExpProxy( "^<style\\b[^>]*>([\\s\\S]*?)(<\\/style\\b[^>]*>)", 'i' ) ],
+          [ 'lang-in.tag',  RegExpProxy( "^(<\\/?[a-z][^<>]*>)", 'i' )]
         ]
     ), [ 'default-markup', 'htm', 'html', 'mxml', 'xhtml', 'xml', 'xsl' ]
 );
@@ -51,20 +51,20 @@ registerLangHandler(
 registerLangHandler(
     createSimpleLexer(
         [
-            [ PR_PLAIN,        new RegExpCompat( "^[\\s]+" ), null, ' \t\r\n' ],
-            [ PR_ATTRIB_VALUE, new RegExpCompat(  "^(?:\\\"[^\\\"]*\\\"?|\\'[^\\']*\\'?)" ), null, '\"\'' ]
+            [ PR_PLAIN,        RegExpProxy( "^[\\s]+" ), null, ' \t\r\n' ],
+            [ PR_ATTRIB_VALUE, RegExpProxy(  "^(?:\\\"[^\\\"]*\\\"?|\\'[^\\']*\\'?)" ), null, '\"\'' ]
         ],
         [
-            [ PR_TAG,          new RegExpCompat( "^^<\\/?[a-z](?:[\\w.:-]*\\w)?|\\/?>$", 'i' ) ],
-            [ PR_ATTRIB_NAME,  new RegExpCompat( "^(?!style[\\s=]|on)[a-z](?:[\\w:-]*\\w)?", 'i' ) ],
-            [ 'lang-uq.val',   new RegExpCompat( "^=\\s*([^>\\'\\\"\\s]*(?:[^>\\'\\\"\\s\\/]|\\/(?=\\s)))" ) ],
-            [ PR_PUNCTUATION,  new RegExpCompat( "^[=<>\\/]+" ) ],
-            [ 'lang-js',       new RegExpCompat( "^on\\w+\\s*=\\s*\\\"([^\\\"]+)\\\"", 'i' ) ],
-            [ 'lang-js',       new RegExpCompat( "^on\\w+\\s*=\\s*\\'([^\\']+)\\'", 'i' ) ],
-            [ 'lang-js',       new RegExpCompat( "^on\\w+\\s*=\\s*([^\\\"\\'>\\s]+)", 'i' ) ],
-            [ 'lang-css',      new RegExpCompat( "^style\\s*=\\s*\\\"([^\\\"]+)\\\"", 'i' ) ],
-            [ 'lang-css',      new RegExpCompat( "^style\\s*=\\s*\\'([^\\']+)\\'", 'i' ) ],
-            [ 'lang-css',      new RegExpCompat( "^style\\s*=\\s*([^\\\"\\'>\\s]+)", 'i' ) ]
+            [ PR_TAG,          RegExpProxy( "^^<\\/?[a-z](?:[\\w.:-]*\\w)?|\\/?>$", 'i' ) ],
+            [ PR_ATTRIB_NAME,  RegExpProxy( "^(?!style[\\s=]|on)[a-z](?:[\\w:-]*\\w)?", 'i' ) ],
+            [ 'lang-uq.val',   RegExpProxy( "^=\\s*([^>\\'\\\"\\s]*(?:[^>\\'\\\"\\s\\/]|\\/(?=\\s)))" ) ],
+            [ PR_PUNCTUATION,  RegExpProxy( "^[=<>\\/]+" ) ],
+            [ 'lang-js',       RegExpProxy( "^on\\w+\\s*=\\s*\\\"([^\\\"]+)\\\"", 'i' ) ],
+            [ 'lang-js',       RegExpProxy( "^on\\w+\\s*=\\s*\\'([^\\']+)\\'", 'i' ) ],
+            [ 'lang-js',       RegExpProxy( "^on\\w+\\s*=\\s*([^\\\"\\'>\\s]+)", 'i' ) ],
+            [ 'lang-css',      RegExpProxy( "^style\\s*=\\s*\\\"([^\\\"]+)\\\"", 'i' ) ],
+            [ 'lang-css',      RegExpProxy( "^style\\s*=\\s*\\'([^\\']+)\\'", 'i' ) ],
+            [ 'lang-css',      RegExpProxy( "^style\\s*=\\s*([^\\\"\\'>\\s]+)", 'i' ) ]
         ]
     ), [ 'in.tag' ]
 );
@@ -72,11 +72,11 @@ registerLangHandler(
 registerLangHandler(
     createSimpleLexer(
         [], 
-        [ [ PR_ATTRIB_VALUE, new RegExpCompat(  "^[\\s\\S]+" ) ] ]
+        [ [ PR_ATTRIB_VALUE, RegExpProxy(  "^[\\s\\S]+" ) ] ]
     ), [ 'uq.val' ]
 );
 
-var C_TYPES = new RegExpCompat( '^(DIR|FILE|array|vector|(de|priority_)?queue|(forward_)?list|stack|(const_)?(reverse_)?iterator|(unordered_)?(multi)?(set|map)|bitset|u?(int|float)\\d*)\\b' );
+var C_TYPES = RegExpProxy( '^(DIR|FILE|array|vector|(de|priority_)?queue|(forward_)?list|stack|(const_)?(reverse_)?iterator|(unordered_)?(multi)?(set|map)|bitset|u?(int|float)\\d*)\\b' );
 
 registerLangHandler(
     createSimpleLexerFromOptionalParameters( {
@@ -167,6 +167,6 @@ registerLangHandler(
 registerLangHandler(
     createSimpleLexer(
         [],
-        [ [ PR_STRING, new RegExpCompat(  "^[\\s\\S]+" ) ] ]
+        [ [ PR_STRING, RegExpProxy(  "^[\\s\\S]+" ) ] ]
     ), [ 'regex' ]
 );

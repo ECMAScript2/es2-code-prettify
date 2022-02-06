@@ -1,5 +1,6 @@
 const gulp   = require('gulp'),
       gulpDPZ = require('gulp-diamond-princess-zoning'),
+      gulpCreateSimpleRexerRegistory = require('./js-buildtools/gulp-createSimpleLexerRegistory.js'),
       globalVariables = 'document,parseFloat,Function,isFinite,setTimeout,clearTimeout',
       closureCompiler = require('google-closure-compiler').gulp(),
       tempDir   = require('os').tmpdir() + '/google-code-prettify';
@@ -39,6 +40,7 @@ gulp.task( 'js', gulp.series(
                         'DEFINE_REGEXP_COMPAT__MINIFY=true',
                         'DEFINE_REGEXP_COMPAT__NODEJS=false',
                         'DEFINE_REGEXP_COMPAT__ES2018=false',
+                        'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=0',
                         'DEFINE_CODE_PRETTIFY__ECMASCRIPT2=true'
                     ],
                     compilation_level : 'ADVANCED',
@@ -51,6 +53,41 @@ gulp.task( 'js', gulp.series(
                 }
             )
         ).pipe( gulp.dest( 'tests' ) );
+    }
+) );
+
+gulp.task( '__generate_simple_lexer_registory', gulp.series(
+    function(){
+        return gulp.src(
+            [
+            // ReRe.js
+                '.submodules/rerejs/dist/develop/ReRE.es2.3.develop.js',
+            // Google Code Prettify
+                './src.js/js/1_global/*.js',
+                // './src.js/js/2_packageGlobal/*.js',
+                './src.js/js/3_prettify/*.moduleGlobal.js',
+                './src.js/js/3_prettify/6_combinePrefixPatterns.js',
+                './src.js/js/3_prettify/7_createSimpleLexer.js',
+                './src.js/js/3_prettify/8_registerLangHandler.js'
+            ]
+        ).pipe(
+            closureCompiler(
+                {
+                    define            : [
+                        'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=0'
+                    ],
+                    // compilation_level : 'ADVANCED',
+                    compilation_level : 'WHITESPACE_ONLY',
+                    // formatting        : 'PRETTY_PRINT',
+                    warning_level     : 'VERBOSE',
+                    language_in       : 'ECMASCRIPT3',
+                    language_out      : 'ECMASCRIPT3',
+                    js_output_file    : '__generate_simple_lexer_registory.js'
+                }
+            )
+        ).pipe(
+            gulpCreateSimpleRexerRegistory
+        ).pipe( gulp.dest( tempDir ) );
     }
 ) );
 
@@ -115,7 +152,6 @@ gulp.task( 'snow', gulp.series(
                '!./.submodules/web-doc-base/src/js/6_CanUse/webfontTest.js',
                '!./.submodules/web-doc-base/src/js/7_Library/**/*.js',
                '!./.submodules/web-doc-base/src/js/7_Patch/**/*.js',
-               '!./.submodules/web-doc-base/src/js/graph/**/*.js',
             // ReRe.js
                 '.submodules/rerejs/src.js/**/*.js',
                '!.submodules/rerejs/src.js/0_global/2_polyfill.js',

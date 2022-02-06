@@ -105,7 +105,7 @@ function createSimpleLexer( shortcutStylePatterns, fallthroughStylePatterns ){
     return [ shortcuts, combinePrefixPatterns( allRegexs ), fallthroughStylePatterns ];
 };
 
-var reAllChars = new RegExpCompat( '[\0-\uffff]' );
+var reAllChars = RegExpProxy( '[\0-\uffff]' );
 
 /**
  * Lexes job.sourceCode and attaches an output array job.decorations of
@@ -117,7 +117,7 @@ var reAllChars = new RegExpCompat( '[\0-\uffff]' );
 var stylePatternTripleQuotedStrings =
     [
         PR_STRING, 
-        new RegExpCompat( "^(?:\\'\\'\\'(?:[^\\'\\\\]|\\\\[\\s\\S]|\\'{1,2}(?=[^\\']))*(?:\\'\\'\\'|$)|\\\"\\\"\\\"(?:[^\\\"\\\\]|\\\\[\\s\\S]|\\\"{1,2}(?=[^\\\"]))*(?:\\\"\\\"\\\"|$)|\\'(?:[^\\\\\\']|\\\\[\\s\\S])*(?:\\'|$)|\\\"(?:[^\\\\\\\"]|\\\\[\\s\\S])*(?:\\\"|$))" ),
+        RegExpProxy( "^(?:\\'\\'\\'(?:[^\\'\\\\]|\\\\[\\s\\S]|\\'{1,2}(?=[^\\']))*(?:\\'\\'\\'|$)|\\\"\\\"\\\"(?:[^\\\"\\\\]|\\\\[\\s\\S]|\\\"{1,2}(?=[^\\\"]))*(?:\\\"\\\"\\\"|$)|\\'(?:[^\\\\\\']|\\\\[\\s\\S])*(?:\\'|$)|\\\"(?:[^\\\\\\\"]|\\\\[\\s\\S])*(?:\\\"|$))" ),
         null,
         '\'"'
     ];
@@ -125,7 +125,7 @@ var stylePatternTripleQuotedStrings =
 var stylePatternMultiLineStrings =
     [
         PR_STRING, 
-        new RegExpCompat( "^(?:\\'(?:[^\\\\\\']|\\\\[\\s\\S])*(?:\\'|$)|\\\"(?:[^\\\\\\\"]|\\\\[\\s\\S])*(?:\\\"|$)|\\`(?:[^\\\\\\`]|\\\\[\\s\\S])*(?:\\`|$))" ),
+        RegExpProxy( "^(?:\\'(?:[^\\\\\\']|\\\\[\\s\\S])*(?:\\'|$)|\\\"(?:[^\\\\\\\"]|\\\\[\\s\\S])*(?:\\\"|$)|\\`(?:[^\\\\\\`]|\\\\[\\s\\S])*(?:\\`|$))" ),
         null,
         '\'"`'
     ];
@@ -133,7 +133,7 @@ var stylePatternMultiLineStrings =
 var stylePatternSingleLineStrings =
     [
         PR_STRING,
-        new RegExpCompat( "^(?:\\'(?:[^\\\\\\'\\r\\n]|\\\\.)*(?:\\'|$)|\\\"(?:[^\\\\\\\"\\r\\n]|\\\\.)*(?:\\\"|$))" ),
+        RegExpProxy( "^(?:\\'(?:[^\\\\\\'\\r\\n]|\\\\.)*(?:\\'|$)|\\\"(?:[^\\\\\\\"\\r\\n]|\\\\.)*(?:\\\"|$))" ),
         null,
         '"\''
     ];
@@ -141,14 +141,14 @@ var stylePatternSingleLineStrings =
 var stylePatternVerbatimStrings =
     [
         PR_STRING,
-        new RegExpCompat(  "^@\\\"(?:[^\\\"]|\\\"\\\")*(?:\\\"|$)" ),
+        RegExpProxy(  "^@\\\"(?:[^\\\"]|\\\"\\\")*(?:\\\"|$)" ),
         null // TODO delete?
     ];
 /** @type {StylePattern} */
 var stylePatternMultiLineCStyleComments =
     [
         PR_COMMENT,
-        new RegExpCompat( "^#(?:##(?:[^#]|#(?!##))*(?:###|$)|.*)" ),
+        RegExpProxy( "^#(?:##(?:[^#]|#(?!##))*(?:###|$)|.*)" ),
         null,
         '#'
     ];
@@ -156,7 +156,7 @@ var stylePatternMultiLineCStyleComments =
 var stylePatternSingleLineCStyleComments =
     [
         PR_COMMENT,
-        new RegExpCompat( "^#(?:(?:define|e(?:l|nd)if|else|error|ifn?def|include|line|pragma|undef|warning)\\b|[^\\r\\n]*)" ),
+        RegExpProxy( "^#(?:(?:define|e(?:l|nd)if|else|error|ifn?def|include|line|pragma|undef|warning)\\b|[^\\r\\n]*)" ),
         null,
         '#'
     ];
@@ -164,14 +164,14 @@ var stylePatternSingleLineCStyleComments =
 var stylePatternCStyleHeaderFile =
     [
         PR_STRING,
-        new RegExpCompat(  "^<(?:(?:(?:\\.\\.\\/)*|\\/?)(?:[\\w-]+(?:\\/[\\w-]+)+)?[\\w-]+\\.h(?:h|pp|\\+\\+)?|[a-z]\\w*)>" ),
+        RegExpProxy(  "^<(?:(?:(?:\\.\\.\\/)*|\\/?)(?:[\\w-]+(?:\\/[\\w-]+)+)?[\\w-]+\\.h(?:h|pp|\\+\\+)?|[a-z]\\w*)>" ),
         null
     ];
 /** @type {StylePattern} */
 var stylePatternNotCStyleComments =
     [
         PR_COMMENT,
-        new RegExpCompat(  "^#[^\\r\\n]*" ),
+        RegExpProxy(  "^#[^\\r\\n]*" ),
         null,
         '#'
     ];
@@ -179,21 +179,21 @@ var stylePatternNotCStyleComments =
 var stylePatternCStyleComments1 =
     [
         PR_COMMENT,
-        new RegExpCompat(  "^\\/\\/[^\\r\\n]*" ),
+        RegExpProxy(  "^\\/\\/[^\\r\\n]*" ),
         null
     ];
 /** @type {StylePattern} */
 var stylePatternCStyleComments2 =
     [
         PR_COMMENT,
-        new RegExpCompat( "^\\/\\*[\\s\\S]*?(?:\\*\\/|$)" ),
+        RegExpProxy( "^\\/\\*[\\s\\S]*?(?:\\*\\/|$)" ),
         null
     ];
 /** @type {StylePattern} */
 var stylePatternRegexLiteralsMultiLine =
     [
         'lang-regex',
-        new RegExpCompat( '^' + REGEXP_PRECEDER_PATTERN + '(' +
+        RegExpProxy( '^' + REGEXP_PRECEDER_PATTERN + '(' +
             // A regular expression literal starts with a slash that is
             // not followed by * or / so that it is not confused with
             // comments.
@@ -213,7 +213,7 @@ var stylePatternRegexLiteralsMultiLine =
 var stylePatternRegexLiteralsSingleLine =
     [
         'lang-regex',
-        new RegExpCompat( '^' + REGEXP_PRECEDER_PATTERN + '(' +
+        RegExpProxy( '^' + REGEXP_PRECEDER_PATTERN + '(' +
             // A regular expression literal starts with a slash that is
             // not followed by * or / so that it is not confused with
             // comments.
@@ -234,7 +234,7 @@ var stylePatternRegexLiteralsSingleLine =
 var stylePatternWhiteSpace =
     [
         PR_PLAIN,
-        new RegExpCompat( '^\\s+' ),
+        RegExpProxy( '^\\s+' ),
         null,
         ' \r\n\t\xA0'
     ];
@@ -244,28 +244,28 @@ var stylePatternFallthrough1 =
     // TODO(mikesamuel): recognize non-latin letters and numerals in idents
     [
         PR_LITERAL,
-        new RegExpCompat( '^@[a-z_$][a-z_$@0-9]*', 'i' ),
+        RegExpProxy( '^@[a-z_$][a-z_$@0-9]*', 'i' ),
         null
     ];
 /** @type {StylePattern} */
 var stylePatternFallthrough2 =
     [
         PR_TYPE,
-        new RegExpCompat(  "^(?:[@_]?[A-Z]+[a-z][A-Za-z_$@0-9]*|\\w+_t\\b)" ),
+        RegExpProxy(  "^(?:[@_]?[A-Z]+[a-z][A-Za-z_$@0-9]*|\\w+_t\\b)" ),
         null
     ];
 /** @type {StylePattern} */
 var stylePatternFallthrough3 =
     [
         PR_PLAIN,
-        new RegExpCompat( '^[a-z_$][a-z_$@0-9]*', 'i' ),
+        RegExpProxy( '^[a-z_$][a-z_$@0-9]*', 'i' ),
         null
     ];
 /** @type {StylePattern} */
 var stylePatternFallthrough4 =
     [
         PR_LITERAL,
-        new RegExpCompat(
+        RegExpProxy(
             '^(?:'
             // A hex number
             + '0x[a-f0-9]+'
@@ -285,7 +285,7 @@ var stylePatternFallthrough4 =
 var stylePatternFallthrough5 =
     [
         PR_PLAIN,
-        new RegExpCompat( "^\\\\[\\s\\S]?" ),
+        RegExpProxy( "^\\\\[\\s\\S]?" ),
         null
     ];
 
@@ -327,9 +327,9 @@ var punctuation =
     // only when not followint [|&;<>].
     '^.[^\\s\\w.$@\'"`/\\\\]*';
 
-var rePunctuation = new RegExpCompat( punctuation );
+var rePunctuation = RegExpProxy( punctuation );
 
-var rePunctuationMulti = new RegExpCompat( punctuation + '(?!\s*\/)' );
+var rePunctuationMulti = RegExpProxy( punctuation + '(?!\s*\/)' );
 
 /** returns a function that produces a list of decorations from source text.
   *
@@ -409,7 +409,7 @@ function createSimpleLexerFromOptionalParameters( options ){
         fallthroughStylePatterns.push(
             [
                 PR_KEYWORD,
-                new RegExpCompat( '^(?:' + keywords.split( ',' ).join( '|' ).split( ' ' ).join( '|' )  + ')\\b' ),
+                RegExpProxy( '^(?:' + keywords.split( ',' ).join( '|' ).split( ' ' ).join( '|' )  + ')\\b' ),
                 null
             ]
         );
