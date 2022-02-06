@@ -10,7 +10,7 @@ const PluginError = require('plugin-error'),
 stream._transform = function( file, encoding, cb ){
     if( file.isNull() ) return cb( null, file );
 
-    if( file.isStream() ) return cb( new PluginError( 'gulp-createSimpleLexerRegistory', 'Streaming not supported' ) );
+    if( file.isStream() ) return cb( new PluginError( 'gulp-createSimpleLexerRegistry', 'Streaming not supported' ) );
 
     if( file.isBuffer() ){
         var js = file.contents.toString( encoding );
@@ -32,7 +32,6 @@ stream._transform = function( file, encoding, cb ){
             sandbox
         );
         var originalSimpleLexerRegistry  = sandbox.window.simpleLexerRegistry;
-        var cloneOfSimpleLexerRegistry   = {};
         var optimizedSimpleLexerRegistry = {};
         var storeStylePatternObject      = [];
         var storeStylePatternArray       = [];

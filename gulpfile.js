@@ -1,6 +1,6 @@
 const gulp   = require('gulp'),
       gulpDPZ = require('gulp-diamond-princess-zoning'),
-      gulpCreateSimpleRexerRegistory = require('./js-buildtools/gulp-createSimpleLexerRegistory.js'),
+      gulpCreateSimpleRexerRegistry = require('./js-buildtools/gulp-createSimpleLexerRegistry.js'),
       globalVariables = 'document,parseFloat,Function,isFinite,setTimeout,clearTimeout',
       closureCompiler = require('google-closure-compiler').gulp(),
       tempDir   = require('os').tmpdir() + '/google-code-prettify';
@@ -56,7 +56,7 @@ gulp.task( 'js', gulp.series(
     }
 ) );
 
-gulp.task( '__generate_simple_lexer_registory', gulp.series(
+gulp.task( '__generate_simple_lexer_registry', gulp.series(
     function(){
         return gulp.src(
             [
@@ -82,11 +82,11 @@ gulp.task( '__generate_simple_lexer_registory', gulp.series(
                     warning_level     : 'VERBOSE',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
-                    js_output_file    : '__generate_simple_lexer_registory.js'
+                    js_output_file    : '__generate_simple_lexer_registry.js'
                 }
             )
         ).pipe(
-            gulpCreateSimpleRexerRegistory
+            gulpCreateSimpleRexerRegistry
         ).pipe( gulp.dest( tempDir ) );
     }
 ) );
