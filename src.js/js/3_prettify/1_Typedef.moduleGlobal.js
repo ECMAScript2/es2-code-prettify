@@ -7,14 +7,14 @@ var DecorationsT;
 
 /**
  * @typedef {!{
- *   sourceNode: !Element,
- *   pre: !(number|boolean),
- *   langExtension: ?string,
- *   numberLines: ?(number|boolean),
- *   sourceCode: string,
- *   spans: ?(Array.<number|Node>),
- *   basePos: ?number,
- *   decorations: ?DecorationsT
+ *   sourceNode    : !Element,
+ *   pre           : !(number|boolean),
+ *   basePos       : number,
+ *   langExtension : ?(string|undefined),
+ *   numberLines   : ?(number|boolean|undefined),
+ *   sourceCode    : ?(string|undefined),
+ *   spans         : ?(Array.<number|Node>|undefined),
+ *   decorations   : ?(DecorationsT|undefined)
  * }}
  * <dl>
  *  <dt>sourceNode<dd>the element containing the source

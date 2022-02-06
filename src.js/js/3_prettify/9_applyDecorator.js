@@ -9,10 +9,10 @@ function applyDecorator( job ){
         var source = sourceAndSpans.sourceCode;
         job.sourceCode = source;
         job.spans = sourceAndSpans.spans;
-        job.basePos = 0;
+        // job.basePos = 0;
 
         // Apply the appropriate language handler
-        var simpleLexer = getSimpleLexer( opt_langExtension, source );
+        var simpleLexer = getSimpleLexer( /** @type {string} */ (opt_langExtension), source );
         decorate( job, simpleLexer );
 
         // Integrate the decorations and tags back into the source code,
@@ -28,7 +28,7 @@ function applyDecorator( job ){
 var reIsMarkup = RegExpProxy( "^\\s*<" );
 
 /**
- * @param {string|null} extension
+ * @param {string|undefined} extension
  * @param {string} source 
  * @returns {SimpleLexer}
  */
@@ -48,10 +48,11 @@ function getSimpleLexer( extension, source ){
  * @param {SimpleLexer} simpleLexer
  */
 function decorate( job, simpleLexer ){
-    var shortcuts = /** @type {Object<string,StylePattern>} */ (simpleLexer[ 0 ]);
-    var tokenizer = /** @type {RegExp|RegExpCompat} */ (simpleLexer[ 1 ]);
+    var shortcuts  = /** @type {Object<string,StylePattern>} */ (simpleLexer[ 0 ]);
+    var tokenizer  = /** @type {RegExp|RegExpCompat} */ (simpleLexer[ 1 ]);
     var fallthroughStylePatterns = /** @type {Array.<StylePattern>} */ (simpleLexer[ 2 ]);
-    var sourceCode = job.sourceCode, basePos = job.basePos;
+    var sourceCode = /** @type {string} */ (job.sourceCode);
+    var basePos    = job.basePos;
     var sourceNode = job.sourceNode;
     /** Even entries are positions in source in ascending order.  Odd enties
       * are style markers (e.g., PR_COMMENT) that run from that position until
@@ -161,12 +162,12 @@ function appendDecorations( sourceNode, basePos, sourceCode, simpleLexer, out ){
         var job = {
                 sourceNode    : sourceNode,
                 pre           : 1,
-                langExtension : null,
-                numberLines   : null,
+                // langExtension : null,
+                // numberLines   : null,
                 sourceCode    : sourceCode,
-                spans         : null,
-                basePos       : basePos,
-                decorations   : null
+                // spans         : null,
+                basePos       : basePos
+                // decorations   : null
             };
         decorate( job, simpleLexer );
 

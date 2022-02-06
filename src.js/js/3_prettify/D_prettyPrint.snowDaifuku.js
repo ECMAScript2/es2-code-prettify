@@ -174,16 +174,16 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
                         };
                     };
 
-                    // do the pretty printing
+                    /** @type {JobT} do the pretty printing */
                     var prettyPrintingJob = {
                         langExtension : langExtension,
                         sourceNode    : codeSegment,
                         numberLines   : lineNums,
-                        pre           : preformatted,
-                        sourceCode    : '',
-                        basePos       : null,
-                        spans         : null,
-                        decorations   : null
+                        pre           : preformatted, //,
+                        // sourceCode    : '',
+                        basePos       : 0
+                        // spans         : null,
+                        // decorations   : null
                     };
                     applyDecorator( prettyPrintingJob );
                 };

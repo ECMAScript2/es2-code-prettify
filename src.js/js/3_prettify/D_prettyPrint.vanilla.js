@@ -60,10 +60,8 @@ function $prettyPrintOne( sourceCodeHtml, opt_langExtension, opt_numberLines ){
         numberLines   : nl,
         sourceNode    : container,
         pre           : 1,
-        sourceCode    : '',
-        basePos       : null,
-        spans         : null,
-        decorations   : null
+        // sourceCode    : '',
+        basePos       : 0
     };
     applyDecorator( job );
     return container.innerHTML;
@@ -228,16 +226,14 @@ function $prettyPrint( opt_whenDone, opt_root ){
                         };
                     };
 
-                    // do the pretty printing
+                    /** @type {JobT} do the pretty printing */
                     var prettyPrintingJob = {
                         langExtension : langExtension,
                         sourceNode    : codeSegment,
                         numberLines   : lineNums,
                         pre           : preformatted,
-                        sourceCode    : '',
-                        basePos       : null,
-                        spans         : null,
-                        decorations   : null
+                        // sourceCode    : '',
+                        basePos       : 0
                     };
                     applyDecorator( prettyPrintingJob );
                 };
