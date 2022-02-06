@@ -27,11 +27,12 @@ function childContentWrapper( element ){
 
 /**
  * Pretty print a chunk of code.
- * @param sourceCodeHtml {string} The HTML to pretty print.
- * @param opt_langExtension {string} The language name to use.
+ * @param {string} sourceCodeHtml The HTML to pretty print.
+ * @param {string=} opt_langExtension The language name to use.
  *     Typically, a filename extension like 'cpp' or 'java'.
- * @param opt_numberLines {number|boolean} True to number lines,
+ * @param {number|boolean=} opt_numberLines True to number lines,
  *     or the 1-indexed number of the first line in sourceCodeHtml.
+ * @return {string}
  */
 function $prettyPrintOne( sourceCodeHtml, opt_langExtension, opt_numberLines ){
     /** @type{number|boolean} */
@@ -69,7 +70,9 @@ function $prettyPrintOne( sourceCodeHtml, opt_langExtension, opt_numberLines ){
 };
 
 if( DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ){
+    /** @type {RegExpCompat} */
     var reCommentLike = new RegExpCompat(  "^\\??prettify\\b" );
+    /** @type {RegExpCompat} */
     var reCorrectCommentAttrValue = new RegExpCompat( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
 };
 

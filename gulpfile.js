@@ -4,68 +4,26 @@ const gulp   = require('gulp'),
       closureCompiler = require('google-closure-compiler').gulp(),
       tempDir   = require('os').tmpdir() + '/google-code-prettify';
 
-gulp.task( 'rerejs', gulp.series(
-    function(){
-        return gulp.src(
-            [
-                '.submodules/rerejs/src.js/**/*.js',
-               '!.submodules/rerejs/src.js/0_global/2_polyfill.js',
-               '!.submodules/rerejs/src.js/1_packageGlobal/1_variable.js',
-               //'!.submodules/rerejs/src.js/7_ponyfill/return.js'
-            ]
-        ).pipe(
-            gulpDPZ(
-                {
-                    labelPackageGlobal : '*',
-                    packageGlobalArgs : [ 'Math,Infinity,undefined', 'Math,1/0,void 0' ],
-                    basePath          : '.submodules/rerejs/src.js'
-                }
-            )
-        ).pipe(
-            closureCompiler(
-                {
-                    externs           : [
-                        '.submodules/rerejs/src.externs/externs.generated.js',
-                        './src.js/externs/externs_rere.js'
-                    ],
-                    define            : [
-                        'DEFINE_REGEXP_COMPAT__DEBUG=false',
-                        'DEFINE_REGEXP_COMPAT__MINIFY=true',
-                        'DEFINE_REGEXP_COMPAT__NODEJS=false',
-                        'DEFINE_REGEXP_COMPAT__ES2018=false'
-                    ],
-                    compilation_level : 'ADVANCED',
-                    // compilation_level : 'WHITESPACE_ONLY',
-                    env               : 'CUSTOM', // DEFINE_REGEXP_COMPAT__DEBUG=true の場合はコメントアウト, console を使うのでブラウザモードにする
-                    formatting        : 'PRETTY_PRINT',
-                    warning_level     : 'VERBOSE',
-                    language_in       : 'ECMASCRIPT3',
-                    language_out      : 'ECMASCRIPT3',
-                    output_wrapper    : 'if( DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT ){var RegExpCompat = %output%;};',
-                    js_output_file    : 'rerejs.es2.generated.js'
-                }
-            )
-        ).pipe( gulp.dest( 'src.js/js/2_packageGlobal' ) );
-    }
-) );
-
 gulp.task( 'js', gulp.series(
     function(){
         return gulp.src(
             [
             // ReRe.js
-                '.submodules/rerejs/src.js/0_global/2_polyfill.js',
+                '.submodules/rerejs/src.js/**/*.js',
+               '!.submodules/rerejs/src.js/0_global/2_polyfill.js',
             // Google Code Prettify
                 './src.js/js/**/*.js',
                '!./src.js/js/**/*.snowDaifuku.js',
+               '!./src.js/js/4_langs/*.js',
                '!./src.js/js/5_run/*.js',
                '!./src.js/js/node_prettify.js'
             ]
         ).pipe(
             gulpDPZ(
                 {
+                    labelPackageGlobal : '*',
                     packageGlobalArgs : [ 'ua,window,emptyFunction,' + globalVariables + ',undefined', '{},this,function(){},' + globalVariables + ',void 0' ],
-                    basePath          : [ '../web-doc-base/src/js/', '../web-doc-base/.submodules/what-browser-am-i/src/js/', './src.js/', '.submodules/rerejs/' ]
+                    basePath          : [ './.submodules/web-doc-base/src/js/', './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/', './src.js/', '.submodules/rerejs/' ]
                 }
             )
         ).pipe(
@@ -74,13 +32,18 @@ gulp.task( 'js', gulp.series(
                     externs           : [
                         // ReRe.js
                         '.submodules/rerejs/src.externs/externs.generated.js',
-                        './src.js/externs/externs_rere.js'
+                        // './src.js/externs/externs_rere.js'
                     ],
                     define            : [
+                        'DEFINE_REGEXP_COMPAT__DEBUG=false',
+                        'DEFINE_REGEXP_COMPAT__MINIFY=true',
+                        'DEFINE_REGEXP_COMPAT__NODEJS=false',
+                        'DEFINE_REGEXP_COMPAT__ES2018=false',
+                        'DEFINE_CODE_PRETTIFY__ECMASCRIPT2=true'
                     ],
-                    // compilation_level : 'ADVANCED',
-                    compilation_level : 'WHITESPACE_ONLY',
-                    formatting        : 'PRETTY_PRINT',
+                    compilation_level : 'ADVANCED',
+                    // compilation_level : 'WHITESPACE_ONLY',
+                    // formatting        : 'PRETTY_PRINT',
                     warning_level     : 'VERBOSE',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
@@ -95,15 +58,15 @@ gulp.task( 'snow', gulp.series(
     function(){
         return gulp.src(
                 [
-                    '../web-doc-base/.submodules/what-browser-am-i/src/js/**/*.js',
-                    '!../web-doc-base/.submodules/what-browser-am-i/src/js/4_brand.js'
+                    './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/**/*.js',
+                    '!./.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/4_brand.js'
                 ]
             ).pipe(
                 gulpDPZ(
                     {
                         labelPackageGlobal : '*',
                         packageGlobalArgs  : [ 'ua,window,document,navigator,screen,parseFloat,Number,undefined', 'ua,window,document,navigator,screen,parseFloat,Number,void 0' ],
-                        basePath           : '../web-doc-base/.submodules/what-browser-am-i/src/js',
+                        basePath           : './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js',
                         fileName           : 'ua.js'
                     }
                 )
@@ -111,7 +74,7 @@ gulp.task( 'snow', gulp.series(
                 closureCompiler(
                     {
                         externs           : [
-                            '../web-doc-base/.submodules/what-browser-am-i/src/js-externs/externs.js'
+                            './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js-externs/externs.js'
                         ],
                         define            : [
                             'DEFINE_WHAT_BROWSER_AM_I__MINIFY=true',
@@ -122,7 +85,7 @@ gulp.task( 'snow', gulp.series(
                         ],
                         compilation_level : 'ADVANCED',
                         //compilation_level : 'WHITESPACE_ONLY',
-                        //formatting        : 'PRETTY_PRINT',
+                        formatting        : 'PRETTY_PRINT',
                         warning_level     : 'VERBOSE',
                         language_in       : 'ECMASCRIPT3',
                         language_out      : 'ECMASCRIPT3',
@@ -138,26 +101,30 @@ gulp.task( 'snow', gulp.series(
             // what-browser-am-i
                 tempDir + '/global.js',
             // Snow daifuku
-                '../web-doc-base/.submodules/what-browser-am-i/src/js/0_global/*.js',
-                '../web-doc-base/src/js/**/*.js',
-               '!../web-doc-base/src/js/3_EventModule/imageReady.js',
-               '!../web-doc-base/src/js/3_EventModule/prefersColor.js',
-               '!../web-doc-base/src/js/3_EventModule/print.js',
-               '!../web-doc-base/src/js/3_EventModule/resize.js',
-               // '!../web-doc-base/src/js/4_DOM/nodeCleaner.js',
-               '!../web-doc-base/src/js/5_CSSOM/**/*.js',
-               '!../web-doc-base/src/js/6_CanUse/cssGeneratedContent.js',
-               '!../web-doc-base/src/js/6_CanUse/dataUriTest.js',
-               '!../web-doc-base/src/js/6_CanUse/webfontTest.js',
-               '!../web-doc-base/src/js/7_Library/**/*.js',
-               '!../web-doc-base/src/js/7_Patch/**/*.js',
-               '!../web-doc-base/src/js/graph/**/*.js',
+                './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/0_global/*.js',
+               '!./.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/0_global/7_conpare.js',
+                './.submodules/web-doc-base/src/js/**/*.js',
+               '!./.submodules/web-doc-base/src/js/4_EventModule/imageReady.js',
+               '!./.submodules/web-doc-base/src/js/4_EventModule/prefersColor.js',
+               '!./.submodules/web-doc-base/src/js/4_EventModule/print.js',
+               '!./.submodules/web-doc-base/src/js/4_EventModule/resize.js',
+               // '!./.submodules/web-doc-base/src/js/4_DOM/nodeCleaner.js',
+               '!./.submodules/web-doc-base/src/js/5_CSSOM/**/*.js',
+               '!./.submodules/web-doc-base/src/js/6_CanUse/cssGeneratedContent.js',
+               '!./.submodules/web-doc-base/src/js/6_CanUse/dataUriTest.js',
+               '!./.submodules/web-doc-base/src/js/6_CanUse/webfontTest.js',
+               '!./.submodules/web-doc-base/src/js/7_Library/**/*.js',
+               '!./.submodules/web-doc-base/src/js/7_Patch/**/*.js',
+               '!./.submodules/web-doc-base/src/js/graph/**/*.js',
             // ReRe.js
-                '.submodules/rerejs/src.js/0_global/2_polyfill.js',
+                '.submodules/rerejs/src.js/**/*.js',
+               '!.submodules/rerejs/src.js/0_global/2_polyfill.js',
             // Google Code Prettify
                 './src.js/js/**/*.js',
+               '!./src.js/js/2_packageGlobal/toEndOfScriipt.js',
                '!./src.js/js/**/*.vanilla.js',
                '!./src.js/js/3_prettify/D_PR.js',
+               '!./src.js/js/4_langs/*.js',
                '!./src.js/js/5_run/*.js',
                '!./src.js/js/node_prettify.js'
             ]
@@ -167,8 +134,8 @@ gulp.task( 'snow', gulp.series(
                     labelPackageGlobal : '*', // for Gecko 0.7- ! https://twitter.com/itozyun/status/1488924003070742535
                     packageGlobalArgs : [ 'ua,window,emptyFunction,' + globalVariables + ',undefined', 'ua,this,function(){},' + globalVariables + ',void 0' ],
                     basePath          : [
-                        tempDir + '/', '../web-doc-base/.submodules/what-browser-am-i/src/js/',
-                        '../web-doc-base/src/js/',
+                        tempDir + '/', './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/',
+                        './.submodules/web-doc-base/src/js/',
                         '.submodules/rerejs/src.js/',
                         './src.js/'
                     ]
@@ -179,17 +146,26 @@ gulp.task( 'snow', gulp.series(
                 {
                     externs           : [
                         // Snow daifuku
-                        '../web-doc-base/.submodules/what-browser-am-i/src/js-externs/externs.js',
-                        '../web-doc-base/.submodules/regexp-free-js-base64/src/js-externs/externs.js',
-                        '../web-doc-base/node_modules/google-closure-compiler/contrib/externs/svg.js',
-                        '../web-doc-base/src/js-externs/externs.js',
+                        './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js-externs/externs.js',
+                        './.submodules/web-doc-base/.submodules/regexp-free-js-base64/src/js-externs/externs.js',
+                        './node_modules/google-closure-compiler/contrib/externs/svg.js',
+                        './.submodules/web-doc-base/src/js-externs/externs.js',
                         // ReRe.js
                         '.submodules/rerejs/src.externs/externs.generated.js',
-                        './src.js/externs/externs_rere.js'
+                        // './src.js/externs/externs_rere.js'
                     ],
                     define            : [
+                        // ReRE.js
+                        'DEFINE_REGEXP_COMPAT__DEBUG=false',
+                        'DEFINE_REGEXP_COMPAT__MINIFY=true',
+                        'DEFINE_REGEXP_COMPAT__NODEJS=false',
+                        'DEFINE_REGEXP_COMPAT__ES2018=false',
                         // Snow daifuku
                         'DEFINE_WHAT_BROWSER_AM_I__MINIFY=true',
+                        'DEFINE_WEB_DOC_BASE__DEBUG=1',
+                        'DEFINE_WEB_DOC_BASE__LOGGER_ELEMENT_ID="logger"',
+                        // Google Code Prettify
+                        'DEFINE_CODE_PRETTIFY__ECMASCRIPT2=true'
                     ],
                     compilation_level : 'ADVANCED',
                     // compilation_level : 'WHITESPACE_ONLY',
@@ -197,6 +173,25 @@ gulp.task( 'snow', gulp.series(
                     warning_level     : 'VERBOSE',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
+                    js_output_file    : 'prettify.snow.withoutPolyfill.js'
+                }
+            )
+        ).pipe( gulp.dest( tempDir ) );
+    },
+    function(){
+        return gulp.src(
+            [
+                '.submodules/rerejs/src.js/0_global/2_polyfill.js',
+                tempDir + '/prettify.snow.withoutPolyfill.js'
+            ]
+        ).pipe(
+            closureCompiler(
+                {
+                    compilation_level : 'WHITESPACE_ONLY',
+                    // formatting        : 'PRETTY_PRINT',
+                    language_in       : 'ECMASCRIPT3',
+                    language_out      : 'ECMASCRIPT3',
+                    output_wrapper    : '// Google Code Prettify for ES2, (https://githug.com/itozyun/regexp-free-code-prettify)\n%output%',
                     js_output_file    : 'prettify.snow.js'
                 }
             )

@@ -63,12 +63,3 @@ var StylePattern;
  * 2 : Array.<StylePattern>
  */
 var SimpleLexer;
-
-/**
- * @typedef {{
- *   test:function(string):boolean,
- *   replace:function(string,*=):string,
- *   match:function(string):(RegExpResult|null)
- * }}
- */
-var RegExpCompat;

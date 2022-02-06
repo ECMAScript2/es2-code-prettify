@@ -26,7 +26,9 @@ function childContentWrapper( element ){
 };
 
 if( DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ){
+    /** @type {RegExpCompat} */
     var reCommentLike = new RegExpCompat(  "^\\??prettify\\b" );
+    /** @type {RegExpCompat} */
     var reCorrectCommentAttrValue = new RegExpCompat( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
 };
 

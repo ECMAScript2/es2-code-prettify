@@ -1,5 +1,8 @@
+/** @type {RegExpCompat} */
 var reSmallAlphabet = new RegExpCompat( '[a-z]', 'i' );
+/** @type {RegExpCompat} */
 var reUnicode = new RegExpCompat( '\\\\u[0-9a-f]{4}|\\\\x[0-9a-f]{2}|\\\\[^ux]', 'gi' );
+/** @type {RegExpCompat} */
 var reCharsetParts = new RegExpCompat(
         '\\\\u[0-9A-Fa-f]{4}'
         + '|\\\\x[0-9A-Fa-f]{2}'
@@ -8,7 +11,9 @@ var reCharsetParts = new RegExpCompat(
         + '|\\\\[\\s\\S]'
         + '|-'
         + '|[^-\\\\]', 'g' );
+/** @type {RegExpCompat} */
 var reNoMatchNamedGroup = new RegExpCompat( '\\\\[bdsw]', 'i' );
+/** @type {RegExpCompat} */
 var reParts = new RegExpCompat(
         '(?:'
         + '\\[(?:[^\\x5C\\x5D]|\\\\[\\s\\S])*\\]'  // a character set
@@ -20,6 +25,7 @@ var reParts = new RegExpCompat(
         + '|[\\(\\)\\^]'  // start/end of a group, or line start
         + '|[^\\x5B\\x5C\\(\\)\\^]+'  // run of other characters
         + ')', 'g');
+/** @type {RegExpCompat} */
 var reAlphabet = new RegExpCompat( '[a-zA-Z]', 'g' );
 
 /**

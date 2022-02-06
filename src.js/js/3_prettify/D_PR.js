@@ -1,7 +1,26 @@
-/**
-  * Contains functions for creating and registering new language handlers.
-  * @type {Object}
-  */
+/** Contains functions for creating and registering new language handlers.
+ * @type {{
+ *   createSimpleLexer: function (Array, Array): SimpleLexer,
+ *   registerLangHandler: function (SimpleLexer, Array.<string>),
+ *   sourceDecorator: function (Object): SimpleLexer,
+ *   PR_ATTRIB_NAME: string,
+ *   PR_ATTRIB_VALUE: string,
+ *   PR_COMMENT: string,
+ *   PR_DECLARATION: string,
+ *   PR_KEYWORD: string,
+ *   PR_LITERAL: string,
+ *   PR_NOCODE: string,
+ *   PR_PLAIN: string,
+ *   PR_PUNCTUATION: string,
+ *   PR_SOURCE: string,
+ *   PR_STRING: string,
+ *   PR_TAG: string,
+ *   PR_TYPE: string,
+ *   prettyPrintOne: function(string,string=,*=):string,
+ *   prettyPrint: function(Function,*=)
+ * }}
+ * @const
+ */
 window[ 'PR' ] = {
     'createSimpleLexer'   : createSimpleLexer,
     'registerLangHandler' : registerLangHandler,
