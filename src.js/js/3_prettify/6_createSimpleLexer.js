@@ -82,14 +82,7 @@
   */
 function createSimpleLexer( shortcutStylePatterns, fallthroughStylePatterns ){
     var shortcuts = {};
-    var allPatterns = []; // shortcutStylePatterns.concat( fallthroughStylePatterns );
-    for( var i = 0, n = shortcutStylePatterns.length; i < n; ++i ){
-        allPatterns[ i ] = shortcutStylePatterns[ i ];
-    };
-    for( var i = 0, l = fallthroughStylePatterns.length; i < l; ++i ){
-        allPatterns[ n + i ] = fallthroughStylePatterns[ i ];
-    };
-
+    var allPatterns = shortcutStylePatterns.concat( fallthroughStylePatterns );
     var allRegexs = [];
     var regexKeys = {};
     for( var i = 0, n = allPatterns.length; i < n; ++i ){
