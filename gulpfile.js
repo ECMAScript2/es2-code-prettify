@@ -61,14 +61,15 @@ gulp.task( '__generate_simple_lexer_registry', gulp.series(
         return gulp.src(
             [
             // ReRe.js
-                '.submodules/rerejs/dist/develop/ReRE.es2.3.develop.js',
+                // '.submodules/rerejs/dist/develop/ReRE.es2.3.develop.js',
             // Google Code Prettify
                 './src.js/js/1_global/*.js',
                 // './src.js/js/2_packageGlobal/*.js',
                 './src.js/js/3_prettify/*.moduleGlobal.js',
                 './src.js/js/3_prettify/6_combinePrefixPatterns.js',
                 './src.js/js/3_prettify/7_createSimpleLexer.js',
-                './src.js/js/3_prettify/8_registerLangHandler.js'
+                './src.js/js/3_prettify/8_registerLangHandler.js',
+                './src.js/js/4_langs/*.js'
             ]
         ).pipe(
             closureCompiler(
