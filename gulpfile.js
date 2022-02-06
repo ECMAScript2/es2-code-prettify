@@ -108,7 +108,7 @@ gulp.task( 'snow', gulp.series(
                '!./.submodules/web-doc-base/src/js/4_EventModule/prefersColor.js',
                '!./.submodules/web-doc-base/src/js/4_EventModule/print.js',
                '!./.submodules/web-doc-base/src/js/4_EventModule/resize.js',
-               // '!./.submodules/web-doc-base/src/js/4_DOM/nodeCleaner.js',
+               // '!./.submodules/web-doc-base/src/js/3_DOM/nodeCleaner.js',
                '!./.submodules/web-doc-base/src/js/5_CSSOM/**/*.js',
                '!./.submodules/web-doc-base/src/js/6_CanUse/cssGeneratedContent.js',
                '!./.submodules/web-doc-base/src/js/6_CanUse/dataUriTest.js',
@@ -123,7 +123,7 @@ gulp.task( 'snow', gulp.series(
                 './src.js/js/**/*.js',
                '!./src.js/js/2_packageGlobal/toEndOfScriipt.js',
                '!./src.js/js/**/*.vanilla.js',
-               '!./src.js/js/3_prettify/D_PR.js',
+               '!./src.js/js/3_prettify/E_PR.js',
                '!./src.js/js/4_langs/*.js',
                '!./src.js/js/5_run/*.js',
                '!./src.js/js/node_prettify.js'
