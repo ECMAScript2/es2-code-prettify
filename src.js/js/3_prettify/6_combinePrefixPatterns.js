@@ -257,7 +257,7 @@ combinePrefixPatterns = function( regexs ){
     var rewritten = [];
     for( var i = 0, n = regexs.length; i < n; ++i ){
         var regex = regexs[ i ];
-        if( !DEFINE_CODE_PRETTIFY__ECMASCRIPT2 ){
+        if( DEFINE_CODE_PRETTIFY__DEBUG ){
             if( regex.global || regex.multiline ){
                 throw new Error( '' + regex );
             };

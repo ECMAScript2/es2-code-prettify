@@ -41,7 +41,7 @@ gulp.task( 'js', gulp.series(
                         'DEFINE_REGEXP_COMPAT__NODEJS=false',
                         'DEFINE_REGEXP_COMPAT__ES2018=false',
                         'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=0',
-                        'DEFINE_CODE_PRETTIFY__ECMASCRIPT2=true'
+                        'DEFINE_CODE_PRETTIFY__DEBUG=false'
                     ],
                     compilation_level : 'ADVANCED',
                     // compilation_level : 'WHITESPACE_ONLY',
@@ -202,7 +202,7 @@ gulp.task( 'snow', gulp.series(
                         'DEFINE_WEB_DOC_BASE__DEBUG=1',
                         'DEFINE_WEB_DOC_BASE__LOGGER_ELEMENT_ID="logger"',
                         // Google Code Prettify
-                        'DEFINE_CODE_PRETTIFY__ECMASCRIPT2=true'
+                        'DEFINE_CODE_PRETTIFY__DEBUG=false'
                     ],
                     compilation_level : 'ADVANCED',
                     // compilation_level : 'WHITESPACE_ONLY',

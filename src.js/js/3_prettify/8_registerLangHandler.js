@@ -9,7 +9,7 @@ function registerLangHandler( simpleLexer, fileExtensions ){
         var ext = fileExtensions[ i ];
         if( !simpleLexerRegistry[ ext ] ){
             simpleLexerRegistry[ ext ] = simpleLexer;
-        } else if( !DEFINE_CODE_PRETTIFY__ECMASCRIPT2 && window.console && console.warn ){
+        } else if( DEFINE_CODE_PRETTIFY__DEBUG && window.console && console.warn ){
             console.warn( 'cannot override language handler %s', ext );
         };
     };
