@@ -41,7 +41,7 @@ function getSimpleLexer( extension, source ){
           ? 'default-markup'
           : 'default-code';
     };
-    if( DEFINE_CODE_PRETTIFY__CREATE_LEXER_STATICALLY ){
+    if( DEFINE_CODE_PRETTIFY__USE_STATIC_LEXER ){
         if( extension ){
             return unzipOptimaizedSimpleLexer( extension );
         };
@@ -160,11 +160,11 @@ function decorate( job, simpleLexer ){
  * @param {number} basePos the index of sourceCode within the chunk of source
  *    whose decorations are already present on out.
  * @param {string} sourceCode
- * @param {SimpleLexer} simpleLexer
+ * @param {SimpleLexer|undefined} simpleLexer
  * @param {DecorationsT} out
  */
 function appendDecorations( sourceNode, basePos, sourceCode, simpleLexer, out ){
-    if( sourceCode ){
+    if( sourceCode && simpleLexer ){
         /** @type {JobT} */
         var job = {
                 sourceNode    : sourceNode,

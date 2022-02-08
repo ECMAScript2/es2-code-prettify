@@ -13,6 +13,13 @@ function unzipOptimaizedSimpleLexer( extension ){
         var stylePatternObject = simpleLexer[ 0 ];
         if( 0 <= stylePatternObject ){
             stylePatternObject = storeStylePatternObject[ stylePatternObject ];
+            if( 0 <= stylePatternObject[ DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY ] ){
+                var stylePattern = stylePatternObject[ DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY ];
+                delete stylePatternObject[ DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY ];
+                for( var i = -1; i < 9; ){
+                    stylePatternObject[ '' + ( ++i ) ] = stylePattern; // 旧い Opera の問題を回避するために key を文字化する
+                };
+            };
             for( var keyword in stylePatternObject ){
                 stylePatternObject[ keyword ] = unzipStylePattern( stylePatternObject[ keyword ] );
             };

@@ -6,6 +6,8 @@ const gulp   = require('gulp'),
       fs = require('fs'),
       tempDir   = require('os').tmpdir() + '/google-code-prettify';
 
+const numericKeyName = '-num';
+
 gulp.task( 'js', gulp.series(
     function(){
         return gulp.src(
@@ -88,7 +90,7 @@ gulp.task( '__generate_simple_lexer_registry', gulp.series(
                 }
             )
         ).pipe(
-            gulpCreateSimpleRexerRegistry( '__zippedSimpleLexerRegistry.js' )
+            gulpCreateSimpleRexerRegistry( '__zippedSimpleLexerRegistry.js', numericKeyName )
         ).pipe( gulp.dest( 'src.js/js/3_prettify' ) );
     }
 ) );
@@ -208,8 +210,9 @@ gulp.task( 'sl', gulp.series(
                         'DEFINE_WEB_DOC_BASE__LOGGER_ELEMENT_ID="logger"',
                         // Google Code Prettify
                         'DEFINE_CODE_PRETTIFY__DEBUG=false',
-                        'DEFINE_CODE_PRETTIFY__CREATE_LEXER_STATICALLY=true',
-                        'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=1'
+                        'DEFINE_CODE_PRETTIFY__USE_STATIC_LEXER=true',
+                        'DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY="' + numericKeyName + '"',
+                        'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=-1'
                     ],
                     compilation_level : 'ADVANCED',
                     // compilation_level : 'WHITESPACE_ONLY',
@@ -243,6 +246,75 @@ gulp.task( 'sl', gulp.series(
     },
     function( cb ){
         fs.unlink( 'src.js/js/3_prettify/__zippedSimpleLexerRegistry.js', cb );
+    },
+    function( cb ){
+        // https://kitak.hatenablog.jp/entry/2014/11/15/233649
+        //   JSのASTを扱うライブラリをつかって、不要なeval呼び出しを除くコードを書いてみた
+        var esprima = require('esprima');
+        var estraverse = require('estraverse');
+        var escodegen = require('escodegen');
+
+        fs.readFile( './tests/prettify.snow.js',
+            function( err, source ){
+                if( err !== null ){
+                    return;
+                };
+                var ast = esprima.parse( source.toString() );
+
+                estraverse.traverse(
+                    ast,
+                    {
+                        enter : function( node, parent ){
+                            if( parent && parent.type === 'ObjectExpression' ){
+                                var prop = node;
+                                if( typeof prop.key.value === 'number' ){
+                                    console.log( '#', prop.key.raw )
+                                    prop.key.value = '' + prop.key.value;
+                                    prop.key.raw   = '"a' + prop.key.value + '"';
+                                };
+                            };
+                        }
+                    }
+                );
+                // console.log( escodegen.generate( ast ) );
+                var lastIndex = 0;
+                fs.writeFile( './tests/prettify.snow.js',
+                    escodegen.generate( ast,
+                        {
+                            // https://github.com/estools/escodegen/issues/1
+                            format: {
+                                renumber: true,
+                                hexadecimal: true,
+                                quotes: "auto",
+                                escapeless: false,
+                                // compact: true,
+                                space: '',
+                                indent: {
+                                    style: '',
+                                    base: 0,
+                                    adjustMultilineComment: false
+                                },
+                                parentheses: false,
+                                semicolons: false
+                            },
+                            // https://github.com/estools/escodegen/issues/231#issuecomment-96850400
+                            // If you really want to avoid Unicode escapes, use {format: {escapeless: true}} as your escodegen options.
+                            // But the only way to use the same escapes that you used in your original code is to use the {verbatim: "raw"} option.
+                            verbatim: "raw"
+                        }
+                    ).replace(
+                        /\n/g,
+                        function( newline, index, all ){
+                            if( 400 < index - lastIndex ){
+                                lastIndex = index;
+                                return newline;
+                            };
+                            return 0 <= '();,:?{}[]"\''.indexOf( all.charAt( index - 1 ) ) ||
+                                   0 <= '();,:?{}[]"\''.indexOf( all.charAt( index + 1 ) ) ? '' : ' ';
+                        }
+                    ), null, cb );
+            }
+        );
     }
 ) );
 

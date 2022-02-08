@@ -8,9 +8,11 @@ var PR_SHOULD_USE_CONTINUATION = true;
 /** @type {Object.<string, (SimpleLexer|ZippedSimpleLexer)>} Maps language-specific file extensions to handlers. */
 var simpleLexerRegistry;
 
-if( !DEFINE_CODE_PRETTIFY__CREATE_LEXER_STATICALLY ){
+if( !DEFINE_CODE_PRETTIFY__USE_STATIC_LEXER ){
     simpleLexerRegistry = {};
 };
+
+var storeStylePatternObject, storeStylePattern, storeRegExp;
 
 /**
   * Pretty print a chunk of code.

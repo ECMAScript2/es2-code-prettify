@@ -7,10 +7,11 @@ const PluginError = require('plugin-error'),
       stream      = new Transform( { objectMode : true } ),
       vm          = require('vm');
 
-var fileName;
+var fileName, numericKeyName;
 
-module.exports = function( _fileName ){
+module.exports = function( _fileName, _numericKeyName ){
     fileName = _fileName;
+    numericKeyName = _numericKeyName || '';
     return stream;
 };
 
@@ -48,9 +49,8 @@ stream._transform = function( file, encoding, cb ){
         var numReuseStylePatternArray  = 0;
         var numReuseStylePattern       = 0;
         var numReuseRegExp             = 0;
-        // console.dir( originalSimpleLexerRegistry );
 
-        var langs =  Object.keys( originalSimpleLexerRegistry ).sort( function( a, b ){ return a.length - b.length; } );
+        var langs = Object.keys( originalSimpleLexerRegistry ).sort( function( a, b ){ return a.length - b.length; } );
         var lang;
 
         while( lang = langs.shift() ){
@@ -82,11 +82,11 @@ stream._transform = function( file, encoding, cb ){
                     contents : Buffer.from(
                             'simpleLexerRegistry = ' +
                                 JSON.stringify( optimizedSimpleLexerRegistry, null, '    ' ) + ';\n' +
-                            'var storeStylePatternObject = ' +
+                            'storeStylePatternObject = ' +
                                 JSON.stringify( storeStylePatternObject, null, '    ' ) + ';\n' +
-                            'var storeStylePattern = ' +
+                            'storeStylePattern = ' +
                                 JSON.stringify( storeStylePattern, null, '    ' ) + ';\n' +
-                            'var storeRegExp = ' +
+                            'storeRegExp = ' +
                                 JSON.stringify( storeRegExp, null, '    ' ) + ';\n'
                         )
                 }
@@ -120,8 +120,27 @@ stream._transform = function( file, encoding, cb ){
         };
         var optimizedStylePatternObject = {};
         storeStylePatternObject.push( optimizedStylePatternObject );
+        var numericKey = 0, numericKeyValue;
         for( var keyword in stylePatternObject ){
-            optimizedStylePatternObject[ keyword ] = getIndexOfStoredStylePattern( stylePatternObject[ keyword ] );
+            if( '0' <= keyword && keyword <= '9' ){
+                if( 0 < numericKey ){
+                    if( numericKeyValue !== getIndexOfStoredStylePattern( stylePatternObject[ keyword ] ) ){
+                        throw "UNEXPECTED about numericKey! " + numericKeyValue + ', ' + getIndexOfStoredStylePattern( stylePatternObject[ keyword ] ) + ' [' + keyword + ']';
+                    };
+                } else {
+                    numericKeyValue = getIndexOfStoredStylePattern( stylePatternObject[ keyword ] );
+                };
+                ++numericKey;
+            } else {
+                optimizedStylePatternObject[ keyword ] = getIndexOfStoredStylePattern( stylePatternObject[ keyword ] );
+            };
+        };
+        if( 0 < numericKey ){
+            if( numericKey === 10 ){
+                optimizedStylePatternObject[ numericKeyName ] = numericKeyValue;
+            } else {
+                throw "UNEXPECTED about numericKey!";
+            };
         };
         return i;
     };
@@ -133,12 +152,16 @@ stream._transform = function( file, encoding, cb ){
             var memory = {};
 
             for( var keyword in stylePatternObject0 ){
+                if( keyword === numericKeyName ) continue;
+
                 if( !( keyword in stylePatternObject1 ) || !equalStylePattern( stylePatternObject0[ keyword ], stylePatternObject1[ keyword ] ) ){
                     return false;
                 };
                 memory[ keyword ] = true;
             };
             for( var keyword in stylePatternObject1 ){
+                if( '0' <= keyword && keyword <= '9' ) continue;
+
                 if( !memory[ keyword ] ){
                     return false;
                 };
