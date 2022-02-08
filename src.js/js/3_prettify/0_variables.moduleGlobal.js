@@ -5,8 +5,12 @@
   */
 var PR_SHOULD_USE_CONTINUATION = true;
  
-/** @type {Object.<string, SimpleLexer>} Maps language-specific file extensions to handlers. */
-var simpleLexerRegistry = {};
+/** @type {Object.<string, (SimpleLexer|ZippedSimpleLexer)>} Maps language-specific file extensions to handlers. */
+var simpleLexerRegistry;
+
+if( !DEFINE_CODE_PRETTIFY__CREATE_LEXER_STATICALLY ){
+    simpleLexerRegistry = {};
+};
 
 /**
   * Pretty print a chunk of code.
@@ -39,3 +43,5 @@ var combinePrefixPatterns;
 function m_isString( test ){
     return test === '' + test;
 };
+
+var m_starTime = new Date - 0;

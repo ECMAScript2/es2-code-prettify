@@ -63,3 +63,11 @@ var StylePattern;
  * 2 : Array.<StylePattern>
  */
 var SimpleLexer;
+
+/**
+ * @typedef {Array.<number|Array.<number>>}
+ * 0 : Object.<string,Array.<StylePattern>>
+ * 1 : (RegExp|RegExpCompat)
+ * 2 : Array.<StylePattern>
+ */
+ var ZippedSimpleLexer;

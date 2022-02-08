@@ -61,6 +61,7 @@
     "html-to-text": "^8.1.0",
     "plugin-error": "^1.0.1",
     "stream": "0.0.2",
+    "vinyl": "^2.2.1",
     "zombie": "^6.1.4"
   }
 }

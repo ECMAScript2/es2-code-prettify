@@ -3,21 +3,22 @@ function applyDecorator( job ){
     var opt_langExtension = job.langExtension;
 
     //try {
-        // Extract tags, and convert the source code to plain text.
-        var sourceAndSpans = extractSourceSpans( job.sourceNode, job.pre );
-        /** Plain text. @type {string} */
-        var source = sourceAndSpans.sourceCode;
-        job.sourceCode = source;
-        job.spans = sourceAndSpans.spans;
-        // job.basePos = 0;
+    // Extract tags, and convert the source code to plain text.
+    var sourceAndSpans = extractSourceSpans( job.sourceNode, job.pre );
+    /** Plain text. @type {string} */
+    var source = job.sourceCode = sourceAndSpans.sourceCode;
+                 job.spans      = sourceAndSpans.spans;
+    // job.basePos = 0;
 
-        // Apply the appropriate language handler
-        var simpleLexer = getSimpleLexer( /** @type {string} */ (opt_langExtension), source );
+    // Apply the appropriate language handler
+    var simpleLexer = getSimpleLexer( /** @type {string} */ (opt_langExtension), source );
+    if( simpleLexer ){
         decorate( job, simpleLexer );
 
         // Integrate the decorations and tags back into the source code,
         // modifying the sourceNode in place.
         recombineTagsAndDecorations( job );
+    };
     /* } catch( e ){
         if( window[ 'console' ] ){
             console['log'](e && e['stack'] || e);
@@ -30,17 +31,23 @@ var reIsMarkup = RegExpProxy( "^\\s*<" );
 /**
  * @param {string|undefined} extension
  * @param {string} source 
- * @returns {SimpleLexer}
+ * @returns {SimpleLexer|undefined}
  */
 function getSimpleLexer( extension, source ){
-    if( !( extension && simpleLexerRegistry[ extension ] ) ){
+    if( !extension || !simpleLexerRegistry[ extension ] ){
       // Treat it as markup if the first non whitespace character is a < and
       // the last non-whitespace character is a >.
       extension = reIsMarkup.test( source )
           ? 'default-markup'
           : 'default-code';
     };
-    return simpleLexerRegistry[ extension ];
+    if( DEFINE_CODE_PRETTIFY__CREATE_LEXER_STATICALLY ){
+        if( extension ){
+            return unzipOptimaizedSimpleLexer( extension );
+        };
+    } else {
+        return /** @type {SimpleLexer|undefined} */ (simpleLexerRegistry[ extension ]);
+    };
 };
 
 /**

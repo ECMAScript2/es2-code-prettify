@@ -9,4 +9,6 @@ var /** @define {number} 0:常にOFF, 1:常にON, -1:ブラウザ毎 */
     /** @define {boolean} */
     DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT = true,
     /** @define {boolean} */
-    DEFINE_CODE_PRETTIFY__NUMBER_LINE_SUPPORT  = true;
+    DEFINE_CODE_PRETTIFY__NUMBER_LINE_SUPPORT  = true,
+    /** @define {boolean} */
+    DEFINE_CODE_PRETTIFY__CREATE_LEXER_STATICALLY = false;

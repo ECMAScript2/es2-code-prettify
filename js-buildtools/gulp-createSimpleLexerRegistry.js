@@ -7,6 +7,13 @@ const PluginError = require('plugin-error'),
       stream      = new Transform( { objectMode : true } ),
       vm          = require('vm');
 
+var fileName;
+
+module.exports = function( _fileName ){
+    fileName = _fileName;
+    return stream;
+};
+
 stream._transform = function( file, encoding, cb ){
     if( file.isNull() ) return cb( null, file );
 
@@ -15,9 +22,8 @@ stream._transform = function( file, encoding, cb ){
     if( file.isBuffer() ){
         var js = file.contents.toString( encoding );
 
-        // collect registered language extensions
         var sandbox = {
-            window : { RegExp : RegExp },
+            window : {},
             RegExpCompat : function( a, b ){
                 var r = new RegExp( a, b );
                 r.match = function( a ){ return a.match( r ) }
@@ -26,7 +32,7 @@ stream._transform = function( file, encoding, cb ){
             }
         };
 
-        // execute source code in an isolated sandbox with a mock PR object
+        // execute source code in an isolated sandbox
         vm.runInNewContext(
             js + ';window.simpleLexerRegistry = simpleLexerRegistry;',
             sandbox
@@ -44,7 +50,10 @@ stream._transform = function( file, encoding, cb ){
         var numReuseRegExp             = 0;
         // console.dir( originalSimpleLexerRegistry );
 
-        for( var lang in originalSimpleLexerRegistry ){
+        var langs =  Object.keys( originalSimpleLexerRegistry ).sort( function( a, b ){ return a.length - b.length; } );
+        var lang;
+
+        while( lang = langs.shift() ){
             var originalSimpleLexer = originalSimpleLexerRegistry[ lang ];
 
             for( var _lang in optimizedSimpleLexerRegistry ){
@@ -66,8 +75,26 @@ stream._transform = function( file, encoding, cb ){
             };
         };
 
+        this.push(
+            new Vinyl(
+                {
+                    path     : fileName,
+                    contents : Buffer.from(
+                            'simpleLexerRegistry = ' +
+                                JSON.stringify( optimizedSimpleLexerRegistry, null, '    ' ) + ';\n' +
+                            'var storeStylePatternObject = ' +
+                                JSON.stringify( storeStylePatternObject, null, '    ' ) + ';\n' +
+                            'var storeStylePattern = ' +
+                                JSON.stringify( storeStylePattern, null, '    ' ) + ';\n' +
+                            'var storeRegExp = ' +
+                                JSON.stringify( storeRegExp, null, '    ' ) + ';\n'
+                        )
+                }
+            )
+        );
+
         console.dir( optimizedSimpleLexerRegistry );
-        console.dir( storeStylePatternArray );
+        // console.dir( storeStylePatternArray );
         console.log( numReuseStylePatternObject + '/' + storeStylePatternObject.length,
                      numReuseStylePatternArray + '/' + storeStylePatternArray.length,
                      numReuseStylePattern + '/' + storeStylePattern.length,
@@ -120,18 +147,18 @@ stream._transform = function( file, encoding, cb ){
         };
 
     function getIndexOfStoredStylePatternArray( stylePatternArray ){
-        for( var i = -1; storeStylePatternArray[ ++i ]; ){
+        /* for( var i = -1; storeStylePatternArray[ ++i ]; ){
             if( equalStylePatternArray( storeStylePatternArray[ i ], stylePatternArray ) ){
                 ++numReuseStylePatternArray;
                 return i;
             };
-        };
+        }; */
         var optimizedStylePatternArray = [];
         storeStylePatternArray.push( optimizedStylePatternArray );
         for( var j = -1, originalStylePattern; originalStylePattern = stylePatternArray[ ++j ]; ){
             optimizedStylePatternArray[ j ] = getIndexOfStoredStylePattern( originalStylePattern );
         };
-        return i;
+        return optimizedStylePatternArray; // i;
     };
         function equalStylePatternArray( stylePatternArray0, stylePatternArray1 ){
             if( Number.isInteger( stylePatternArray0 ) ){
@@ -176,19 +203,18 @@ stream._transform = function( file, encoding, cb ){
                 return i;
             };
         };
-        storeRegExp.push( originalRegExp.flags ? [ originalRegExp.source, originalRegExp.flags ] : [ originalRegExp.source ] );
+        storeRegExp.push( originalRegExp.flags ? [ originalRegExp.source, originalRegExp.flags ] : originalRegExp.source );
         return i;
     };
         function equalRegExp( regExp0, regExp1 ){
             if( Number.isInteger( regExp0 ) ){
                 regExp0 = storeRegExp[ regExp0 ];
             };
-            return ( Array.isArray( regExp0 ) && regExp0[ 0 ] === regExp1.source   && regExp0[ 1 ] === regExp1.flags  ) ||
-                   ( Array.isArray( regExp0 ) && regExp0[ 0 ] === regExp1.source   && !regExp0[ 1 ] && !regExp1.flags ) ||
-                   ( regExp0.source === regExp1.source && regExp0.flags === regExp1.flags );
+            return ( Array.isArray( regExp0 )    && regExp0[ 0 ] === regExp1.source   && regExp0[ 1 ] === regExp1.flags  ) ||
+                   ( typeof regExp0 === 'string' && regExp0 === regExp1.source        && !regExp1.flags                  ) ||
+                   (                                regExp0.source === regExp1.source && regExp0.flags === regExp1.flags );
         };
 
     // this.push( file );
     cb();
 };
-module.exports = stream;
