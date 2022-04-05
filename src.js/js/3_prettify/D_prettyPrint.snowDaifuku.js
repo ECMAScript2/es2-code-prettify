@@ -185,14 +185,14 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
                 };
 
                 currentJob = {
-                    langExtension : langExtension,
+                    langExtension : /** @type {string} */ (langExtension),
                     sourceNode    : codeSegment,
                     numberLines   : lineNums,
                     pre           : preformatted,
                     basePos       : 0,
-                    decorations   : [],
+                    pos           : 0,
                     styleCache    : {},
-                    pos           : 0
+                    decorations   : []
                 };
 
                 if( DEFINE_CODE_PRETTIFY__DEBUG ){

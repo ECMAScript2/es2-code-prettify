@@ -9,14 +9,17 @@ var DecorationsT;
  * @typedef {!{
  *   sourceNode    : !Element,
  *   pre           : !(number|boolean),
- *   basePos       : number,
  *   langExtension : (string|undefined),
  *   numberLines   : (number|boolean|undefined),
  *   sourceCode    : (string|undefined),
  *   spans         : (!Array.<number|Node>|undefined),
- *   decorations   : (!DecorationsT|undefined),
+ *   decorations   : (!DecorationsT),
+ *   styleCache    : (!Object.<string,string>|undefined),
+ *   basePos       : number,
+ *   pos           : number,
  *   tokens        : (!Array.<string>|undefined),
- *   parentJob     : (!JobT|undefined)   
+ *   parentJob     : (!JobT|undefined),
+ *   childJobs     : (!Array.<!JobT>|undefined)
  * }}
  * <dl>
  *  <dt>sourceNode<dd>the element containing the source

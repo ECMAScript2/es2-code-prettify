@@ -55,11 +55,13 @@ function $prettyPrintOne( sourceCodeHtml, opt_langExtension, opt_numberLines ){
     };
 
     currentJob = {
-        langExtension : langExtension,
-        numberLines   : nl,
+        langExtension : /** @type {string} */ (langExtension),
         sourceNode    : container,
+        numberLines   : nl,
         pre           : 1,
         basePos       : 0,
+        pos           : 0,
+        styleCache    : {},
         decorations   : []
     };
     applyDecorator();
@@ -236,14 +238,14 @@ if( DEFINE_CODE_PRETTIFY__DEBUG ){
                 };
 
                 currentJob = {
-                    langExtension : langExtension,
+                    langExtension : /** @type {string} */ (langExtension),
                     sourceNode    : codeSegment,
                     numberLines   : lineNums,
                     pre           : preformatted,
                     basePos       : 0,
-                    decorations   : [],
+                    pos           : 0,
                     styleCache    : {},
-                    pos           : 0
+                    decorations   : []
                 };
 
                 if( DEFINE_CODE_PRETTIFY__DEBUG ){

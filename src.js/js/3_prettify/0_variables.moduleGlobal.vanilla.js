@@ -1,6 +1,6 @@
-var p_Gecko   = false,
-    p_Presto  = false,
-    p_Trident = false;
+var p_Gecko   = NaN,
+    p_Presto  = NaN,
+    p_Trident = NaN;
 
 var p_setTimer = 
    /**
