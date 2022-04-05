@@ -107,23 +107,26 @@ function decorate(){
         };
 
 
-        var tokenStart = job.pos; // index into sourceCode;
-
-        job.pos += token.length;
+        var tokenStart  = job.pos; // index into sourceCode;
+        var tokenLength = token.length;
+        job.pos += tokenLength;
 
         if( !isEmbedded ){
             decorations.push( basePos + tokenStart, style );
             m_graduallyPrettify( decorate, undefined, TASK_IS_DECORATE );
         } else {  // Treat group 1 as an embedded block of source code.
-            var embeddedSource = match[ 1 ];
-            var embeddedSourceStart = token.indexOf( embeddedSource );
-            var embeddedSourceEnd = embeddedSourceStart + embeddedSource.length;
+            var embeddedSource       = match[ 1 ];
+            var embeddedSourceStart  = token.indexOf( embeddedSource );
+            var embeddedSourceLength = embeddedSource.length;
+            var embeddedSourceEnd    = embeddedSourceStart + embeddedSourceLength;
+            var nextTaskIsUnzipSimpleLexer;
+
             if( match[ 2 ] ){
                 // If embeddedSource can be blank, then it would match at the
                 // beginning which would cause us to infinitely recurse on the
                 // entire token, so we catch the right context in match[2].
-                embeddedSourceEnd = token.length - match[ 2 ].length;
-                embeddedSourceStart = embeddedSourceEnd - embeddedSource.length;
+                embeddedSourceEnd   = tokenLength - match[ 2 ].length;
+                embeddedSourceStart = embeddedSourceEnd - embeddedSourceLength;
             };
             var lang = style.substr( 5 );
             // Decorate the left of the embedded source
@@ -132,14 +135,13 @@ function decorate(){
                 token.substr( 0, embeddedSourceStart ),
                 simpleLexer
             );
-            if( unzipSimpleLexer( lang, embeddedSource ) ){
+            if( embeddedSourceLength && unzipSimpleLexer( lang, embeddedSource ) ){
                 // Decorate the embedded source
                 appendDecorations(
                     basePos + tokenStart + embeddedSourceStart,
                     embeddedSource
                 );
-            } else {
-                m_graduallyPrettify( tokenize, undefined, TASK_IS_DECORATE, true );
+                nextTaskIsUnzipSimpleLexer = true;
             };
             // Decorate the right of the embedded section
             appendDecorations(
@@ -147,6 +149,12 @@ function decorate(){
                 token.substr( embeddedSourceEnd ),
                 simpleLexer
             );
+            if( !nextTaskIsUnzipSimpleLexer ){
+                if( job.childJobs ){
+                    currentJob = job.childJobs.shift();
+                };
+                m_graduallyPrettify( tokenize, undefined, TASK_IS_DECORATE, true );
+            };
         };
     } else {
         if( !job.parentJob ){
