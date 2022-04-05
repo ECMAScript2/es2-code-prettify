@@ -35,12 +35,9 @@ function unzipSimpleLexer( extension, source ){
     };
     var existSimpleLexer = !!simpleLexerRegistry[ extension ];
 
-    // if( DEFINE_CODE_PRETTIFY__USE_STATIC_LEXER ){
-        if( existSimpleLexer ){
-            currentJob.langExtension = extension;
-            m_graduallyPrettify( unzipOptimaizedSimpleLexer, extension, 0, true );
-        };
-    // };
+    if( existSimpleLexer ){
+        m_graduallyPrettify( unzipOptimaizedSimpleLexer, extension, 0, true );
+    };
     return existSimpleLexer;
 };
 
@@ -130,30 +127,35 @@ function decorate(){
             };
             var lang = style.substr( 5 );
             // Decorate the left of the embedded source
-            appendDecorations(
+            appendChildJob(
                 basePos + tokenStart,
                 token.substr( 0, embeddedSourceStart ),
                 simpleLexer
             );
             if( embeddedSourceLength && unzipSimpleLexer( lang, embeddedSource ) ){
                 // Decorate the embedded source
-                appendDecorations(
+                appendChildJob(
                     basePos + tokenStart + embeddedSourceStart,
                     embeddedSource
                 );
                 nextTaskIsUnzipSimpleLexer = true;
             };
             // Decorate the right of the embedded section
-            appendDecorations(
+            appendChildJob(
                 basePos + tokenStart + embeddedSourceEnd,
                 token.substr( embeddedSourceEnd ),
                 simpleLexer
             );
+
+            if( job.childJobs ){
+                currentJob = job.childJobs.shift();
+            };
             if( !nextTaskIsUnzipSimpleLexer ){
-                if( job.childJobs ){
-                    currentJob = job.childJobs.shift();
+                if( currentJob !== job ){
+                    m_graduallyPrettify( tokenize, undefined, TASK_IS_DECORATE );
+                } else {
+                    m_graduallyPrettify( decorate, undefined, TASK_IS_DECORATE );
                 };
-                m_graduallyPrettify( tokenize, undefined, TASK_IS_DECORATE, true );
             };
         };
     } else {
@@ -165,7 +167,6 @@ function decorate(){
                 m_graduallyPrettify( tokenize, undefined, TASK_IS_DECORATE );
             } else {
                 currentJob = job.parentJob;
-                delete currentJob.childJobs;
                 m_graduallyPrettify( decorate, undefined, TASK_IS_DECORATE );
             };
         };
@@ -178,7 +179,7 @@ function decorate(){
      * @param {string} sourceCode
      * @param {SimpleLexer=} simpleLexer
      */
-    function appendDecorations( basePos, sourceCode, simpleLexer ){
+    function appendChildJob( basePos, sourceCode, simpleLexer ){
         if( sourceCode ){
             job.childJobs = job.childJobs || [];
             job.childJobs.push(

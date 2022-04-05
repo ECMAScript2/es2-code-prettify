@@ -36,16 +36,16 @@ function unzipOptimaizedSimpleLexer( extension ){
     if( lazyCreateRegExpList.length ){
         m_graduallyPrettify( createRegExp, extension, TASK_IS_INIT_REGEXP );
     } else {
-        if( job.childJobs ){
-            if( !job.childJobs[ 0 ].simpleLexer ){
-                job.childJobs[ 0 ].simpleLexer = simpleLexer;
-            } else {
-                job.childJobs[ 1 ].simpleLexer = simpleLexer;
-            };
-            currentJob = job.childJobs.shift();
-        } else {
+        if( !job.simpleLexer ){
             job.simpleLexer = simpleLexer;
+        } else if( job.parentJob ){
+            // childJobs の最大は 3. この時は2番目に lang-* が入っている(decorate appendChildJob 参照)
+            // unzipOptimaizedSimpleLexer に入る時には currentJpb = job.childJobs.shift() している.
+            // lang-* が childJobs[0] だった時は、上で simpleLexer を接続する
+            // lang-* が childJobs[1] だった時は、次で simpleLexer を接続する
+            job.parentJob.childJobs[ 0 ].simpleLexer = simpleLexer;
         };
+
         // Apply the appropriate language handler
         m_graduallyPrettify( tokenize, undefined, TASK_IS_INIT_REGEXP );
     };
