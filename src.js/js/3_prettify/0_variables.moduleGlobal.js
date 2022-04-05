@@ -1,11 +1,4 @@
- /**
-  * Split {@code prettyPrint} into multiple timeouts so as not to interfere with
-  * UI events.
-  * If set to {@code false}, {@code prettyPrint()} is synchronous.
-  */
-var PR_SHOULD_USE_CONTINUATION = true;
- 
-/** @type {Object.<string, (SimpleLexer|ZippedSimpleLexer)>} Maps language-specific file extensions to handlers. */
+/** @type {Object.<string,(SimpleLexer|ZippedSimpleLexer)>} Maps language-specific file extensions to handlers. */
 var simpleLexerRegistry;
 
 if( !DEFINE_CODE_PRETTIFY__USE_STATIC_LEXER ){
@@ -13,28 +6,6 @@ if( !DEFINE_CODE_PRETTIFY__USE_STATIC_LEXER ){
 };
 
 var storeStylePatternObject, storeStylePattern, storeRegExp;
-
-/**
-  * Pretty print a chunk of code.
-  * @param {string} sourceCodeHtml The HTML to pretty print.
-  * @param {string} opt_langExtension The language name to use.
-  *     Typically, a filename extension like 'cpp' or 'java'.
-  * @param {number|boolean} opt_numberLines True to number lines,
-  *     or the 1-indexed number of the first line in sourceCodeHtml.
-  * @return {string} code as html, but prettier
-  */
-var prettyPrintOne;
-
-/**
-  * Find all the {@code <pre>} and {@code <code>} tags in the DOM with
-  * {@code class=prettyprint} and prettify them.
-  *
-  * @param {Function} opt_whenDone called when prettifying is done.
-  * @param {HTMLElement|HTMLDocument} opt_root an element or document
-  *   containing all the elements to pretty print.
-  *   Defaults to {@code document.body}.
-  */
-var prettyPrint;
 
 var combinePrefixPatterns;
 
@@ -46,4 +17,84 @@ function m_isString( test ){
     return test === '' + test;
 };
 
-var m_starTime = new Date - 0;
+/** @type {!JobT|undefined} */
+var currentJob;
+
+var USE_REGEXPCOMPAT = DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT === 1 ||
+    !window.RegExp ||
+    DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT === -1 && ( p_Gecko < 0.9 || p_Presto < 8 || p_Trident < 5.5 );
+
+/** @type {!Function|undefiend} */
+var completeHandler;
+
+/**
+ * @typedef {{
+ *   initTime        : (number|undefined),
+ *   _startTime      : (number|undefined),
+ *   useRegExpCompat : boolean,
+ *   initRegExpCount : number,
+ *   initRegExpTime  : number,
+ *   codeBlocks      : !Array.<!{elm:Node, lang:string, readyTime:number, decorateTime:number, updateDOMTime:number}>
+ * }}
+ */
+var Benchmark;
+
+/** @type {Benchmark} */
+var benchmark = { useRegExpCompat : USE_REGEXPCOMPAT, initRegExpTime : 0, initRegExpCount : 0, codeBlocks : [] };
+
+if( DEFINE_CODE_PRETTIFY__DEBUG ){
+    benchmark.initTime = + new Date;
+};
+
+var TASK_IS_INIT_REGEXP = 1;
+var TASK_IS_DECORATE    = 2;
+var TASK_IS_UPDATE_DOM  = 3;
+
+/**
+ * @param {!Function} lazyFunction 
+ * @param {string|!JobT=} param 
+ * @param {number=} task
+ */
+function m_graduallyPrettify( lazyFunction, param, task ){
+    if( DEFINE_CODE_PRETTIFY__DEBUG ){
+        if( new Date - benchmark._startTime < 9 ){
+            // return lazyFunction( param );
+        };
+        var codeBlock = benchmark.codeBlocks[ benchmark.codeBlocks.length - 1 ];
+
+        switch( task ){
+            case TASK_IS_INIT_REGEXP :
+                benchmark.initRegExpCount++;
+                benchmark.initRegExpTime += ( new Date - benchmark._startTime );
+                break;
+            case TASK_IS_DECORATE :
+                codeBlock.decorateTime += ( new Date - benchmark._startTime );
+                break;
+            case TASK_IS_UPDATE_DOM :
+                codeBlock.updateDOMTime += ( new Date - benchmark._startTime );
+                break;
+        };
+
+        if( USE_REGEXPCOMPAT ){
+            p_setTimer(
+                function(){
+                    if( 0 <= task ){
+                        benchmark._startTime = + new Date;
+                    };
+                    lazyFunction( param );
+                }
+            );
+        } else {
+            requestAnimationFrame(
+                function(){
+                    if( 0 <= task ){
+                        benchmark._startTime = + new Date;
+                    };
+                    lazyFunction( param );
+                }
+            )
+        };
+    } else {
+        p_setTimer( lazyFunction, param );
+    };
+};

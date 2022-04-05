@@ -15,7 +15,7 @@ function recombineTagsAndDecorations( job ){
     // Index into spans after the last span which ends at or before sourceIndex.
     var spanIndex = 0;
 
-    var decorations = job.decorations;
+    var decorations = /** @type {!DecorationsT} */ (job.decorations);
     var nDecorations = decorations.length;
     // Index into decorations after the last decoration which ends at or before
     // sourceIndex.
@@ -60,13 +60,13 @@ function recombineTagsAndDecorations( job ){
     //  var decoration = null;
     while( spanIndex < nSpans ){
         // var spanStart = spans[ spanIndex ];
-        var spanEnd = /** @type{number} */ (spans[ spanIndex + 2 ]) || sourceLength;
+        var spanEnd = /** @type {number} */ (spans[ spanIndex + 2 ]) || sourceLength;
 
         var decEnd = decorations[ decorationIndex + 2 ] || sourceLength;
 
         var end = Math.min( spanEnd, decEnd );
 
-        var textNode = /** @type{Node} */ (spans[ spanIndex + 1 ]);
+        var textNode = /** @type {Node} */ (spans[ spanIndex + 1 ]);
         var styledText;
         if( textNode.nodeType !== 1  // Don't muck with <BR>s or <LI>s
             // Don't introduce spans around empty text nodes.
@@ -108,4 +108,8 @@ function recombineTagsAndDecorations( job ){
         p_DOM_setStyle( sourceNode, 'display', oldDisplay );
     };
     //}
+
+    currentJob = undefined;
+    // finish up in a continuation
+    m_graduallyPrettify( applyPrettifyElementOne, undefined, TASK_IS_UPDATE_DOM );
 };

@@ -1,101 +1,97 @@
-/** @param {JobT} job */
-function applyDecorator( job ){
-    var opt_langExtension = job.langExtension;
 
-    //try {
+function applyDecorator(){
+    var job = /** @type {!JobT} */ (currentJob);
+    var opt_langExtension = job.langExtension;
+    
+    // TODO ie4dom
+
     // Extract tags, and convert the source code to plain text.
     var sourceAndSpans = extractSourceSpans( job.sourceNode, job.pre );
     /** Plain text. @type {string} */
     var source = job.sourceCode = sourceAndSpans.sourceCode;
                  job.spans      = sourceAndSpans.spans;
     // job.basePos = 0;
-
-    // Apply the appropriate language handler
-    var simpleLexer = getSimpleLexer( /** @type {string} */ (opt_langExtension), source );
-    if( simpleLexer ){
-        decorate( job, simpleLexer );
-
-        // Integrate the decorations and tags back into the source code,
-        // modifying the sourceNode in place.
-        recombineTagsAndDecorations( job );
+    if( !unzipSimpleLexer( /** @type {string} */ (opt_langExtension), source ) ){
+        currentJob = undefined;
+        // finish up in a continuation
+        m_graduallyPrettify( applyPrettifyElementOne );
     };
-    /* } catch( e ){
-        if( window[ 'console' ] ){
-            console['log'](e && e['stack'] || e);
-        };
-    }; */
 };
 
 var reIsMarkup = RegExpProxy( "^\\s*<" );
 
 /**
  * @param {string|undefined} extension
- * @param {string} source 
- * @returns {SimpleLexer|undefined}
+ * @param {string} source
+ * @returns {boolean}
  */
-function getSimpleLexer( extension, source ){
+function unzipSimpleLexer( extension, source ){
     if( !extension || !simpleLexerRegistry[ extension ] ){
       // Treat it as markup if the first non whitespace character is a < and
       // the last non-whitespace character is a >.
-      extension = reIsMarkup.test( source )
+      extension = RegExpProxy_test( reIsMarkup, source )
           ? 'default-markup'
           : 'default-code';
     };
-    if( DEFINE_CODE_PRETTIFY__USE_STATIC_LEXER ){
-        if( extension ){
-            return unzipOptimaizedSimpleLexer( extension );
+    var existSimpleLexer = !!simpleLexerRegistry[ extension ];
+
+    // if( DEFINE_CODE_PRETTIFY__USE_STATIC_LEXER ){
+        if( existSimpleLexer ){
+            currentJob.langExtension = extension;
+            m_graduallyPrettify( unzipOptimaizedSimpleLexer, extension );
         };
-    } else {
-        return /** @type {SimpleLexer|undefined} */ (simpleLexerRegistry[ extension ]);
-    };
+    // };
+    return existSimpleLexer;
 };
 
-/**
- * @param {JobT} job
- * @param {SimpleLexer} simpleLexer
- */
-function decorate( job, simpleLexer ){
-    var shortcuts  = /** @type {Object<string,StylePattern>} */ (simpleLexer[ 0 ]);
-    var tokenizer  = /** @type {RegExp|RegExpCompat} */ (simpleLexer[ 1 ]);
-    var fallthroughStylePatterns = /** @type {Array.<StylePattern>} */ (simpleLexer[ 2 ]);
-    var sourceCode = /** @type {string} */ (job.sourceCode);
-    var basePos    = job.basePos;
-    var sourceNode = job.sourceNode;
+function tokenize(){
+    var job         = currentJob;
+    var simpleLexer = job.simpleLexer;
+    var tokenizer   = /** @type {RegExp|RegExpCompat} */ (simpleLexer[ 1 ]);
+    var sourceCode  = /** @type {string} */ (job.sourceCode);
+
+    job.tokens = RegExpProxy_match( tokenizer, sourceCode ) || [];
+
+    job.decorations.push( job.basePos, PR_PLAIN );
+
+    m_graduallyPrettify( decorate, undefined, TASK_IS_DECORATE );
+};
+
+function decorate(){
+    var job         = currentJob;
+    var simpleLexer = /** @type {!SimpleLexer} */ (job.simpleLexer);
+    var shortcuts   = /** @type {!Object<string,StylePattern>} */ (simpleLexer[ 0 ]);
+    var fallthroughStylePatterns = /** @type {!Array.<!StylePattern>} */ (simpleLexer[ 2 ]);
+    var basePos     = job.basePos;
     /** Even entries are positions in source in ascending order.  Odd enties
       * are style markers (e.g., PR_COMMENT) that run from that position until
       * the end.
-      * @type {DecorationsT}
       */
-    var decorations = [ basePos, PR_PLAIN ];
-    var pos = 0;  // index into sourceCode
-    var tokens = RegExpProxy_match( tokenizer, sourceCode ) || [];
-    var styleCache = {};
+    var decorations = /** @type {!DecorationsT} */ (job.decorations);
+    var token       = job.tokens.shift();
+    var styleCache  = job.styleCache;
 
-    for( var ti = 0, nTokens = tokens.length; ti < nTokens; ++ti ){
-        var token = tokens[ ti ];
+    if( token ){
         var style = styleCache[ token ];
-        var match = undefined;
+        var match;
 
         var isEmbedded;
         if( m_isString( style ) ){
-            isEmbedded = false;
+            // isEmbedded = false;
         } else {
-            var patternParts = shortcuts[ token.charAt( 0 ) ];
-            if( patternParts ){
-                match = RegExpProxy_match( /** @type {RegExp|RegExpCompat} */ (patternParts[ 1 ]), token );
-                style = patternParts[ 0 ];
+            var stylePattern = shortcuts[ token.charAt( 0 ) ];
+            if( stylePattern ){
+                match = RegExpProxy_match( /** @type {RegExp|RegExpCompat} */ (stylePattern[ 1 ]), token );
+                style = /** @type {string} */ (stylePattern[ 0 ]);
             } else {
-                for( var i = 0, l = fallthroughStylePatterns.length; i < l; ++i ){
-                    patternParts = fallthroughStylePatterns[ i ];
-                    match = RegExpProxy_match( /** @type {RegExp|RegExpCompat} */ (patternParts[ 1 ]), token );
+                style = PR_PLAIN; // make sure that we make progress
+
+                for( var i = -1; stylePattern = fallthroughStylePatterns[ ++i ]; ){
+                    match = RegExpProxy_match( /** @type {RegExp|RegExpCompat} */ (stylePattern[ 1 ]), token );
                     if( match ){
-                        style = patternParts[ 0 ];
+                        style = /** @type {string} */ (stylePattern[ 0 ]);
                         break;
                     };
-                };
-
-                if( !match ){ // make sure that we make progress
-                    style = PR_PLAIN;
                 };
             };
 
@@ -110,11 +106,14 @@ function decorate( job, simpleLexer ){
             };
         };
 
-        var tokenStart = pos;
-        pos += token.length;
+
+        var tokenStart = job.pos; // index into sourceCode;
+
+        job.pos += token.length;
 
         if( !isEmbedded ){
             decorations.push( basePos + tokenStart, style );
+            m_graduallyPrettify( decorate, undefined, TASK_IS_DECORATE );
         } else {  // Treat group 1 as an embedded block of source code.
             var embeddedSource = match[ 1 ];
             var embeddedSourceStart = token.indexOf( embeddedSource );
@@ -129,61 +128,66 @@ function decorate( job, simpleLexer ){
             var lang = style.substr( 5 );
             // Decorate the left of the embedded source
             appendDecorations(
-                sourceNode,
                 basePos + tokenStart,
                 token.substr( 0, embeddedSourceStart ),
-                simpleLexer, decorations
+                simpleLexer
             );
-            // Decorate the embedded source
-            appendDecorations(
-                sourceNode,
-                basePos + tokenStart + embeddedSourceStart,
-                embeddedSource,
-                getSimpleLexer( lang, embeddedSource ), decorations
-            );
+            if( unzipSimpleLexer( lang, embeddedSource ) ){
+                // Decorate the embedded source
+                appendDecorations(
+                    basePos + tokenStart + embeddedSourceStart,
+                    embeddedSource
+                );
+            } else {
+                m_graduallyPrettify( tokenize, undefined, TASK_IS_DECORATE );
+            };
             // Decorate the right of the embedded section
             appendDecorations(
-                sourceNode,
                 basePos + tokenStart + embeddedSourceEnd,
                 token.substr( embeddedSourceEnd ),
-                simpleLexer, decorations
+                simpleLexer
             );
         };
+    } else {
+        if( !job.parentJob ){
+            m_graduallyPrettify( recombineTagsAndDecorations, job, TASK_IS_DECORATE );
+        } else {
+            currentJob = job.parentJob.childJobs.shift();
+            if( currentJob ){
+                m_graduallyPrettify( tokenize, undefined, TASK_IS_DECORATE );
+            } else {
+                currentJob = job.parentJob;
+                delete currentJob.childJobs;
+                m_graduallyPrettify( decorate, undefined, TASK_IS_DECORATE );
+            };
+        };
     };
-    job.decorations = decorations;
-};
+    /**
+     * Apply the given language handler to sourceCode and add the resulting
+     * decorations to out.
+     * @param {number} basePos the index of sourceCode within the chunk of source
+     *    whose decorations are already present on out.
+     * @param {string} sourceCode
+     * @param {SimpleLexer=} simpleLexer
+     */
+    function appendDecorations( basePos, sourceCode, simpleLexer ){
+        if( sourceCode ){
+            job.childJobs = job.childJobs || [];
+            job.childJobs.push(
+                /** @type {JobT} */
+                ({
 
-/**
- * Apply the given language handler to sourceCode and add the resulting
- * decorations to out.
- * @param {!Element} sourceNode
- * @param {number} basePos the index of sourceCode within the chunk of source
- *    whose decorations are already present on out.
- * @param {string} sourceCode
- * @param {SimpleLexer|undefined} simpleLexer
- * @param {DecorationsT} out
- */
-function appendDecorations( sourceNode, basePos, sourceCode, simpleLexer, out ){
-    if( sourceCode && simpleLexer ){
-        /** @type {JobT} */
-        var job = {
-                sourceNode    : sourceNode,
-                pre           : 1,
-                // langExtension : null,
-                // numberLines   : null,
-                sourceCode    : sourceCode,
-                // spans         : null,
-                basePos       : basePos
-                // decorations   : null
-            };
-        decorate( job, simpleLexer );
-
-        var decorations = job.decorations;
-
-        if( decorations ){
-            for( var i = 0, l = decorations.length; i < l; ++i ){
-                out.push( decorations[ i ] );
-            };
+                    parentJob   : job,
+                    sourceNode  : job.sourceNode,
+                    pre         : 1,
+                    decorations : decorations,
+                    basePos     : basePos,
+                    sourceCode  : sourceCode,
+                    simpleLexer : simpleLexer,
+                    styleCache  : {},
+                    pos         : 0
+                })
+            );
         };
     };
 };

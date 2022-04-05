@@ -1,1 +1,1 @@
-window[ 'RegExpCompat' ] = RegExpCompat; // RegExpProxy
+window[ 'RegExpCompat' ] = RegExpProxy; // RegExpProxy

@@ -400,7 +400,8 @@ function runTests(goldens) {
 
   // time syntax highlighting
   var t = now();    // tic
-  PR.prettyPrint(function () {
+  
+  (PR.prettyPrint || PR.registerCompleteHandler)(function () {
     t = now() - t;  // toc
 
     // verify results against golden and write HTML report

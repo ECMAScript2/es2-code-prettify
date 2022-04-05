@@ -1,1 +1,5 @@
-// var PR;
+var PR;
+
+if( DEFINE_CODE_PRETTIFY__EXPORT_PR_OBJECT || DEFINE_CODE_PRETTIFY__DEBUG ){
+    PR = {};
+};

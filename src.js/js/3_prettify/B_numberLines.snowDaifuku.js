@@ -124,7 +124,7 @@ function numberLines( node, startLineNum, isPreformatted ){
             ol.innerHTML = '<li value="' + startLineNum + '">' + li.innerHTML + '</li>';
             listItems[ 0 ] = ol.firstChild;
         } else {
-            p_DOM_setAttribute( li, 'value', startLineNum  );
+            p_DOM_setAttribute( li, 'value', startLineNum );
         };
     };
     var ol = p_DOM_insertElement( node, 'ol', { className : 'linenums' } );

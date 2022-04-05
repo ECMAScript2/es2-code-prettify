@@ -52,7 +52,7 @@ combinePrefixPatterns = function( regexs ){
         var regex = regexs[ i ];
         if( regex.ignoreCase ){
             ignoreCase = true;
-        } else if( reSmallAlphabet.test( RegExpProxy_replace( reUnicode, regex.source, '' ) ) ){
+        } else if( RegExpProxy_test( reSmallAlphabet, RegExpProxy_replace( reUnicode, regex.source, '' ) ) ){
             needToFoldCase = true;
             ignoreCase = false;
             break;
@@ -107,7 +107,7 @@ combinePrefixPatterns = function( regexs ){
         for( var i = inverse ? 1 : 0, n = charsetParts.length; i < n; ++i ){
             var p = charsetParts[ i ];
 
-            if( reNoMatchNamedGroup.test( p ) ){ // Don't muck with named groups.
+            if( RegExpProxy_test( reNoMatchNamedGroup, p ) ){ // Don't muck with named groups.
                 out.push( p );
             } else {
                 var start = decodeEscape( p );

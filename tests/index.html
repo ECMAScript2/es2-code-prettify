@@ -1376,40 +1376,19 @@ fn main() {
         and beat it"#;
 }
 </pre>
-<script type="text/javascript" src="./prettify.es2.js"></script>
+<script type="text/javascript" src="./prettify.snow.js"></script>
 <script type="text/javascript" src="prettify_test.js"></script>
 <script type="text/javascript" src="test_base.js"></script>
 <script type="text/javascript">
   (function () {
     // keep track of when window.onload fires, this is to make sure that we dont
     // miss it as it might occur before or after dynamic scripts are loaded
-    var isReady = false;
-    // window.onload = function () { isReady = true; };
-  
-    // run tests when page is fully loaded
-    function onReady() {
-      runTests(goldens);
-    }
-  
+
+    runTests(goldens);
+
     // JS & CSS prettify files to load
     var base = /[&?]loader\b/.test(location.search) ? '../loader/' : '../src/';
-    var sources = [
-      'lang-css.js',
-      'lang-erlang.js',
-      'lang-go.js',
-      'lang-hs.js',
-      'lang-lisp.js',
-      'lang-lua.js',
-      'lang-ml.js',
-      'lang-proto.js',
-      'lang-rust.js',
-      'lang-scala.js',
-      'lang-sql.js',
-      'lang-vb.js',
-      'lang-vhdl.js',
-      'lang-wiki.js',
-      'lang-yaml.js'
-    ];
+
     var styles = [
       'prettify.css'
     ];
@@ -1418,23 +1397,6 @@ fn main() {
     while (styles.length) {
       injectCSS(base + styles.shift());
     }
-  
-    // first load prettify.js
-    //injectJS(base + 'prettify.js', function () {
-      // then load all lang-*.js concurrently
-      while (sources.length) {
-        injectJS(base + sources.shift(),
-          (sources.length) ? undefined : function () {
-            // then after last one is loaded, run tests when page is ready
-            // (piggyback on window.onload if it hasn't already fired)
-            if (isReady) {
-              onReady();
-            } else {
-              window.onload = onReady;
-            }
-          });
-      }
-    //});
   })();
 </script>
 </body>

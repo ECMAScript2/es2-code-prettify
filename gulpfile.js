@@ -72,7 +72,7 @@ gulp.task( '__generate_simple_lexer_registry', gulp.series(
                 './src.js/js/3_prettify/6_combinePrefixPatterns.js',
                 './src.js/js/3_prettify/7_createSimpleLexer.js',
                 './src.js/js/3_prettify/8_registerLangHandler.js',
-                // './src.js/js/4_langs/*.js'
+                './src.js/js/4_langs/*.js'
             ]
         ).pipe(
             closureCompiler(
@@ -148,15 +148,15 @@ gulp.task( 'sl', gulp.series(
                 './.submodules/web-doc-base/src/js/**/*.js',
                '!./.submodules/web-doc-base/src/js/3_DOM/nodeCleaner.js',
                '!./.submodules/web-doc-base/src/js/4_EventModule/imageReady.js',
-               '!./.submodules/web-doc-base/src/js/4_EventModule/prefersColor.js',
+               '!./.submodules/web-doc-base/src/js/4_EventModule/forcedColors.js',
+               '!./.submodules/web-doc-base/src/js/4_EventModule/prefersColorScheme.js',
                '!./.submodules/web-doc-base/src/js/4_EventModule/print.js',
                '!./.submodules/web-doc-base/src/js/4_EventModule/resize.js',
+               '!./.submodules/web-doc-base/src/js/4_EventModule/scroll.js',
                '!./.submodules/web-doc-base/src/js/5_CSSOM/**/*.js',
-               '!./.submodules/web-doc-base/src/js/6_CanUse/cssGeneratedContent.js',
-               '!./.submodules/web-doc-base/src/js/6_CanUse/dataUriTest.js',
-               '!./.submodules/web-doc-base/src/js/6_CanUse/webfontTest.js',
-               '!./.submodules/web-doc-base/src/js/7_Library/**/*.js',
+               '!./.submodules/web-doc-base/src/js/6_CanUse/**/*.js',
                '!./.submodules/web-doc-base/src/js/7_Patch/**/*.js',
+               '!./.submodules/web-doc-base/src/js/8_Library/**/*.js',
             // ReRe.js
                 '.submodules/rerejs/src.js/**/*.js',
                '!.submodules/rerejs/src.js/0_global/2_polyfill.js',
@@ -167,7 +167,7 @@ gulp.task( 'sl', gulp.series(
                '!./src.js/js/3_prettify/6_combinePrefixPatterns.js',
                '!./src.js/js/3_prettify/7_createSimpleLexer.js',
                '!./src.js/js/3_prettify/8_registerLangHandler.js',
-               '!./src.js/js/3_prettify/E_PR.js',
+               // '!./src.js/js/3_prettify/E_PR.js',
                '!./src.js/js/4_langs/*.js',
                '!./src.js/js/5_run/*.js',
                '!./src.js/js/node_prettify.js'
@@ -209,12 +209,12 @@ gulp.task( 'sl', gulp.series(
                         'DEFINE_WEB_DOC_BASE__DEBUG=1',
                         'DEFINE_WEB_DOC_BASE__LOGGER_ELEMENT_ID="logger"',
                         // Google Code Prettify
-                        'DEFINE_CODE_PRETTIFY__DEBUG=false',
+                        'DEFINE_CODE_PRETTIFY__DEBUG=true',
                         'DEFINE_CODE_PRETTIFY__USE_STATIC_LEXER=true',
                         'DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY="' + numericKeyName + '"',
-                        'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=-1'
+                        'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=0'
                     ],
-                    compilation_level : 'ADVANCED',
+                    // compilation_level : 'ADVANCED',
                     // compilation_level : 'WHITESPACE_ONLY',
                     // formatting        : 'PRETTY_PRINT',
                     warning_level     : 'VERBOSE',
@@ -235,7 +235,7 @@ gulp.task( 'sl', gulp.series(
             closureCompiler(
                 {
                     compilation_level : 'WHITESPACE_ONLY',
-                    // formatting        : 'PRETTY_PRINT',
+                    formatting        : 'PRETTY_PRINT',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
                     output_wrapper    : '// Google Code Prettify for ES2, (https://githug.com/itozyun/regexp-free-code-prettify)\n%output%',
@@ -244,10 +244,11 @@ gulp.task( 'sl', gulp.series(
             )
         ).pipe( gulp.dest( 'tests' ) );
     },
-    function( cb ){
+    /* function( cb ){
         fs.unlink( 'src.js/js/3_prettify/__zippedSimpleLexerRegistry.js', cb );
-    },
+    }, */
     function( cb ){
+        return cb();
         // https://kitak.hatenablog.jp/entry/2014/11/15/233649
         //   JSのASTを扱うライブラリをつかって、不要なeval呼び出しを除くコードを書いてみた
         var esprima = require('esprima');
@@ -370,15 +371,14 @@ gulp.task( 'snow', gulp.series(
                 './.submodules/web-doc-base/src/js/**/*.js',
                '!./.submodules/web-doc-base/src/js/3_DOM/nodeCleaner.js',
                '!./.submodules/web-doc-base/src/js/4_EventModule/imageReady.js',
-               '!./.submodules/web-doc-base/src/js/4_EventModule/prefersColor.js',
+               '!./.submodules/web-doc-base/src/js/4_EventModule/forcedColors.js',
+               '!./.submodules/web-doc-base/src/js/4_EventModule/prefersColorScheme.js',
                '!./.submodules/web-doc-base/src/js/4_EventModule/print.js',
                '!./.submodules/web-doc-base/src/js/4_EventModule/resize.js',
                '!./.submodules/web-doc-base/src/js/5_CSSOM/**/*.js',
-               '!./.submodules/web-doc-base/src/js/6_CanUse/cssGeneratedContent.js',
-               '!./.submodules/web-doc-base/src/js/6_CanUse/dataUriTest.js',
-               '!./.submodules/web-doc-base/src/js/6_CanUse/webfontTest.js',
-               '!./.submodules/web-doc-base/src/js/7_Library/**/*.js',
+               '!./.submodules/web-doc-base/src/js/6_CanUse/**/*.js',
                '!./.submodules/web-doc-base/src/js/7_Patch/**/*.js',
+               '!./.submodules/web-doc-base/src/js/8_Library/**/*.js',
             // ReRe.js
                 '.submodules/rerejs/src.js/**/*.js',
                '!.submodules/rerejs/src.js/0_global/2_polyfill.js',
