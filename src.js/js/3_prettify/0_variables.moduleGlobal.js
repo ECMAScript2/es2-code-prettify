@@ -54,11 +54,12 @@ var TASK_IS_UPDATE_DOM  = 3;
  * @param {!Function} lazyFunction 
  * @param {string|!JobT=} param 
  * @param {number=} task
+ * @param {boolean=} forceLazy
  */
-function m_graduallyPrettify( lazyFunction, param, task ){
+function m_graduallyPrettify( lazyFunction, param, task, forceLazy ){
     if( DEFINE_CODE_PRETTIFY__DEBUG ){
-        if( new Date - benchmark._startTime < 9 ){
-            // return lazyFunction( param );
+        if( new Date - benchmark._startTime < 9 && !forceLazy ){
+            return lazyFunction( param );
         };
         var codeBlock = benchmark.codeBlocks[ benchmark.codeBlocks.length - 1 ];
 

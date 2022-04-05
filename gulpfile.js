@@ -44,7 +44,7 @@ gulp.task( 'js', gulp.series(
                         'DEFINE_REGEXP_COMPAT__NODEJS=false',
                         'DEFINE_REGEXP_COMPAT__ES2018=false',
                         'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=0',
-                        'DEFINE_CODE_PRETTIFY__DEBUG=false'
+                        'DEFINE_CODE_PRETTIFY__DEBUG=true'
                     ],
                     compilation_level : 'ADVANCED',
                     // compilation_level : 'WHITESPACE_ONLY',

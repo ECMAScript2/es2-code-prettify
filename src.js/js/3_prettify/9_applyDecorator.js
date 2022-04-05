@@ -38,7 +38,7 @@ function unzipSimpleLexer( extension, source ){
     // if( DEFINE_CODE_PRETTIFY__USE_STATIC_LEXER ){
         if( existSimpleLexer ){
             currentJob.langExtension = extension;
-            m_graduallyPrettify( unzipOptimaizedSimpleLexer, extension );
+            m_graduallyPrettify( unzipOptimaizedSimpleLexer, extension, 0, true );
         };
     // };
     return existSimpleLexer;
@@ -139,7 +139,7 @@ function decorate(){
                     embeddedSource
                 );
             } else {
-                m_graduallyPrettify( tokenize, undefined, TASK_IS_DECORATE );
+                m_graduallyPrettify( tokenize, undefined, TASK_IS_DECORATE, true );
             };
             // Decorate the right of the embedded section
             appendDecorations(
