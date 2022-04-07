@@ -25,49 +25,6 @@ function childContentWrapper( element ){
     return wrapper === element ? undefined : wrapper;
 };
 
-/**
- * Pretty print a chunk of code.
- * @param {string} sourceCodeHtml The HTML to pretty print.
- * @param {string=} opt_langExtension The language name to use.
- *     Typically, a filename extension like 'cpp' or 'java'.
- * @param {number|boolean=} opt_numberLines True to number lines,
- *     or the 1-indexed number of the first line in sourceCodeHtml.
- * @return {string}
- */
-function $prettyPrintOne( sourceCodeHtml, opt_langExtension, opt_numberLines ){
-    /** @type{number|boolean} */
-    var nl = opt_numberLines || false;
-    /** @type{string|null} */
-    var langExtension = opt_langExtension || null;
-    /** @type{!Element} */
-    var container = document.createElement( 'div' );
-    // This could cause images to load and onload listeners to fire.
-    // E.g. <img onerror="alert(1337)" src="nosuchimage.png">.
-    // We assume that the inner HTML is from a trusted source.
-    // The pre-tag is required for IE8 which strips newlines from innerHTML
-    // when it is injected into a <pre> tag.
-    // http://stackoverflow.com/questions/451486/pre-tag-loses-line-breaks-when-setting-innerhtml-in-ie
-    // http://stackoverflow.com/questions/195363/inserting-a-newline-into-a-pre-tag-ie-javascript
-    container.innerHTML = '<pre>' + sourceCodeHtml + '</pre>';
-    container = /** @type{!Element} */( container.firstChild );
-    if( nl ){
-        numberLines( container, nl, true );
-    };
-
-    currentJob = {
-        langExtension : /** @type {string} */ (langExtension),
-        sourceNode    : container,
-        numberLines   : nl,
-        pre           : 1,
-        basePos       : 0,
-        pos           : 0,
-        styleCache    : {},
-        decorations   : []
-    };
-    applyDecorator();
-    return container.innerHTML;
-};
-
 if( DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ){
     /** @type {RegExp|RegExpCompat} */
     var reCommentLike = RegExpProxy(  "^\\??prettify\\b" );
@@ -77,36 +34,31 @@ if( DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ){
 
 var prettifyElements = [];
 
+var prettifyElementTotal;
+
 if( DEFINE_CODE_PRETTIFY__DEBUG ){
-    benchmark.initTime = new Date - benchmark.initTime;
+    benchmark.readyTime = m_getCurrentTime() - m_startTime;
 };
 
-/**
-  * Find all the {@code <pre>} and {@code <code>} tags in the DOM with
-  * {@code class=prettyprint} and prettify them.
-  *
-  * @param {function(Benchmark=)} opt_whenDone called when prettifying is done.
-  * @param {HTMLElement|HTMLDocument=} opt_root an element or document
-  *   containing all the elements to pretty print.
-  *   Defaults to {@code document.body}.
-  */
- PR[ 'prettyPrint' ] = function( opt_whenDone, opt_root ){
-    var root = opt_root || document.body;
-    var doc = root.ownerDocument || document;
-    function byTagName( tn ){
-        return root.getElementsByTagName( tn );
-    };
+p_listenCssAvailabilityChange( function( cssAvailability ){
+    if( !cssAvailability ) return;
+
     // fetch a list of nodes to rewrite
-    var codeSegments = [ byTagName( 'pre' ), byTagName( 'code' ), byTagName( 'xmp' ) ];
+    var codeSegments = [
+                            p_DOM_getElementsByTagNameFromDocument( 'pre' ),
+                            p_DOM_getElementsByTagNameFromDocument( 'code' ),
+                            p_DOM_getElementsByTagNameFromDocument( 'xmp' )
+                       ];
 
     for( var i = 0; i < codeSegments.length; ++i ){
         for( var j = 0, n = codeSegments[ i ].length; j < n; ++j ){
             prettifyElements.push( codeSegments[ i ][ j ] );
         };
     };
+    prettifyElementTotal = prettifyElements.length;
     p_setTimer( applyPrettifyElementOne );
-    PR[ 'registerCompleteHandler' ]( opt_whenDone );
-};
+    return true;
+} );
 
     // The loop is broken into a series of continuations to make sure that we
     // don't make the browser unresponsive when rewriting a large page.
@@ -117,17 +69,21 @@ if( DEFINE_CODE_PRETTIFY__DEBUG ){
             return ( className.split( attr )[ 1 ] || ''  ).split( ' ' )[ 0 ];
         };
 
+        if( DEFINE_CODE_PRETTIFY__DEBUG && prettifyElementTotal !== prettifyElements.length ){
+            completeOneHandler && completeOneHandler( prettifyElementTotal - prettifyElements.length, prettifyElementTotal );
+        };
+
         var codeSegment = prettifyElements.shift();
 
         if( !codeSegment ){
-            if( DEFINE_CODE_PRETTIFY__EXPORT_PR_OBJECT || DEFINE_CODE_PRETTIFY__DEBUG ){
+            if( DEFINE_CODE_PRETTIFY__DEBUG ){
                 completeHandler && completeHandler( benchmark );
             };
             return;
         };
 
         if( DEFINE_CODE_PRETTIFY__DEBUG ){
-            benchmark.readyTime = +new Date;
+            m_startTime = m_getCurrentTime();
         };
 
         var EMPTY = {};
@@ -162,31 +118,27 @@ if( DEFINE_CODE_PRETTIFY__DEBUG ){
             };
         };
 
-        var className = codeSegment.className;
         if( ( DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT && attrs !== EMPTY )
-            || 0 <= ( ' ' + className + ' ' ).indexOf( ' prettyprint ' )
+            || p_DOM_hasClassName( codeSegment, 'prettyprint' )
             // Don't redo this if we've already done it.
             // This allows recalling pretty print to just prettyprint elements
             // that have been added to the page since last call.
-            && ( ' ' + className + ' ' ).indexOf( ' prettyprinted ' ) === -1
+            && !p_DOM_hasClassName( codeSegment, 'prettyprinted' )
         ){
-
             // make sure this is not nested in an already prettified element
             var nested = false;
-            for( var p = codeSegment.parentNode; p; p = p.parentNode ){
-                var tn = p.tagName;
-                if( tn // <!DOCTYPE> で undefined -> RegExpCompat でエラー
-                    && ( tn.toLowerCase() === 'pre' || tn.toLowerCase() === 'xmp' || tn.toLowerCase() === 'code' )
-                    && p.className && 0 <= ( ' ' + p.className + ' ' ).indexOf( ' prettyprint ' )
-                ){
+            for( var p = codeSegment.parentNode; p !== p_body; p = p.parentNode ){
+                var tn = p_DOM_getTagName( p );
+                if( ( tn === 'PRE' || tn === 'XMP' || tn === 'CODE' ) && p_DOM_hasClassName( p, 'prettyprint' ) ){
                     nested = true;
                     break;
                 };
             };
             if( !nested ){
+                var className = codeSegment.className;
                 // Mark done.  If we fail to prettyprint for whatever reason,
                 // we shouldn't try again.
-                codeSegment.className += ' prettyprinted';
+                p_DOM_addClassName( codeSegment, 'prettyprinted' );
 
                 // If the classes includes a language extensions, use it.
                 // Language extensions can be specified like
@@ -197,19 +149,21 @@ if( DEFINE_CODE_PRETTIFY__DEBUG ){
                 // as the prefix instead.  Google Code Prettify supports both.
                 // http://dev.w3.org/html5/spec-author-view/the-code-element.html
                 var langExtension = DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ? attrs[ 'lang' ] : false;
+
                 if( !langExtension ){
                     langExtension = getAttributeValueFromClassName( className, 'lang-' ) || getAttributeValueFromClassName( className, 'language-' );
                     // Support <pre class="prettyprint"><code class="language-c">
                     var wrapper;
                     if( !langExtension && ( wrapper = childContentWrapper( codeSegment ) )
-                        && wrapper.tagName.toLowerCase() === 'code'
+                        && p_DOM_getTagName( wrapper ) === 'CODE'
                     ){
                         langExtension = getAttributeValueFromClassName( wrapper.className, 'lang-' ) || getAttributeValueFromClassName( wrapper.className, 'language-' );
                     };
                 };
 
                 var preformatted;
-                if( codeSegment.tagName.toLowerCase() === 'pre' || codeSegment.tagName.toLowerCase() === 'xmp' ){
+                var tn = p_DOM_getTagName( codeSegment );
+                if( tn === 'PRE' || tn === 'XMP' ){
                     preformatted = 1;
                 } else {
                     var currentStyle = codeSegment[ 'currentStyle' ];
@@ -229,7 +183,7 @@ if( DEFINE_CODE_PRETTIFY__DEBUG ){
                     // 1-indexed number of the first line.
                     var lineNums = DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ? attrs[ 'linenums' ] : false;
                     if( !( lineNums = lineNums === 'true' || +lineNums ) ){
-                        lineNums = getAttributeValueFromClassName( className, 'linenums:' ) || !!( ' ' + className + ' ' ).match( ' linenums ' );
+                        lineNums = getAttributeValueFromClassName( className, 'linenums:' ) || p_DOM_hasClassName( codeSegment, 'linenums' );
                         lineNums = lineNums.length ? +lineNums : lineNums;
                     };
                     if( lineNums ){
@@ -253,15 +207,19 @@ if( DEFINE_CODE_PRETTIFY__DEBUG ){
                         {
                             elm           : codeSegment,
                             lang          : langExtension,
-                            readyTime     : ( new Date - benchmark._startTime ),
+                            readyTime     : ( m_getCurrentTime() - m_startTime ),
                             decorateTime  : 0,
+                            decorateCount : 0,
                             updateDOMTime : 0
                         }
                     );
                 };
                 m_graduallyPrettify( applyDecorator );
+                return;
             };
         };
         // finish up in a continuation
-        m_graduallyPrettify( applyPrettifyElementOne );
+        m_graduallyPrettify( applyPrettifyElementOne, undefined, 0, true );
     };
+
+var prettyPrint;

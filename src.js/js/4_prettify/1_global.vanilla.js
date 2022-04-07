@@ -5,7 +5,7 @@ var p_Gecko   = NaN,
 var p_setTimer = 
    /**
      * @param {!Function} func 
-     * @param {string|!JobT=} param 
+     * @param {*=} param 
      */
     function( func, param ){
         setTimeout( function(){ func( param ); }, 16 );

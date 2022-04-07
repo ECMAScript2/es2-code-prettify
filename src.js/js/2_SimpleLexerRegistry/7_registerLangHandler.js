@@ -4,7 +4,7 @@
   *      state of the computation and attaches the decorations to it.
   * @param {Array.<string>} fileExtensions
   */
-function registerLangHandler( simpleLexer, fileExtensions ){
+ registerLangHandler = function( simpleLexer, fileExtensions ){
     for( var i = fileExtensions.length; --i >= 0; ){
         var ext = fileExtensions[ i ];
         if( !simpleLexerRegistry[ ext ] ){

@@ -62,3 +62,20 @@ PR.PR_SOURCE = 'src';
 PR.PR_STRING = 'str';
 PR.PR_TAG = 'tag';
 PR.PR_TYPE = 'typ';
+
+var Benchmark = {
+  readyTime       : 0,
+  useRegExpCompat : true,
+  initRegExpCount : 0,
+  initRegExpTime  : 0,
+  codeBlocks      : []
+};
+
+var CodeBlock = {
+  elm           : null,
+  lang          : 'js',
+  readyTime     : 0,
+  decorateCount : 0,
+  decorateTime  : 0,
+  updateDOMTime : 0
+}

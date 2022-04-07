@@ -14,7 +14,7 @@ function applyDecorator(){
     if( !unzipSimpleLexer( /** @type {string} */ (opt_langExtension), source ) ){
         currentJob = undefined;
         // finish up in a continuation
-        m_graduallyPrettify( applyPrettifyElementOne );
+        m_graduallyPrettify( applyPrettifyElementOne, undefined, 0, true );
     };
 };
 
@@ -160,7 +160,7 @@ function decorate(){
         };
     } else {
         if( !job.parentJob ){
-            m_graduallyPrettify( recombineTagsAndDecorations, job, TASK_IS_DECORATE );
+            m_graduallyPrettify( recombineTagsAndDecorations, undefined, TASK_IS_DECORATE );
         } else {
             currentJob = job.parentJob.childJobs.shift();
             if( currentJob ){
