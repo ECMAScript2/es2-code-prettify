@@ -3,72 +3,21 @@
 <head>
 <meta charset="utf-8">
 <title>Code Prettifier</title>
-<script type="text/javascript" src="./prettify.es2.js"></script>
-<script type="text/javascript" src="prettify_test_2.js"></script>
-<script type="text/javascript" src="test_base.js"></script>
-<link rel="stylesheet" type="text/css" href="test_styles.css">
-<script type="text/javascript">
-(function () {
-  // keep track of when window.onload fires, this is to make sure that we dont
-  // miss it as it might occur before or after dynamic scripts are loaded
-  var isReady = false;
-  window.onload = function () { isReady = true; };
-
-  // run tests when page is fully loaded
-  function onReady() {
-    runTests(goldens);
-  }
-
-  // JS & CSS prettify files to load
-  var base = /[&?]loader\b/.test(location.search) ? '../loader/' : '../src/';
-  var sources = [
-    'lang-basic.js',
-    'lang-clj.js',
-    'lang-css.js',
-    'lang-dart.js',
-    'lang-ex.js',
-    'lang-kotlin.js',
-    'lang-lisp.js',
-    'lang-llvm.js',
-    'lang-matlab.js',
-    'lang-mumps.js',
-    'lang-n.js',
-    'lang-pascal.js',
-    'lang-r.js',
-    'lang-tcl.js',
-    'lang-tex.js',
-    'lang-xq.js'
-  ];
-  var styles = [
-    'prettify.css'
-  ];
-
-  // load skin(s)
-  while (styles.length) {
-    injectCSS(base + styles.shift());
-  }
-
-  // first load prettify.js
-  //injectJS(base + 'prettify.js', function () {
-    // then load all lang-*.js concurrently
-    while (sources.length) {
-      injectJS(base + sources.shift(),
-        (sources.length) ? undefined : function () {
-          // then after last one is loaded, run tests when page is ready
-          // (piggyback on window.onload if it hasn't already fired)
-          if (isReady) {
-            onReady();
-          } else {
-            window.onload = onReady;
-          }
-        });
-    }
-  //});
-})();
-</script>
+<link rel="stylesheet" type="text/css" href="css/prettify.css">
+<link rel="stylesheet" type="text/css" href="css/test_styles.css">
+<link rel="stylesheet" type="text/css" href="css/test_modules.css">
 </head>
-
 <body>
+<a href="prettify_test.html">Test 1</a>,
+<a href="prettify_test_2.html">Test 2</a>,
+<!-- a href="large_input_test.html">Tests of Prettifier w/ large data files</a>,
+<a href="numberLines_test.html">Number Lines Test</a>,
+<a href="recombineTagsAndDecorations_test.html">Recombine Tags And Decorations Test</a>,
+<a href="extractSourceSpans_test.html">Extract Source Spans Test</a -->,
+<a href="debug-ie-compat-matrix.html">IE quirk/standard modes</a>,
+<a href="ie-newline-copy-paste.html">IE Newline Copy/Paste Info Gathering</a>
+<hr>
+<p id="logger"></p>
 <h1>Test Results</h1>
 <div id="report"></div>
 
@@ -1202,5 +1151,14 @@ fun Boolean?.isNull(): Boolean = this == null
 
 fun Boolean?.getOrThrow(): Boolean = this ?: throw Exception()
 </pre>
+
+<script type="text/javascript" src="./goldens/2.js"></script>
+<script type="text/javascript" src="./js/prettify.lang-all.js"></script>
+<script type="text/javascript" src="./js/test_base.js"></script>
+<script type="text/javascript">
+  (function () {
+    runTests(goldens);
+  })();
+</script>
 </body>
 </html>

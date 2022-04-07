@@ -362,35 +362,72 @@ function runTests(goldens) {
    * @param {Object<string,string>} goldens
    * @return {{html: Array<string>, pass: integer, fail: integer}} HTML report
    */
-  function runComparison(goldens) {
+  function runComparison(goldens, benchmark) {
     var out = [];
     var npass = 0;
     var nfail = 0;
+    var readyTime = 0;
+    var decorateCount = 0;
+    var decorateTime = 0;
+    var updateDOMTime = 0;
     for (var id in goldens) {
       // compare actual against expexted
       var golden = expandGolden(goldens[id]);
-      var actual = normalizedInnerHtml(document.getElementById(id));
-      var diff = golden !== actual;
-      out.push('<div class="test">' + (diff ? 'FAIL' : 'PASS') +
-        ': <a href="#' + id + '">' + id + '<\/a><\/div>');
-      if (diff) {
-        ++nfail;
-        // write out difference
-        out.push(
-          diffTexts(golden, actual).replace(/&lt;br&gt;/g, '&lt;br&gt;\n'));
-      } else {
-        ++npass;
-      }
-    }
+      var elm    = document.getElementById(id);
+      if( elm && golden ){
+        var actual = normalizedInnerHtml(elm);
+        var diff   = golden !== actual;
+        var bm     = getBenchmark( elm );
+        out.push('<tr><th class="test"' + ( diff ? ' rowspan=2' : '' ) + '>' + (diff ? '<span class=fail>FAIL</span>' : '<span class=pass>PASS</span>') +
+          '<td><a href="#' + id + '">' + id + '<\/a>' +
+          '<td align=right>' + ( bm ? bm.readyTime + ' ms' : '-' ) +
+          '<td align=right>' + ( bm ? bm.decorateCount : '-' ) +
+          '<td align=right>' + ( bm ? bm.decorateTime + ' ms' : '-' ) +
+          '<td align=right>' + ( bm ? bm.updateDOMTime + ' ms' : '-' )
+          );
+        if( bm ){
+          readyTime     += bm.readyTime;
+          decorateCount += bm.decorateCount;
+          decorateTime  += bm.decorateTime;
+          updateDOMTime += bm.updateDOMTime;
+        };
+        if (diff) {
+          ++nfail;
+          // write out difference
+          out.push(
+            '<tr><td colspan=5>',
+            diffTexts(golden, actual).replace(/&lt;br&gt;/g, '&lt;br&gt;\n'));
+        } else {
+          ++npass;
+        }
+      };
+    };
     out.unshift(
       '<p class="pass">\u2714 ' + npass + ' passing<\/p>',
-      '<p class="fail">\u2718 ' + nfail + ' failing<\/p>');
-    out.push('<h3 id="summary">Tests ' +
-      (nfail ? 'failed' : 'passed') + '<\/h3>');
+      '<p class="fail">\u2718 ' + nfail + ' failing<\/p>',
+      '<table border=1>',
+      '<thead>',
+      '<tr><th>Result<th>id<th>Ready Time<th>Decorate Count<th>Decorate Time<th>Update DOM Time',
+      '<tbody>'
+      );
+    out.push(
+      '<tfoot>',
+      '<tr><th colspan=2>Total<td align=right>' + readyTime + ' ms<td align=right>' + decorateCount + '<td align=right>' + decorateTime + ' ms<td align=right>' + updateDOMTime + ' ms',
+      '</table>',
+      '<h3 id="summary">Tests ' + (nfail ? 'failed' : 'passed') + '<\/h3>'
+    );
     return {
       html: out,
       pass: npass,
       fail: nfail
+    };
+
+    function getBenchmark( elm ){
+      for( var i = 0, l = benchmark.codeBlocks.length; i < l; ++i ){
+        if( benchmark.codeBlocks[ i ].elm === elm ){
+          return benchmark.codeBlocks[ i ];
+        };
+      }
     };
   }
 
@@ -399,15 +436,30 @@ function runTests(goldens) {
   window.PR_SHOULD_USE_CONTINUATION = false;
 
   // time syntax highlighting
-  var t = now();    // tic
-  
-  (PR.prettyPrint || PR.registerCompleteHandler)(function () {
-    t = now() - t;  // toc
 
-    // verify results against golden and write HTML report
-    var report = runComparison(goldens);
-    document.title += (' \u2014 ' + (report.fail ? 'FAIL' : 'PASS'));
-    report.html.unshift('<p id="timing">Took ' + t + ' ms<\/p>');
-    document.getElementById('report').innerHTML = report.html.join('\n');
-  });
+  PR.prettyPrint && PR.prettyPrint();
+
+  PR.registerCompleteHandler(
+    function( benchmark ){
+      document.getElementById('report').innerHTML = 'レポートの作成中です...';
+
+      setTimeout(
+        function(){
+            // verify results against golden and write HTML report
+            var report = runComparison(goldens, benchmark);
+            document.title += (' \u2014 ' + (report.fail ? 'FAIL' : 'PASS'));
+            report.html.unshift(
+              '<p id="timing">Ready Time ' + benchmark.readyTime + ' ms' +
+                          ', Use RegExpCompat ' + benchmark.useRegExpCompat +
+                          ', Init RegExp Count ' + benchmark.initRegExpCount +
+                          ', Init RegExp Time ' + benchmark.initRegExpTime + ' ms' +
+              '<\/p>');
+            document.getElementById('report').innerHTML = report.html.join('\n');
+        }
+      );
+    },
+    function( done, total ){
+      document.getElementById('report').innerHTML = done + '/' + total;
+    }
+  );
 }

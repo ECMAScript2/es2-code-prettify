@@ -20,14 +20,15 @@
 
 /* SPAN elements with the classes below are added by prettyprint. */
 
-.prettyprint {
-    background : #333;
-    color      : #fff;
-}
+
 
 /* .pln { color: #000 }  plain text */
 
-@media screen {
+@media screen, handheld, projection, tv {
+  .prettyprint {
+      background : #333;
+      color      : #fff;
+  }
   .str { color: #65B042 }  /* string content */
   .kwd { color: #E28964 }  /* a keyword */
   .com { color: #AEAEAE; font-style: italic; }  /* a comment */
@@ -41,19 +42,39 @@
   .atv { color: #65B042 }  /* a markup attribute value */
   .dec, .var { color: #3387CC }  /* a declaration; a variable name */
   .fun { color: #65B042 }  /* a function name */
+  .fun_tbx { color : #1bb81b }
+  .const { color: #1162cc; }
+  .transpose { color : #a6c909}
+  .ident { color: #73cfdb; }
+  .codeoutput { color: #0d9c0d; }
+  .wrn { color : #df9372;}
+  .err { color : #d66868; }
+  .linecont { color: #8c4dcc; }
+  .syscmd{ color: #AEAEAE; }
 }
 
 /* Use higher contrast and text-weight for printable form. */
-@media print, projection {
+@media print {
   .str { color: #060 }
   .kwd { color: #006; font-weight: bold }
   .com { color: #600; font-style: italic }
   .typ { color: #404; font-weight: bold }
   .lit { color: #044 }
-  .pun, .opn, .clo { color: #440 }
+  .pun, .pln, .opn, .clo { color: #440 }
   .tag { color: #006; font-weight: bold }
   .atn { color: #404 }
   .atv { color: #060 }
+  .dec, .var { color: #146 }  /* a declaration; a variable name */
+  .fun { color: #241 }  /* a function name */
+  .fun_tbx { color : #030 }
+  .const { color: #037; }
+  .transpose { color : #670}
+  .ident { color: #367; }
+  .codeoutput { color: #050; }
+  .wrn { color : #b37;}
+  .err { color : #c00; }
+  .linecont { color: #60b; }
+  .syscmd{ color: #444; }
 }
 
 /* Put a border around prettyprinted code snippets. */

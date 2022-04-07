@@ -3,13 +3,21 @@
 <head>
 <meta charset="utf-8">
 <title>Code Prettifier</title>
-
-<link rel="stylesheet" type="text/css" href="test_styles.css">
-
+<link rel="stylesheet" type="text/css" href="css/prettify.css">
+<link rel="stylesheet" type="text/css" href="css/test_styles.css">
+<link rel="stylesheet" type="text/css" href="css/test_modules.css">
 </head>
-
 <body>
-  <p id="logger"></p>
+<a href="prettify_test.html">Test 1</a>,
+<a href="prettify_test_2.html">Test 2</a>,
+<!-- a href="large_input_test.html">Tests of Prettifier w/ large data files</a>,
+<a href="numberLines_test.html">Number Lines Test</a>,
+<a href="recombineTagsAndDecorations_test.html">Recombine Tags And Decorations Test</a>,
+<a href="extractSourceSpans_test.html">Extract Source Spans Test</a -->,
+<a href="debug-ie-compat-matrix.html">IE quirk/standard modes</a>,
+<a href="ie-newline-copy-paste.html">IE Newline Copy/Paste Info Gathering</a>
+<hr>
+<p id="logger"></p>
 <h1>Test Results</h1>
 <div id="report"></div>
 
@@ -771,7 +779,7 @@ Six&#9;<b>seven</b>&#9;Eight&#9;nine&#9;Ten&#9;|
 
 <h1>Code doesn't copy and paste well in IE</h1>
 <p><a href="https://github.com/google/code-prettify/issues/21">Issue #21</a>:
-To test this bug, disable overriding of <em>_pr_isIE6</em> in test_base.js
+To test this bug, disable overriding of <em>_pr_isIE6</em> in js/test_base.js
 by putting <em>#testcopypaste</em> on the end of the URL and reloading the
 page, then copy and paste the above into Notepad.</p>
 <pre class="prettyprint" id="issue21"
@@ -1376,65 +1384,12 @@ fn main() {
         and beat it"#;
 }
 </pre>
-<script type="text/javascript" src="./prettify.es2.js"></script>
-<script type="text/javascript" src="prettify_test.js"></script>
-<script type="text/javascript" src="test_base.js"></script>
+<script type="text/javascript" src="./goldens/1.js"></script>
+<script type="text/javascript" src="./js/prettify.lang-all.js"></script>
+<script type="text/javascript" src="./js/test_base.js"></script>
 <script type="text/javascript">
   (function () {
-    // keep track of when window.onload fires, this is to make sure that we dont
-    // miss it as it might occur before or after dynamic scripts are loaded
-    var isReady = false;
-    // window.onload = function () { isReady = true; };
-  
-    // run tests when page is fully loaded
-    function onReady() {
-      runTests(goldens);
-    }
-  
-    // JS & CSS prettify files to load
-    var base = /[&?]loader\b/.test(location.search) ? '../loader/' : '../src/';
-    var sources = [
-      'lang-css.js',
-      'lang-erlang.js',
-      'lang-go.js',
-      'lang-hs.js',
-      'lang-lisp.js',
-      'lang-lua.js',
-      'lang-ml.js',
-      'lang-proto.js',
-      'lang-rust.js',
-      'lang-scala.js',
-      'lang-sql.js',
-      'lang-vb.js',
-      'lang-vhdl.js',
-      'lang-wiki.js',
-      'lang-yaml.js'
-    ];
-    var styles = [
-      'prettify.css'
-    ];
-  
-    // load skin(s)
-    while (styles.length) {
-      injectCSS(base + styles.shift());
-    }
-  
-    // first load prettify.js
-    //injectJS(base + 'prettify.js', function () {
-      // then load all lang-*.js concurrently
-      while (sources.length) {
-        injectJS(base + sources.shift(),
-          (sources.length) ? undefined : function () {
-            // then after last one is loaded, run tests when page is ready
-            // (piggyback on window.onload if it hasn't already fired)
-            if (isReady) {
-              onReady();
-            } else {
-              window.onload = onReady;
-            }
-          });
-      }
-    //});
+    runTests(goldens);
   })();
 </script>
 </body>
