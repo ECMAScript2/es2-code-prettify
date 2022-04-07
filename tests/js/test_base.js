@@ -16,41 +16,6 @@
  */
 
 /**
- * Dynamically load script
- *
- * @param {string} url JavaScript file
- * @param {Function=} opt_func onload callback
- */
-function injectJS(url, opt_func) {
-  var el = document.createElement('script');
-  if (typeof opt_func === 'function') {
-    el.onload = el.onerror = el.onreadystatechange = function () {
-      if (el && (!el.readyState || /loaded|complete/.test(el.readyState))) {
-        el.onerror = el.onload = el.onreadystatechange = null;
-        el = null;
-        opt_func();
-      }
-    };
-  }
-  el.type = 'text/javascript';
-  el.src = url;
-  document.getElementsByTagName('head')[0].appendChild(el);
-}
-
-/**
- * Dynamically load stylesheet
- *
- * @param {string} url CSS file
- */
-function injectCSS(url) {
-  var el = document.createElement('link');
-  el.rel = 'stylesheet';
-  el.type = 'text/css';
-  el.href = url;
-  document.getElementsByTagName('head')[0].appendChild(el);
-}
-
-/**
  * Perform syntax highlighting and execute tests to verify results.
  *
  * @param {Object<string,string>} goldens a mapping from IDs of prettyprinted
@@ -60,32 +25,9 @@ function injectCSS(url) {
 function runTests(goldens) {
   // Regexp literals defined here so that the interpreter doesn't have to
   // compile them each time the function containing them is called.
-  /** @const {RegExp} */
-  var ampRe = /&/g;
-  /** @const {RegExp} */
-  var ltRe = /</g;
-  /** @const {RegExp} */
-  var gtRe = />/g;
-  /** @const {RegExp} */
-  var quotRe = /\"/g;
-  /** @const {RegExp} */
-  var nbspRe = /\xa0/g;
-  /** @const {RegExp} */
-  var newlineRe = /[\r\n]/g;
-  /** @const {RegExp} */
-  var voidElemsRe = /^(?:br|hr|link|img)$/;
 
-  /** @type {?boolean} */
-  var innerHtmlWorks = null;
-
-  /**
-   * Get timestamp in milliseconds unit.
-   *
-   * @return {number}
-   */
-  function now() {
-    return (Date.now ? Date.now() : (new Date()).getTime());
-  }
+  /** @const {RegExp} */
+  var nbsp = String.fromCharCode( 0xA0 );
 
   /**
    * Escapes HTML special characters to HTML.
@@ -94,10 +36,7 @@ function runTests(goldens) {
    * @return {string} output escaped HTML
    */
   function textToHtml(str) {
-    return str
-      .replace(ampRe, '&amp;')
-      .replace(ltRe, '&lt;')
-      .replace(gtRe, '&gt;');
+    return str.split( '&' ).join( '&amp;' ).split( '<' ).join( '&lt;' ).split( '>' ).join( '&gt;' );
   }
 
   /**
@@ -106,8 +45,8 @@ function runTests(goldens) {
    * @param {string} str the HTML to escape
    * @return {string} output escaped HTML
    */
-  function attribToHtml(str) {
-    return textToHtml(str).replace(quotRe, '&quot;');
+  function attribToHtml( str ){
+    return textToHtml( str ).split( '"' ).join( '&quot;' );
   }
 
   /**
@@ -116,8 +55,8 @@ function runTests(goldens) {
    * @param {string} plainText
    * @return {string}
    */
-  function htmlEscape(plainText) {
-    return attribToHtml(plainText).replace(nbspRe, '&nbsp;');
+  function htmlEscape( plainText ){
+    return attribToHtml( plainText ).split( nbsp ).join( '&nbsp;' );
   }
 
   /**
@@ -160,7 +99,7 @@ function runTests(goldens) {
           normalizedHtml(child, out, opt_sortAttrs);
         }
         // end-tag
-        if (node.firstChild || !voidElemsRe.test(name)) {
+        if (node.firstChild || ' br hr link img '.indexOf( ' ' + name + ' ' ) === -1 ) {
           out.push('<\/', name, '>');
         }
         break;
@@ -191,69 +130,9 @@ function runTests(goldens) {
     for (var i = 0; (i = out.indexOf('\xa0')) >= 0;) {
       out = out.substring(0, i) + '&nbsp;' + out.substring(i + 1);
     }
-    return out.replace(/\r\n?/g, '\n');
+    return out.split( '\r\n' ).join( '\n' ).split( '\r' ).join( '\n' );
   }
 
-  /**
-   * Are newlines and adjacent spaces significant in the given node's
-   * `innerHTML`?
-   *
-   * @param {Node} node DOM node
-   * @param {string} content its HTML content
-   * @return {boolean} is it preformatted
-   */
-  function isPreformatted(node, content) {
-    // PRE means preformatted, and is a very common case, so don't create
-    // unnecessary computed style objects.
-    if ('PRE' === node.tagName) { return true; }
-    if (!newlineRe.test(content)) { return true; }  // Don't care
-    var whitespace = '';
-    // For disconnected nodes, IE has no currentStyle.
-    if (node.currentStyle) {
-      whitespace = node.currentStyle.whiteSpace;
-    } else if (window.getComputedStyle) {
-      // Firefox makes a best guess if node is disconnected whereas Safari
-      // returns the empty string.
-      whitespace = window.getComputedStyle(node, null).whiteSpace;
-    }
-    return !whitespace || whitespace === 'pre';
-  }
-
-  /**
-   * Get `innerHTML` of a node
-   *
-   * @param {Node} node DOM node
-   * @return {string} HTML content
-   */
-  function getInnerHtml(node) {
-    // innerHTML is hopelessly broken in Safari 2.0.4 when the content is
-    // an HTML description of well formed XML and the containing tag is a PRE
-    // tag, so we detect that case and emulate innerHTML.
-    if (null === innerHtmlWorks) {
-      var testNode = document.createElement('pre');
-      testNode.appendChild(
-        document.createTextNode('<!DOCTYPE foo PUBLIC "foo bar">\n<foo />'));
-      innerHtmlWorks = !/</.test(testNode.innerHTML);
-    }
-
-    if (innerHtmlWorks) {
-      var content = node.innerHTML;
-      // XMP tags contain unescaped entities so require special handling.
-      if ('XMP' === node.tagName) {
-        content = textToHtml(content);
-      } else if (!isPreformatted(node, content)) {
-        content = content.replace(/(<br\s*\/?>)[\r\n]+/g, '$1')
-          .replace(/(?:[\r\n]+[ \t]*)+/g, ' ');
-      }
-      return content;
-    } else {
-      var out = [];
-      for (var child = node.firstChild; child; child = child.nextSibling) {
-        normalizedHtml(child, out);
-      }
-      return out.join('');
-    }
-  }
 
   /**
    * number of characters in common from the beginning.
@@ -301,11 +180,12 @@ function runTests(goldens) {
     // vtab    = \u240B
     // ffeed   = \u240C
     return txt
-      .replace(/ /g, '\xb7')
-      .replace(/(\r?\n)/g, '\u21b5$1')
-      .replace(/\t/g, '\u25b8')
-      .replace(/\v/g, '\u240B')
-      .replace(/\f/g, '\u240C');
+        .split( ' '          ).join( '\xb7' )
+        .split( '\n'         ).join( '\u21b5\n' )
+        .split( '\r\u21b5\n' ).join( '\u21b5\r\n' )
+        .split( '\t'         ).join( '\u25b8' )
+        .split( '\v'         ).join( '\u240B' )
+        .split( '\f'         ).join( '\u240C' );
   }
 
   /**
@@ -363,13 +243,16 @@ function runTests(goldens) {
    * @return {{html: Array<string>, pass: integer, fail: integer}} HTML report
    */
   function runComparison(goldens, benchmark) {
-    var out = [];
-    var npass = 0;
-    var nfail = 0;
-    var readyTime = 0;
+    var readyTime = benchmark.readyTime;
     var decorateCount = 0;
     var decorateTime = 0;
     var updateDOMTime = 0;
+
+    var out = [
+        '<tr><th colspan=2>core<td align=right>' + readyTime + '<td colspan=3>'
+    ];
+    var npass = 0;
+    var nfail = 0;
     for (var id in goldens) {
       // compare actual against expexted
       var golden = expandGolden(goldens[id]);
@@ -396,7 +279,7 @@ function runTests(goldens) {
           // write out difference
           out.push(
             '<tr><td colspan=5>',
-            diffTexts(golden, actual).replace(/&lt;br&gt;/g, '&lt;br&gt;\n'));
+            diffTexts(golden, actual).split( '&lt;br&gt;' ).join( '&lt;br&gt;\n' ) );
         } else {
           ++npass;
         }
@@ -412,7 +295,8 @@ function runTests(goldens) {
       );
     out.push(
       '<tfoot>',
-      '<tr><th colspan=2>Total<td align=right>' + readyTime + ' ms<td align=right>' + decorateCount + '<td align=right>' + decorateTime + ' ms<td align=right>' + updateDOMTime + ' ms',
+      '<tr><th>Total<td align=right>' + ( readyTime + decorateTime + updateDOMTime + benchmark.initRegExpTime ) + ' ms' +
+          '<td align=right>' + readyTime + ' ms<td align=right>' + decorateCount + '<td align=right>' + decorateTime + ' ms<td align=right>' + updateDOMTime + ' ms',
       '</table>',
       '<h3 id="summary">Tests ' + (nfail ? 'failed' : 'passed') + '<\/h3>'
     );
@@ -449,10 +333,9 @@ function runTests(goldens) {
             var report = runComparison(goldens, benchmark);
             document.title += (' \u2014 ' + (report.fail ? 'FAIL' : 'PASS'));
             report.html.unshift(
-              '<p id="timing">Ready Time ' + benchmark.readyTime + ' ms' +
-                          ', Use RegExpCompat ' + benchmark.useRegExpCompat +
-                          ', Init RegExp Count ' + benchmark.initRegExpCount +
-                          ', Init RegExp Time ' + benchmark.initRegExpTime + ' ms' +
+              '<p id="timing">Use RegExpCompat = ' + benchmark.useRegExpCompat +
+                           ', Init RegExp Count '  + benchmark.initRegExpCount +
+                           ', Init RegExp Time '   + benchmark.initRegExpTime + ' ms' +
               '<\/p>');
             document.getElementById('report').innerHTML = report.html.join('\n');
         }
