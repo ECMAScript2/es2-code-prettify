@@ -15,9 +15,9 @@ gulp.task( '__generate_simple_lexer_registry', gulp.series(
             // ReRe.js
                 // '.submodules/rerejs/dist/develop/ReRE.es2.3.develop.js',
             // Google Code Prettify
-                './src.js/js/1_common/*.js',
-                './src.js/js/2_SimpleLexerRegistry/*.js',
-                './src.js/js/3_langs/*.js'
+                './src/js/1_common/*.js',
+                './src/js/2_SimpleLexerRegistry/*.js',
+                './src/js/3_langs/*.js'
             ]
 
         ).pipe(
@@ -37,7 +37,7 @@ gulp.task( '__generate_simple_lexer_registry', gulp.series(
             )
         ).pipe(
             gulpCreateSimpleRexerRegistry( '__zippedSimpleLexerRegistry.js', numericKeyName )
-        ).pipe( gulp.dest( 'src.js/js/4_prettify' ) );
+        ).pipe( gulp.dest( 'src/js/4_prettify' ) );
     }
 ) );
 
@@ -50,16 +50,16 @@ gulp.task( 'js', gulp.series(
                 '.submodules/rerejs/src.js/**/*.js',
                '!.submodules/rerejs/src.js/0_global/2_polyfill.js',
             // Google Code Prettify
-                './src.js/js/1_common/*.js',
-                './src.js/js/4_prettify/*.js',
-               '!./src.js/js/4_prettify/*.snowDaifuku.js'
+                './src/js/1_common/*.js',
+                './src/js/4_prettify/*.js',
+               '!./src/js/4_prettify/*.snowDaifuku.js'
             ]
         ).pipe(
             gulpDPZ(
                 {
                     labelPackageGlobal : '*',
                     packageGlobalArgs : [ 'window,' + globalVariables + ',undefined', 'this,' + globalVariables + ',void 0' ],
-                    basePath          : [ './.submodules/web-doc-base/src/js/', './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/', './src.js/', '.submodules/rerejs/' ]
+                    basePath          : [ './.submodules/web-doc-base/src/js/', './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/', './src/', '.submodules/rerejs/' ]
                 }
             )
         ).pipe(
@@ -68,8 +68,9 @@ gulp.task( 'js', gulp.series(
                     externs           : [
                         // ReRe.js
                         '.submodules/rerejs/src.externs/externs.generated.js',
-                        './src.js/externs/externs_rere.js',
-                        './src.js/externs/externs.js'
+                        // Google Code Prettify
+                        './src/externs/externs_rere.js',
+                        './src/externs/externs.js'
                     ],
                     define            : [
                         'DEFINE_REGEXP_COMPAT__DEBUG=false',
@@ -94,7 +95,7 @@ gulp.task( 'js', gulp.series(
         ).pipe( gulp.dest( 'tests/js' ) );
     },
     function( cb ){
-        fs.unlink( 'src.js/js/4_prettify/__zippedSimpleLexerRegistry.js', cb );
+        fs.unlink( 'src/js/4_prettify/__zippedSimpleLexerRegistry.js', cb );
     },
 ) );
 
@@ -164,9 +165,9 @@ gulp.task( 'sd', gulp.series(
                 '.submodules/rerejs/src.js/**/*.js',
                '!.submodules/rerejs/src.js/0_global/2_polyfill.js',
             // Google Code Prettify
-                './src.js/js/1_common/*.js',
-                './src.js/js/4_prettify/*.js',
-               '!./src.js/js/**/*.vanilla.js'
+                './src/js/1_common/*.js',
+                './src/js/4_prettify/*.js',
+               '!./src/js/**/*.vanilla.js'
             ]
         ).pipe(
             gulpDPZ(
@@ -177,7 +178,7 @@ gulp.task( 'sd', gulp.series(
                         tempDir + '/', './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/',
                         './.submodules/web-doc-base/src/js/',
                         '.submodules/rerejs/src.js/',
-                        './src.js/'
+                        './src/'
                     ]
                 }
             )
@@ -192,7 +193,9 @@ gulp.task( 'sd', gulp.series(
                         './.submodules/web-doc-base/src/js-externs/externs.js',
                         // ReRe.js
                         '.submodules/rerejs/src.externs/externs.generated.js',
-                        // './src.js/externs/externs_rere.js'
+                        // Google Code Prettify
+                        './src/externs/externs_rere.js',
+                        './src/externs/externs.js'
                     ],
                     define            : [
                         // ReRE.js
@@ -240,7 +243,7 @@ gulp.task( 'sd', gulp.series(
         ).pipe( gulp.dest( 'tests/js' ) );
     },
     function( cb ){
-        fs.unlink( 'src.js/js/4_prettify/__zippedSimpleLexerRegistry.js', cb );
+        fs.unlink( 'src/js/4_prettify/__zippedSimpleLexerRegistry.js', cb );
     },
     function( cb ){
         return cb();
