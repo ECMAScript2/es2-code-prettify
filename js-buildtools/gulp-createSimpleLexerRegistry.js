@@ -1,6 +1,3 @@
-const { Console } = require('console');
-const e = require('express');
-
 const PluginError = require('plugin-error'),
       Transform   = require('stream').Transform,
       Vinyl       = require('vinyl'),
@@ -44,6 +41,7 @@ stream._transform = function( file, encoding, cb ){
         var storeStylePatternArray       = [];
         var storeStylePattern            = [];
         var storeRegExp                  = [];
+        var storeClasses                 = [];
 
         var numReuseStylePatternObject = 0;
         var numReuseStylePatternArray  = 0;
@@ -75,19 +73,59 @@ stream._transform = function( file, encoding, cb ){
             };
         };
 
+        for( var i = 0, l = storeStylePattern.length, tempClasses = {}; i < l; ++i ){
+            var className = storeStylePattern[ i ][ 0 ];
+            if( className.indexOf( 'lang-' ) !== 0 ){
+                if( 0 < tempClasses[ className ] ){
+                    tempClasses[ className ]++;
+                } else {
+                    tempClasses[ className ] = 1;
+                    storeClasses.push( className );
+                };
+            } else {
+                storeStylePattern[ i ][ 0 ] = className === 'lang-' ? '' : className.substr( 5 );
+            };
+        };
+        storeClasses.sort(
+            function( a, b ){
+                if( typeof tempClasses[ a ] === 'string' && typeof tempClasses[ b ] === 'string' ) return 0;
+                if( typeof tempClasses[ a ] === 'string' ) return 1;
+                if( typeof tempClasses[ b ] === 'string' ) return -1;
+                return tempClasses[ a ] === tempClasses[ b ] ? 0 : tempClasses[ a ] < tempClasses[ b ] ? 1 : -1;
+            }
+        );
+        for( i = 0; i < l; ++i ){
+            var className = storeStylePattern[ i ][ 0 ];
+            var index = storeClasses.indexOf( className );
+            if( 0 <= index ){
+                storeStylePattern[ i ][ 0 ] = index;
+            };
+        };
+
+        if( storeClasses.indexOf( sandbox.window.PR.PR_PLAIN ) === -1 ){
+            storeClasses.push( sandbox.window.PR.PR_PLAIN );
+        };
+        if( storeClasses.indexOf( sandbox.window.PR.PR_SOURCE ) === -1 ){
+            storeClasses.push( sandbox.window.PR.PR_SOURCE );
+        };
+
         this.push(
             new Vinyl(
                 {
                     path     : fileName,
                     contents : Buffer.from(
-                            'simpleLexerRegistry = ' +
+                            'var simpleLexerRegistry = ' +
                                 JSON.stringify( optimizedSimpleLexerRegistry, null, '    ' ) + ';\n' +
-                            'storeStylePatternObject = ' +
+                            'var storeStylePatternObject = ' +
                                 JSON.stringify( storeStylePatternObject, null, '    ' ) + ';\n' +
-                            'storeStylePattern = ' +
+                            'var storeStylePattern = ' +
                                 JSON.stringify( storeStylePattern, null, '    ' ) + ';\n' +
-                            'storeRegExp = ' +
-                                JSON.stringify( storeRegExp, null, '    ' ) + ';\n'
+                            'var storeRegExp = ' +
+                                JSON.stringify( storeRegExp, null, '    ' ) + ';\n' +
+                            'var storeClasses = ' +
+                                JSON.stringify( storeClasses, null, '    ' ) + ';\n' +
+                            'var STYLE_PLAIN = '  + storeClasses.indexOf( sandbox.window.PR.PR_PLAIN  ) + ';\n' +
+                            'var STYLE_SOURCE = ' + storeClasses.indexOf( sandbox.window.PR.PR_SOURCE ) + ';'
                         )
                 }
             )

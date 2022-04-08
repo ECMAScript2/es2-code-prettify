@@ -6,6 +6,7 @@ if( DEFINE_CODE_PRETTIFY__EXPORT_PR_OBJECT || DEFINE_CODE_PRETTIFY__DEBUG ){
  * @const
  */
     window[ 'PR' ] = {
+        'RegExpProxy' : RegExpProxy,
         'prettyPrint' : prettyPrint,
         'registerCompleteHandler' : registerCompleteHandler
     };

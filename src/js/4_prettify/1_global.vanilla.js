@@ -1,6 +1,6 @@
 var p_Gecko   = NaN,
     p_Presto  = NaN,
-    p_Trident = NaN;
+    p_Trident = document.documentMode;
 
 var p_setTimer = 
    /**

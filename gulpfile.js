@@ -7,6 +7,8 @@ const gulp            = require('gulp'),
       gulpCreateSimpleRexerRegistry = require('./js-buildtools/gulp-createSimpleLexerRegistry.js');
 
 const numericKeyName = '-num';
+const simpleLexerRegistryFileName = '2__zippedSimpleLexerRegistry.generated.js';
+var isDebug, languageUsed;
 
 gulp.task( '__generate_simple_lexer_registry', gulp.series(
     function(){
@@ -24,10 +26,13 @@ gulp.task( '__generate_simple_lexer_registry', gulp.series(
             closureCompiler(
                 {
                     define            : [
+                        'DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP=' + true || isDebug,
+                        'DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE=' + isDebug,
+                        'DEFINE_CODE_PRETTIFY__LANGUAGES_USED="' + languageUsed + '"',
                         'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=0'
                     ],
                     // compilation_level : 'ADVANCED',
-                    compilation_level : 'WHITESPACE_ONLY', // Snow Daifuku の変数が未定義エラーになるので ADVANCED は使えない...!
+                    // compilation_level : 'WHITESPACE_ONLY', // Snow Daifuku の変数が未定義エラーになるので ADVANCED は使えない...!
                     // formatting        : 'PRETTY_PRINT',
                     warning_level     : 'VERBOSE',
                     language_in       : 'ECMASCRIPT3',
@@ -36,12 +41,23 @@ gulp.task( '__generate_simple_lexer_registry', gulp.series(
                 }
             )
         ).pipe(
-            gulpCreateSimpleRexerRegistry( '__zippedSimpleLexerRegistry.js', numericKeyName )
+            gulpCreateSimpleRexerRegistry( '__simple_lexer_registry.js', numericKeyName )
+        ).pipe(
+            closureCompiler(
+                {
+                    compilation_level : 'WHITESPACE_ONLY',
+                    formatting        : 'PRETTY_PRINT',
+                    warning_level     : 'VERBOSE',
+                    language_in       : 'ECMASCRIPT3',
+                    language_out      : 'ECMASCRIPT3',
+                    js_output_file    : simpleLexerRegistryFileName
+                }
+            )
         ).pipe( gulp.dest( 'src/js/4_prettify' ) );
     }
 ) );
 
-gulp.task( 'js', gulp.series(
+gulp.task( '__vanilla', gulp.series(
     '__generate_simple_lexer_registry',
     function(){
         return gulp.src(
@@ -77,29 +93,41 @@ gulp.task( 'js', gulp.series(
                         'DEFINE_REGEXP_COMPAT__MINIFY=true',
                         'DEFINE_REGEXP_COMPAT__NODEJS=false',
                         'DEFINE_REGEXP_COMPAT__ES2018=false',
-                        'DEFINE_CODE_PRETTIFY__DEBUG=true',
+                        'DEFINE_CODE_PRETTIFY__DEBUG=' + isDebug,
                         'DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY="' + numericKeyName + '"',
-                        'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=1'
+                        'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=' + ( isDebug ? 1 : -1 )
                     ],
                     compilation_level : 'ADVANCED',
                     // compilation_level : 'WHITESPACE_ONLY',
-                    formatting        : 'PRETTY_PRINT',
+                    formatting        : isDebug ? 'PRETTY_PRINT' : 'SINGLE_QUOTES',
                     warning_level     : 'VERBOSE',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
-                    output_wrapper    : '/** Code Preffity for ES2 [lang-all, Debug build](https://githug.com/itozyun/regexp-free-code-prettify) */\n%output%',
-                    js_output_file    : 'prettify.lang-all.js'
+                    output_wrapper    : '/** Code Preffity for ES2 [lang-' + ( isDebug ? 'all, Debug build' : languageUsed ) + '](https://githug.com/itozyun/regexp-free-code-prettify) */\n%output%',
+                    js_output_file    : 'prettify.lang-' + ( isDebug ? 'all' : 'web' ) + '.js'
                 }
             )
-
         ).pipe( gulp.dest( 'tests/js' ) );
     },
     function( cb ){
-        fs.unlink( 'src/js/4_prettify/__zippedSimpleLexerRegistry.js', cb );
-    },
+        fs.unlink( 'src/js/4_prettify/' + simpleLexerRegistryFileName, cb );
+    }
 ) );
 
-gulp.task( 'sd', gulp.series(
+gulp.task( 'js',
+    gulp.series(
+        function( cb ){ isDebug = true; languageUsed = ''; cb() },
+        '__vanilla'
+    )
+);
+gulp.task( 'js-web',
+    gulp.series(
+        function( cb ){ isDebug = false; languageUsed = 'web'; cb() },
+        '__vanilla'
+    )
+);
+
+gulp.task( '__snowSaifuku', gulp.series(
     '__generate_simple_lexer_registry',
     function(){
         return gulp.src(
@@ -205,16 +233,17 @@ gulp.task( 'sd', gulp.series(
                         'DEFINE_REGEXP_COMPAT__ES2018=false',
                         // Snow daifuku
                         'DEFINE_WHAT_BROWSER_AM_I__MINIFY=true',
-                        'DEFINE_WEB_DOC_BASE__DEBUG=1',
+                        'DEFINE_WEB_DOC_BASE__DEBUG=' + ( isDebug ? 1 : 0 ),
                         'DEFINE_WEB_DOC_BASE__LOGGER_ELEMENT_ID="logger"',
                         // Google Code Prettify
-                        'DEFINE_CODE_PRETTIFY__DEBUG=true',
+                        'DEFINE_CODE_PRETTIFY__DEBUG=' + isDebug,
+                        'DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT=' + isDebug,
                         'DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY="' + numericKeyName + '"',
-                        'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=1'
+                        'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=' + ( isDebug ? 1 : -1 )
                     ],
-                    // compilation_level : 'ADVANCED',
+                    compilation_level : 'ADVANCED',
                     // compilation_level : 'WHITESPACE_ONLY',
-                    // formatting        : 'PRETTY_PRINT',
+                    // formatting        : isDebug ? 'PRETTY_PRINT' : 'SINGLE_QUOTES',
                     warning_level     : 'VERBOSE',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
@@ -233,17 +262,18 @@ gulp.task( 'sd', gulp.series(
             closureCompiler(
                 {
                     compilation_level : 'WHITESPACE_ONLY',
-                    formatting        : 'PRETTY_PRINT',
+                    formatting        : isDebug ? 'PRETTY_PRINT' : 'SINGLE_QUOTES',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
-                    output_wrapper    : '/** Code Preffity for ES2 [lang-all, Debug build](https://githug.com/itozyun/regexp-free-code-prettify) */\n%output%',
-                    js_output_file    : 'prettify.lang-all.js'
+                    output_wrapper    : '/** Code Preffity for ES2 [lang-' + ( isDebug ? 'all, Debug build' : languageUsed ) + '](https://githug.com/itozyun/regexp-free-code-prettify) */\n%output%',
+                    js_output_file    : 'prettify.lang-' + ( isDebug ? 'all' : 'web' ) + '.js'
                 }
             )
         ).pipe( gulp.dest( 'tests/js' ) );
     },
     function( cb ){
-        fs.unlink( 'src/js/4_prettify/__zippedSimpleLexerRegistry.js', cb );
+        // fs.unlink( 'src/js/4_prettify/' + simpleLexerRegistryFileName, cb );
+        cb();
     },
     function( cb ){
         return cb();
@@ -316,3 +346,16 @@ gulp.task( 'sd', gulp.series(
         );
     }
 ) );
+
+gulp.task( 'sd',
+    gulp.series(
+        function( cb ){ isDebug = true; languageUsed = ''; cb() },
+        '__snowSaifuku'
+    )
+);
+gulp.task( 'sd-web',
+    gulp.series(
+        function( cb ){ isDebug = false; languageUsed = 'web'; cb() },
+        '__snowSaifuku'
+    )
+);

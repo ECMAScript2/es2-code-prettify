@@ -4,13 +4,49 @@
   *      state of the computation and attaches the decorations to it.
   * @param {Array.<string>} fileExtensions
   */
- registerLangHandler = function( simpleLexer, fileExtensions ){
+registerLangHandler = function( simpleLexer, fileExtensions ){
     for( var i = fileExtensions.length; --i >= 0; ){
         var ext = fileExtensions[ i ];
-        if( !simpleLexerRegistry[ ext ] ){
-            simpleLexerRegistry[ ext ] = simpleLexer;
-        } else if( DEFINE_CODE_PRETTIFY__DEBUG && window.console && console.warn ){
-            console.warn( 'cannot override language handler %s', ext );
+        if( use( ext ) ){
+            if( !simpleLexerRegistry[ ext ] ){
+                simpleLexerRegistry[ ext ] = simpleLexer;
+            } else if( DEFINE_CODE_PRETTIFY__DEBUG && window.console && console.warn ){
+                console.warn( 'cannot override language handler %s', ext );
+            };
+        };
+    };
+
+    function use( language ){
+        var langs = DEFINE_CODE_PRETTIFY__LANGUAGES_USED.toLowerCase().split( ',' );
+
+        if( !DEFINE_CODE_PRETTIFY__LANGUAGES_USED || 0 <= langs.indexOf( language ) ){
+            return true;
+        };
+        switch( language ){
+            case 'default-code' :
+                return DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE;
+            case 'default-markup' :
+                return DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP;
+            case 'in.tag' : case 'uq.val' :
+            case 'htm' : case 'html' : case 'mxml' : case 'xhtml' : case 'xml' : case 'xsl' :
+                return find( [ 'web', 'default-markup', 'htm', 'html', 'mxml', 'xhtml', 'xml', 'xsl' ] ) || DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP;
+            case 'javascript' : case 'js' : case 'ts' : case 'typescript' :
+                return find( [ 'web', 'regex', 'javascript', 'js', 'ts', 'typescript' ] );
+            case 'json' :
+                return find( [ 'web', 'json' ] );
+            case 'regex' :
+                return find( [ 'web', 'regex', 'javascript', 'js', 'ts', 'typescript' ] );
+            case 'css' : case 'css-str' : case 'css-kw' :
+                return find( [ 'web', 'css' ] );
+            case 'wiki.meta' :
+                return 0 <= langs.indexOf( 'wiki' );
+        };
+        function find( list ){
+            for( var i = 0, l = list.length; i < l; ++i ){
+                if( 0 <= list[ i ].indexOf( language ) ){
+                    return true;
+                };
+            };
         };
     };
 };
@@ -171,23 +207,18 @@ registerLangHandler(
     ), [ 'regex' ]
 );
 
-if( DEFINE_CODE_PRETTIFY__EXPORT_PR_OBJECT ){
-    PR = {
-        'createSimpleLexer'   : createSimpleLexer,
-        'registerLangHandler' : registerLangHandler,
-        'sourceDecorator'     : createSimpleLexerFromOptionalParameters,
-        'PR_ATTRIB_NAME'      : PR_ATTRIB_NAME,
-        'PR_ATTRIB_VALUE'     : PR_ATTRIB_VALUE,
-        'PR_COMMENT'          : PR_COMMENT,
-        'PR_DECLARATION'      : PR_DECLARATION,
-        'PR_KEYWORD'          : PR_KEYWORD,
-        'PR_LITERAL'          : PR_LITERAL,
-        'PR_NOCODE'           : PR_NOCODE,
-        'PR_PLAIN'            : PR_PLAIN,
-        'PR_PUNCTUATION'      : PR_PUNCTUATION,
-        'PR_SOURCE'           : PR_SOURCE,
-        'PR_STRING'           : PR_STRING,
-        'PR_TAG'              : PR_TAG,
-        'PR_TYPE'             : PR_TYPE
-    };
+window[ 'PR' ] = {
+    'PR_ATTRIB_NAME'      : PR_ATTRIB_NAME,
+    'PR_ATTRIB_VALUE'     : PR_ATTRIB_VALUE,
+    'PR_COMMENT'          : PR_COMMENT,
+    'PR_DECLARATION'      : PR_DECLARATION,
+    'PR_KEYWORD'          : PR_KEYWORD,
+    'PR_LITERAL'          : PR_LITERAL,
+    'PR_NOCODE'           : PR_NOCODE,
+    'PR_PLAIN'            : PR_PLAIN,
+    'PR_PUNCTUATION'      : PR_PUNCTUATION,
+    'PR_SOURCE'           : PR_SOURCE,
+    'PR_STRING'           : PR_STRING,
+    'PR_TAG'              : PR_TAG,
+    'PR_TYPE'             : PR_TYPE
 };

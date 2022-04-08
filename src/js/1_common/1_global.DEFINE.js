@@ -4,8 +4,12 @@ var /** @define {number} 0:常にOFF, 1:常にON, -1:ブラウザ毎 */
     DEFINE_CODE_PRETTIFY__EXPORT_PR_OBJECT     = true,
     /** @define {boolean} */
     DEFINE_CODE_PRETTIFY__DEBUG                = true,
-    /** @define {number} */
-    DEFINE_CODE_PRETTIFY__USE_CONTINUATION     = 1, // 0:常にOFF, 1:常にON, -1:マニュアル
+    /** @define {string} */
+    DEFINE_CODE_PRETTIFY__LANGUAGES_USED       = '', // 'js,css,python'
+    /** @define {boolean} */
+    DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP   = true,
+    /** @define {boolean} */
+    DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE     = true,
     /** @define {boolean} */
     DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT = true,
     /** @define {boolean} */

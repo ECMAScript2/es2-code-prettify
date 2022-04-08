@@ -90,7 +90,7 @@ function recombineTagsAndDecorations(){
             textNode.nodeValue = styledText;
             var document = textNode.ownerDocument;
             var span = document.createElement( 'span' );
-            span.className = decorations[ decorationIndex + 1 ];
+            span.className = storeClasses[ decorations[ decorationIndex + 1 ] ];
             var parentNode = textNode.parentNode;
             parentNode.replaceChild( span, textNode );
             span.appendChild( textNode );

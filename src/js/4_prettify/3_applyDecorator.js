@@ -1,4 +1,3 @@
-
 function applyDecorator(){
     var job = /** @type {!JobT} */ (currentJob);
     var opt_langExtension = job.langExtension;
@@ -18,7 +17,11 @@ function applyDecorator(){
     };
 };
 
-var reIsMarkup = RegExpProxy( "^\\s*<" );
+var reIsMarkup;
+
+if( DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP || DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE ){
+    reIsMarkup = RegExpProxy( "^\\s*<" );
+};
 
 /**
  * @param {string|undefined} extension
@@ -27,11 +30,13 @@ var reIsMarkup = RegExpProxy( "^\\s*<" );
  */
 function unzipSimpleLexer( extension, source ){
     if( !extension || !simpleLexerRegistry[ extension ] ){
-      // Treat it as markup if the first non whitespace character is a < and
-      // the last non-whitespace character is a >.
-      extension = RegExpProxy_test( reIsMarkup, source )
-          ? 'default-markup'
-          : 'default-code';
+        // Treat it as markup if the first non whitespace character is a < and
+        // the last non-whitespace character is a >.
+        if( DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP || DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE ){
+            extension = RegExpProxy_test( reIsMarkup, source )
+                ? ( DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP ? 'default-markup' : '' )
+                : ( DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE   ? 'default-code'   : '' );
+        };
     };
     var existSimpleLexer = !!simpleLexerRegistry[ extension ];
 
@@ -49,7 +54,7 @@ function tokenize(){
 
     job.tokens = RegExpProxy_match( tokenizer, sourceCode ) || [];
 
-    job.decorations.push( job.basePos, PR_PLAIN );
+    job.decorations.push( job.basePos, STYLE_PLAIN );
 
     m_graduallyPrettify( decorate, undefined, TASK_IS_DECORATE );
 };
@@ -73,29 +78,29 @@ function decorate(){
         var match;
 
         var isEmbedded;
-        if( m_isString( style ) ){
+        if( 0 <= style ){
             // isEmbedded = false;
         } else {
             var stylePattern = shortcuts[ token.charAt( 0 ) ];
             if( stylePattern ){
                 match = RegExpProxy_match( /** @type {RegExp|RegExpCompat} */ (stylePattern[ 1 ]), token );
-                style = /** @type {string} */ (stylePattern[ 0 ]);
+                style = /** @type {number|string} */ (stylePattern[ 0 ]);
             } else {
-                style = PR_PLAIN; // make sure that we make progress
+                style = STYLE_PLAIN; // make sure that we make progress
 
                 for( var i = -1; stylePattern = fallthroughStylePatterns[ ++i ]; ){
                     match = RegExpProxy_match( /** @type {RegExp|RegExpCompat} */ (stylePattern[ 1 ]), token );
                     if( match ){
-                        style = /** @type {string} */ (stylePattern[ 0 ]);
+                        style = /** @type {number|string} */ (stylePattern[ 0 ]);
                         break;
                     };
                 };
             };
 
-            isEmbedded = 5 <= style.length && 'lang-' === style.substr( 0, 5 );
+            isEmbedded = m_isString( style );
             if( isEmbedded && !( match && m_isString( match[ 1 ] ) ) ){
                 isEmbedded = false;
-                style = PR_SOURCE;
+                style = STYLE_SOURCE;
             };
 
             if( !isEmbedded ){
@@ -125,7 +130,7 @@ function decorate(){
                 embeddedSourceEnd   = tokenLength - match[ 2 ].length;
                 embeddedSourceStart = embeddedSourceEnd - embeddedSourceLength;
             };
-            var lang = style.substr( 5 );
+            var lang = style;
             // Decorate the left of the embedded source
             appendChildJob(
                 basePos + tokenStart,
@@ -147,7 +152,7 @@ function decorate(){
                 simpleLexer
             );
 
-            if( job.childJobs ){
+            if( job.childJobs && job.childJobs.length ){ // DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE==false の場合に .length のチェックが必要
                 currentJob = job.childJobs.shift();
             };
             if( !nextTaskIsUnzipSimpleLexer ){

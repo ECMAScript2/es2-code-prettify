@@ -1,15 +1,13 @@
 /**
- * @typedef {Array.<string|RegExp|RegExpCompat|null|undefined>}
- * 0 : string,
- * 1 : (RegExp|RegExpCompat),
- * 2 : (string|null|undefined),
- * 3 : (string|null|undefined)
+ * @typedef {Array.<string|number|RegExp|RegExpCompat>}
+ * 0 : string|number,
+ * 1 : (RegExp|RegExpCompat)
  */
 var StylePattern;
 
 /**
- * @typedef {Array.<Object.<string,Array.<StylePattern>>|RegExp|RegExpCompat|Array.<StylePattern>>}
- * 0 : Object.<string,Array.<StylePattern>>
+ * @typedef {Array.<!Object.<string,!StylePattern>|!RegExp|!RegExpCompat|!Array.<!StylePattern>>}
+ * 0 : Object.<string,StylePattern>
  * 1 : (RegExp|RegExpCompat)
  * 2 : Array.<StylePattern>
  */

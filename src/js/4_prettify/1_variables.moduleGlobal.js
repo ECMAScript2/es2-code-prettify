@@ -1,4 +1,5 @@
-var storeStylePatternObject, storeStylePattern, storeRegExp;
+// var storeStylePatternObject, storeStylePattern, storeRegExp, storeClasses;
+// var STYLE_PLAIN, STYLE_SOURCE;
 
 /**
  * @param {*} test

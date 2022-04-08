@@ -87,8 +87,6 @@ if( DEFINE_CODE_PRETTIFY__DEBUG ){
   * Find all the {@code <pre>} and {@code <code>} tags in the DOM with
   * {@code class=prettyprint} and prettify them.
   *
-  * @param {function(Benchmark=)} opt_whenDone called when prettifying is done.
-  * @param {HTMLElement|HTMLDocument=} opt_root an element or document
   *   containing all the elements to pretty print.
   *   Defaults to {@code document.body}.
   */

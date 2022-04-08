@@ -80,7 +80,7 @@
   * @return {SimpleLexer} a function that takes an undecorated job and
   *   attaches a list of decorations.
   */
- createSimpleLexer = function( shortcutStylePatterns, fallthroughStylePatterns ){
+createSimpleLexer = function( shortcutStylePatterns, fallthroughStylePatterns ){
     var shortcuts = {};
     var allPatterns = shortcutStylePatterns.concat( fallthroughStylePatterns );
     var allRegexs = [];
