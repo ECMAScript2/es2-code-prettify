@@ -3,18 +3,315 @@
 <head>
 <meta charset="utf-8">
 <title>Code Prettifier</title>
+<link rel="stylesheet" type="text/css" href="css/prettify.css">
+<link rel="stylesheet" type="text/css" href="css/test_styles.css">
+<link rel="stylesheet" type="text/css" href="css/test_modules.css">
 </head>
-
 <body>
+<a href="//github.com/itozyun/regexp-free-code-prettify/">Github</a>,
+<a href="./">index</a>,
 <a href="prettify_test.html">Test 1</a>,
 <a href="prettify_test_2.html">Test 2</a>,
 <!-- a href="large_input_test.html">Tests of Prettifier w/ large data files</a>,
 <a href="numberLines_test.html">Number Lines Test</a>,
 <a href="recombineTagsAndDecorations_test.html">Recombine Tags And Decorations Test</a>,
-<a href="extractSourceSpans_test.html">Extract Source Spans Test</a -->,
+<a href="extractSourceSpans_test.html">Extract Source Spans Test</a -->
 <a href="debug-ie-compat-matrix.html">IE quirk/standard modes</a>,
 <a href="ie-newline-copy-paste.html">IE Newline Copy/Paste Info Gathering</a>
 <hr>
+<p id="logger"></p>
+<p>Web 用ビルドのテストページです。
 
+<h1>JSON</h1>
+<pre class="prettyprint lang-json">
+{
+  "str" : "string",
+  "num" : 1e3,
+  "nul" : null,
+  "ary" : [ "string", 255, null, { "0" : 1 }, [] ]
+}
+</pre>
+
+<h1>JavaScript</h1>
+<pre class="prettyprint lang-js" id="javascript">
+/**
+ * nth element in the fibonacci series.
+ * @param n &gt;= 0
+ * @return the nth element, &gt;= 0.
+ */
+function fib(n) {
+  var a = 1, b = 1;
+  var tmp;
+  while (--n &gt;= 0) {
+    tmp = a;
+    a += b;
+    b = tmp;
+  }
+  return a;
+}
+
+document.write(fib(10));
+</pre>
+
+<h1>JavaScript Regular Expressions</h1>
+<p><a href="https://github.com/google/code-prettify/issues/12">Issue #12</a></p>
+<pre class="prettyprint lang-js" id="js_regexp">
+/foo/;  // a slash starting a line treated as a regexp beginning
+"foo".match(/fo+$/);
+// this line comment not treated as a regular expressions
+"foo /bar/".test(/"baz"/);  // test string and regexp boundaries
+var division = /\b\d+\/\d+/g;  // test char sets and escaping of specials
+var allSpecials = /([^\(\)\[\]\{\}\-\?\+\*\.\^\$\/]+)\\/;
+var slashInCharset = /[^/]/g, notCloseSq = /[^\]]/;
+
+// test that slash used in numeric context treated as an operator
+1 / 2;
+1. / x;
+x / y;
+(x) / y;
+1 /* foo */ / 2;
+1 /* foo *// 2;
+1/2;
+1./x;
+x/y;
+(x)/y;
+
+// test split over two lines.  line comment should not fool it
+1//
+/2;
+
+x++/y;
+x--/y;
+x[y] / z;
+f() / n;
+
+// test that slash after non postfix operator is start of regexp
+log('matches = ' + /foo/.test(foo));
+
+// test keyword preceders
+return /a regexp/;
+division = notreturn / not_a_regexp / 2;  // keyword suffix does not match
+
+// &amp; not used as prefix operator in javascript but this should still work
+&amp;/foo/;
+
+extends = /extends/;
+</pre>
+
+<h1>JavaScript Regular Expressions w/ language specified</h1>
+<p><a href="https://github.com/google/code-prettify/issues/12">Issue #12</a></p>
+<pre class="prettyprint lang-js" id="js_regexp_lang">
+/foo/;  // a slash starting a line treated as a regexp beginning
+"foo".match(/fo+$/);
+// this line comment not treated as a regular expressions
+"foo /bar/".test(/"baz"/);  // test string and regexp boundaries
+var division = /\b\d+\/\d+/g;  // test char sets and escaping of specials
+var allSpecials = /([^\(\)\[\]\{\}\-\?\+\*\.\^\$\/]+)\\/;
+var slashInCharset = /[^/]/g, notCloseSq = /[^\]]/;
+
+// test that slash used in numeric context treated as an operator
+1 / 2;
+1. / x;
+x / y;
+(x) / y;
+1 /* foo */ / 2;
+1 /* foo *// 2;
+1/2;
+1./x;
+x/y;
+(x)/y;
+
+// test split over two lines.  line comment should not fool it
+1//
+/2;
+
+x++/y;
+x--/y;
+x[y] / z;
+f() / n;
+
+// test that slash after non postfix operator is start of regexp
+log('matches = ' + /foo/.test(foo));
+
+// test keyword preceders
+return /a regexp/;
+division = notreturn / not_a_regexp / 2;  // keyword suffix does not match
+
+// &amp; not used as prefix operator in javascript but this should still work
+&amp;/foo/;
+
+extends = /extends/;
+</pre>
+
+
+<h1>HTML</h1>
+<pre class="prettyprint lang-html" id="html">
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Fibonacci number&lt;/title&gt;
+    &lt;style&gt;&lt;!-- BODY { text-decoration: blink } --&gt;&lt;/style&gt;
+    &lt;script src="foo.js"&gt;&lt;/script&gt;
+    &lt;script src="bar.js"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;noscript&gt;
+      &lt;dl&gt;
+        &lt;dt&gt;Fibonacci numbers&lt;/dt&gt;
+        &lt;dd&gt;1&lt;/dd&gt;
+        &lt;dd&gt;1&lt;/dd&gt;
+        &lt;dd&gt;2&lt;/dd&gt;
+        &lt;dd&gt;3&lt;/dd&gt;
+        &lt;dd&gt;5&lt;/dd&gt;
+        &lt;dd&gt;8&lt;/dd&gt;
+        &amp;hellip;
+      &lt;/dl&gt;
+    &lt;/noscript&gt;
+
+    &lt;script type="text/javascript"&gt;&lt;!--
+function fib(n) {
+  var a = 1, b = 1;
+  var tmp;
+  while (--n &gt;= 0) {
+    tmp = a;
+    a += b;
+    b = tmp;
+  }
+  return a;
+}
+
+document.writeln(fib(10));
+// --&gt;
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<h1>HTML w/ language specified</h1>
+<pre class="prettyprint lang-html" id="html_lang">
+Fibonacci Numbers
+
+&lt;noscript&gt;
+  &lt;dl style="list-style: disc"&gt;
+    &lt;dt&gt;Fibonacci numbers&lt;/dt&gt;
+    &lt;dd&gt;1&lt;/dd&gt;
+    &lt;dd&gt;1&lt;/dd&gt;
+    &lt;dd&gt;2&lt;/dd&gt;
+    &lt;dd&gt;3&lt;/dd&gt;
+    &lt;dd&gt;5&lt;/dd&gt;
+    &lt;dd&gt;8&lt;/dd&gt;
+    &amp;hellip;
+  &lt;/dl&gt;
+&lt;/noscript&gt;
+
+&lt;script type="text/javascript"&gt;&lt;!--
+function fib(n) {
+  var a = 1, b = 1;
+  var tmp;
+  while (--n &gt;= 0) {
+    tmp = a;
+    a += b;
+    b = tmp;
+  }
+  return a;
+}
+
+document.writeln(fib(10));
+// --&gt;
+&lt;/script&gt;
+</pre>
+
+<h1>XHTML</h1>
+<pre class="prettyprint lang-xhtml" id="xhtml"
+>&lt;xhtml&gt;
+  &lt;head&gt;
+    &lt;title&gt;Fibonacci number&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body onload="alert(fib(10))"&gt;
+    &lt;script type="text/javascript"&gt;&lt;![CDATA[
+function fib(n) {
+  var a = 1, b = 1;
+  var tmp;
+  while (--n &gt;= 0) {
+    tmp = a;
+    a += b;
+    b = tmp;
+  }
+  return a;
+}
+]]&gt;
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/xhtml&gt;
+</pre>
+
+<h1>JavaScript inside HTML &lt;SCRIPT&gt;</h1>
+<p>
+<a href="https://github.com/google/code-prettify/issues/4">Issue #4</a>:
+JavaScript Snippets wrapped in HTML SCRIPT tags hides/destroys inner content
+</p>
+<p>The fact that the script tag was not closed properly was causing
+<em>PR_splitSourceNodes</em> to end without emitting the script contents.</p>
+<pre class="prettyprint lang-html" id="js_script">
+&lt;script type="text/javascript"&gt;
+   var savedTarget=null;                           // The target layer (effectively vidPane)
+   var orgCursor=null;                             // The original mouse style so we can restore it
+   var dragOK=false;                               // True if we're allowed to move the element under mouse
+   var dragXoffset=0;                              // How much we've moved the element on the horozontal
+   var dragYoffset=0;                              // How much we've moved the element on the verticle
+   vidPaneID = document.getElementById('vidPane'); // Our movable layer
+   vidPaneID.style.top='75px';                     // Starting location horozontal
+   vidPaneID.style.left='75px';                    // Starting location verticle
+&lt;script&gt;
+</pre>
+
+
+<h1>CSS w/ language specified</h1>
+<pre class="prettyprint lang-css" id="css">
+&lt;!--
+@charset('UTF-8');
+
+/** A url that is not quoted. */
+@import(url(/more-styles.css));
+
+HTML { content-before: 'hello\20'; content-after: 'w\6f rld';
+       -moz-spiff: inherit !important }
+
+/* Test units on numbers. */
+BODY { margin-bottom: 4px; margin-left: 3in; margin-bottom: 0; margin-top: 5% }
+
+/** Test number literals and quoted values. */
+TABLE.foo TR.bar A#visited { color: #001123; font-family: "monospace" }
+/** bolder is not a name, so should be plain.  !IMPORTANT is a keyword
+  * regardless of case.
+  */
+blink { text-decoration: BLINK !IMPORTANT; font-weight: bolder }
+/* Empty url() was causing infinite recursion */
+a { background-image: url(); }
+p#featured{background:#fea}
+--&gt;
+</pre>
+
+<h1>CSS inside HTML &lt;STYLE&gt;</h1>
+<p><a href="https://github.com/google/code-prettify/issues/79">Issue #79</a></p>
+<pre class="prettyprint lang-html" id="css_style">
+&lt;style type='text/css'&gt;
+/* desert scheme ported from vim to google prettify */
+code.prettyprint { display: block; padding: 2px; border: 1px solid #888;
+background-color: #333; }
+.str { color: #ffa0a0; } /* string  - pink */
+.kwd { color: #f0e68c; font-weight: bold; }
+.com { color: #87ceeb; } /* comment - skyblue */
+.typ { color: #98fb98; } /* type    - lightgreen */
+.lit { color: #cd5c5c; } /* literal - darkred */
+.pun { color: #fff; }    /* punctuation */
+.pln { color: #fff; }    /* plaintext */
+.tag { color: #f0e68c; font-weight: bold; } /* html/xml tag    - lightyellow*/
+.atn { color: #bdb76b; font-weight: bold; } /* attribute name  - khaki*/
+.atv { color: #ffa0a0; } /* attribute value - pink */
+.dec { color: #98fb98; } /* decimal         - lightgreen */
+&lt;/style&gt;
+</pre>
+
+<script type="text/javascript" src="./js/prettify.lang-web.js"></script>
 </body>
 </html>

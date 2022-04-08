@@ -249,7 +249,7 @@ function runTests(goldens) {
     var updateDOMTime = 0;
 
     var out = [
-        '<tr><th colspan=2>core<td align=right>' + readyTime + '<td colspan=3>'
+        '<tr><th colspan=2>core<td align=right>' + readyTime + ' ms<td colspan=3>'
     ];
     var npass = 0;
     var nfail = 0;
