@@ -1,6 +1,6 @@
 [submodule "regexpcompat"]
 	path = .submodules/rerejs
-	url = git@github.com.itozyun:itozyun/rerejs
+	url = https://github.com/itozyun/rerejs.git/
 [submodule ".submodules/web-doc-base"]
 	path = .submodules/web-doc-base
 	url = https://github.com/itozyun/web-doc-base.git/
