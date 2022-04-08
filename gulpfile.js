@@ -107,7 +107,7 @@ gulp.task( '__vanilla', gulp.series(
                     js_output_file    : 'prettify.lang-' + ( isDebug ? 'all' : 'web' ) + '.js'
                 }
             )
-        ).pipe( gulp.dest( 'tests/js' ) );
+        ).pipe( gulp.dest( 'docs/js' ) );
     },
     function( cb ){
         fs.unlink( 'src/js/4_prettify/' + simpleLexerRegistryFileName, cb );
@@ -269,7 +269,7 @@ gulp.task( '__snowSaifuku', gulp.series(
                     js_output_file    : 'prettify.lang-' + ( isDebug ? 'all' : 'web' ) + '.js'
                 }
             )
-        ).pipe( gulp.dest( 'tests/js' ) );
+        ).pipe( gulp.dest( 'docs/js' ) );
     },
     function( cb ){
         // fs.unlink( 'src/js/4_prettify/' + simpleLexerRegistryFileName, cb );
@@ -283,7 +283,7 @@ gulp.task( '__snowSaifuku', gulp.series(
         var estraverse = require('estraverse');
         var escodegen = require('escodegen');
 
-        fs.readFile( './tests/prettify.snow.js',
+        fs.readFile( './docs/prettify.snow.js',
             function( err, source ){
                 if( err !== null ){
                     return;
@@ -307,7 +307,7 @@ gulp.task( '__snowSaifuku', gulp.series(
                 );
                 // console.log( escodegen.generate( ast ) );
                 var lastIndex = 0;
-                fs.writeFile( './tests/prettify.snow.js',
+                fs.writeFile( './docs/prettify.snow.js',
                     escodegen.generate( ast,
                         {
                             // https://github.com/estools/escodegen/issues/1
