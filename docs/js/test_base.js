@@ -338,7 +338,7 @@ function runTests(goldens) {
                            ', Init RegExp Time '   + benchmark.initRegExpTime + ' ms' +
               '<\/p>');
             document.getElementById('report').innerHTML = report.html.join('\n');
-        }
+        }, 16
       );
     },
     function( done, total ){

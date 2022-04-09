@@ -6,7 +6,7 @@ app.set('port', process.env.PORT || 8022);
 
 app.use( function( req, res, next ){
     console.log( req.path );
-    res.sendFile( __dirname + req.path );
+    res.sendFile( __dirname + '/docs' + req.path );
 } );
 
 app.listen( app.get( 'port' ), function(){
