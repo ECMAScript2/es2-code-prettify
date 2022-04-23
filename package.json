@@ -1,7 +1,7 @@
 {
-  "name": "code-prettify",
-  "version": "1.0.0",
-  "description": "Google Code Prettify",
+  "name": "code-prettify-for-es2",
+  "version": "0.0.0",
+  "description": "Code Prettify for ES2",
   "license": "Apache-2.0",
   "homepage": "https://github.com/itozyun/regexp-free-code-prettify",
   "repository": {
@@ -17,37 +17,16 @@
     "highlighting",
     "source",
     "code",
-    "prettify",
-    "google"
+    "prettify"
   ],
-  "author": "Google",
-  "maintainers": [
-    "Mike Samuel <mikesamuel@gmail.com>"
-  ],
-  "contributors": [
-    "Amro <amroamroamro@gmail.com>"
-  ],
-  "main": "src/node_prettify.js",
-  "directories": {
-    "lib": "src",
-    "doc": "docs",
-    "example": "examples",
-    "test": "tests"
-  },
-  "files": [
-    "loader/",
-    "src/",
-    "styles/*.css",
-    "COPYING"
-  ],
+  "author": "itozyun",
   "scripts": {
-    "build": "grunt",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp js",
     "start": "node local-web-server.js"
   },
   "devDependencies": {
-    "express": "^4.17.2",
-    "google-closure-compiler": "^20211107.0.0",
+    "express": "^4.17.3",
+    "google-closure-compiler": "^20220405.0.0",
     "grunt-cli": "^1.4.3",
     "gulp": "^4.0.2",
     "gulp-diamond-princess-zoning": "^0.9.11",

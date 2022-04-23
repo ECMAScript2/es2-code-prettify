@@ -41,18 +41,7 @@ gulp.task( '__generate_simple_lexer_registry', gulp.series(
                 }
             )
         ).pipe(
-            gulpCreateSimpleRexerRegistry( '__simple_lexer_registry.js', numericKeyName )
-        ).pipe(
-            closureCompiler(
-                {
-                    compilation_level : 'WHITESPACE_ONLY',
-                    formatting        : 'PRETTY_PRINT',
-                    warning_level     : 'VERBOSE',
-                    language_in       : 'ECMASCRIPT3',
-                    language_out      : 'ECMASCRIPT3',
-                    js_output_file    : simpleLexerRegistryFileName
-                }
-            )
+            gulpCreateSimpleRexerRegistry( simpleLexerRegistryFileName, numericKeyName )
         ).pipe( gulp.dest( 'src/js/4_prettify' ) );
     }
 ) );
@@ -178,6 +167,7 @@ gulp.task( '__snowSaifuku', gulp.series(
                 './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/0_global/*.js',
                '!./.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/0_global/7_conpare.js',
                 './.submodules/web-doc-base/src/js/**/*.js',
+               '!./.submodules/web-doc-base/src/js/1_packageGlobal/2_toEndOfScript.js',
                '!./.submodules/web-doc-base/src/js/3_DOM/nodeCleaner.js',
                '!./.submodules/web-doc-base/src/js/4_EventModule/imageReady.js',
                '!./.submodules/web-doc-base/src/js/4_EventModule/forcedColors.js',
@@ -217,7 +207,6 @@ gulp.task( '__snowSaifuku', gulp.series(
                         // Snow daifuku
                         './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js-externs/externs.js',
                         './.submodules/web-doc-base/.submodules/regexp-free-js-base64/src/js-externs/externs.js',
-                        './node_modules/google-closure-compiler/contrib/externs/svg.js',
                         './.submodules/web-doc-base/src/js-externs/externs.js',
                         // ReRe.js
                         '.submodules/rerejs/src.externs/externs.generated.js',

@@ -113,8 +113,8 @@ stream._transform = function( file, encoding, cb ){
             new Vinyl(
                 {
                     path     : fileName,
-                    contents : Buffer.from(
-                            'var simpleLexerRegistry = ' +
+                    contents : Buffer.from( unicodeEscape( 
+                            'simpleLexerRegistry = ' +
                                 JSON.stringify( optimizedSimpleLexerRegistry, null, '    ' ) + ';\n' +
                             'var storeStylePatternObject = ' +
                                 JSON.stringify( storeStylePatternObject, null, '    ' ) + ';\n' +
@@ -126,7 +126,7 @@ stream._transform = function( file, encoding, cb ){
                                 JSON.stringify( storeClasses, null, '    ' ) + ';\n' +
                             'var STYLE_PLAIN = '  + storeClasses.indexOf( sandbox.window.PR.PR_PLAIN  ) + ';\n' +
                             'var STYLE_SOURCE = ' + storeClasses.indexOf( sandbox.window.PR.PR_SOURCE ) + ';'
-                        )
+                        ) )
                 }
             )
         );
@@ -277,5 +277,21 @@ stream._transform = function( file, encoding, cb ){
         };
 
     // this.push( file );
+
+    function unicodeEscape( str ){
+        var hex, result = '', charCode;
+
+        for( var i = 0, len = str.length; i < len; i++ ){
+            charCode = str.codePointAt( i );
+            if( 0xa0 <= charCode ){
+                hex = charCode.toString( 16 );
+                result += '\\u' + ( '0'.repeat( Math.abs( hex.length - 4 ) ) ) + hex;
+            } else {
+                result += str.charAt( i );
+            };
+        };
+        return result;
+    };
+
     cb();
 };
