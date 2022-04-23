@@ -295,7 +295,7 @@ function runTests(goldens) {
       );
     out.push(
       '<tfoot>',
-      '<tr><th>Total<td align=right>' + ( readyTime + decorateTime + updateDOMTime + benchmark.initRegExpTime ) + ' ms' +
+      '<tr><th>Total<td align=right>' + ( readyTime + decorateTime + updateDOMTime + benchmark.initRegExpTotal ) + ' ms' +
           '<td align=right>' + readyTime + ' ms<td align=right>' + decorateCount + '<td align=right>' + decorateTime + ' ms<td align=right>' + updateDOMTime + ' ms',
       '</table>',
       '<h3 id="summary">Tests ' + (nfail ? 'failed' : 'passed') + '<\/h3>'
@@ -335,8 +335,10 @@ function runTests(goldens) {
             report.html.unshift(
               '<p id="timing">Use RegExpCompat = ' + benchmark.useRegExpCompat +
                            ', Init RegExp Count '  + benchmark.initRegExpCount +
-                           ', Init RegExp Time '   + benchmark.initRegExpTime + ' ms' +
-              '<\/p>');
+                           ', Init RegExp Time '   + benchmark.initRegExpTotal + ' ms' +
+              '<p id="timing">Max Init RegExp Time = ' + benchmark.initRegExpMax + ' ms' +
+                           ', Source : <input type=text value="' + benchmark.initRegExpSource.split( '"' ).join( '&quot;' ) + '">'
+              );
             document.getElementById('report').innerHTML = report.html.join('\n');
         }, 16
       );

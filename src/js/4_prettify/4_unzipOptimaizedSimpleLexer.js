@@ -34,7 +34,7 @@ function unzipOptimaizedSimpleLexer( extension ){
     };
 
     if( lazyCreateRegExpList.length ){
-        m_graduallyPrettify( createRegExp, extension, TASK_IS_INIT_REGEXP );
+        m_graduallyPrettify( createRegExp, extension, TASK_IS_DECORATE );
     } else {
         if( !job.simpleLexer ){
             job.simpleLexer = simpleLexer;
@@ -81,14 +81,18 @@ function createRegExp( extension ){
         var regExpIndex = lazyCreateRegExpList.shift();
         var regExp = storeRegExp[ regExpIndex ];
         if( regExp.pop ){ // isArray
-            storeRegExp[ regExpIndex ] = RegExpProxy( regExp[ 0 ], regExp[ 1 ] );
+            storeRegExp[ regExpIndex ] = regExp = RegExpProxy( regExp[ 0 ], regExp[ 1 ] );
         } else if( m_isString( regExp ) ){
-            storeRegExp[ regExpIndex ] = RegExpProxy( regExp );
+            storeRegExp[ regExpIndex ] = regExp = RegExpProxy( regExp );
         } else {
             return createRegExp( extension );
         };
-        m_graduallyPrettify( createRegExp, extension, TASK_IS_INIT_REGEXP );
+        if( DEFINE_CODE_PRETTIFY__DEBUG ){
+            m_graduallyPrettify( createRegExp, extension, TASK_IS_INIT_REGEXP, false, regExp );
+        } else {
+            m_graduallyPrettify( createRegExp, extension, TASK_IS_INIT_REGEXP );
+        };
     } else {
-        unzipOptimaizedSimpleLexer( extension );
+        m_graduallyPrettify( unzipOptimaizedSimpleLexer, extension );
     };
 };
