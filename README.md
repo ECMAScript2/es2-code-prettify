@@ -1,4 +1,4 @@
-# Google Code Prettify for ES2
+# Code Prettify for ES2
 
 ![Flowchart of Google Code Prettify](docs/FllowchartOfGoogleCodePrettify.drawio.png)
 
@@ -10,6 +10,41 @@
 [Edit in draw.io](https://viewer.diagrams.net/?tags=%7B%7D&highlight=0000ff&edit=_blank&layers=1&nav=1&title=SimpleLexerRegistory.drawio#R7Vlbd6M2EP41nLN9WB8EBjuPvqXtadqkzUO7fZNBwdoAYoXwpb9%2BJSQBAhw7ju2kPX2yNBqNpJlP34yw5c6S7Y8UZqtfSYhiy7HDreXOLccBtuPzHyHZScnoxpaCiOJQKdWCR%2FwP0jOVtMAhyg1FRkjMcGYKA5KmKGCGDFJKNqbaE4nNVTMYoY7gMYBxV%2FonDtlKSj3bruU%2FIRytWGtgCYPniJIiVctZjuuMXR%2BM5XACtSmln69gSDYNkbuw3BklhMlWsp2hWLhWe03Ou90zWm2bopQdM2EH0d%2B%2F79jt3c%2BLrxR%2Fw3Tyy%2FqzsrKGcYH0McrNsp32D993JprBLsZpiKhrudPNCjP0mMFADGw4LrhsxZKY9wBvLoVXUHi3rASVr%2B4Lxs0gJc8lGoAn2oyS5yoE3D3TJxzHMxITWm7Enc78mVNrNkbm8wnwFmIGSVlDfru4nSxsLlenRJSh7V73gSooHOuIJIjRHVdRE3wVRoVyHdVNDRmtsWqgRcugAmlU2a0jxRsqWK8InNMJ3CNOshjdoS2if6AI54yIZfyYCf9T3opY6QkpEZ4ScdbX0f9WCCBOQd1sT8kzmBrQ0IrC1ueNOvWEq6SEJlAcoZxtl%2BNyJTEK%2FGzbXeV%2B%2BZXf7gHvwkTASS7JKE4jy5kJW2obhZ7ROLAe464sGtuWloxDcA15Dr8tlh7R4tYl4LhhJsZNEKZEYNpArBLBGEepuD4cZ3yj7lSgEHP6maiBBIehWKb3UlF5k7jAVo5WBOpUfbVJcFn4j034gy78XdCD%2F%2FGl8O%2B%2BgriK5T73nsJZIaTP99wMZsIX9sD2TKFTSkEnePkzYsGqEcm%2BSL1AbXvI8AyxBaAV3LHXiW4VyWZ0wfBS4R32hFfe1BCv25d3%2BTIjLDv6HTbkWj12e0SaNvs58BDHWd7Utjw%2Byz6B7cSSD5BxEklfRXcmr137vECe9xNPSYttZo1msjEjSQbZDx9mm47c5oRSuGtF5bqROHveidETe1vWOYq42qnpHLQ0bJdcwy4tDftoST9Jzk5L3uGsg9JwIl4lIvHEMM9xYMav9i3o863yIfDPmiSCgq7reHYKbR4QuvtLDZedL83OXAREJAXd3zVHHxDF3LuitpnXkUdh59XVijt%2F5kEaIXYoyXfxsWk%2B07rh1zKKYsjw2txGHyTUCg8Elyyi4OfceAb8Rp5pIScFDZCa1Hx3te24ph0AWoakGzqGSoBWpz4ds%2F5hzJr3%2FUChdCXInoNAWp53Rz11TR%2BCgH2pumb0cl1ja9auk1TJ352U1ZeD%2FgWPvLoA0rWO%2Falc6jeYoGY1cNQb7WCRcLQ7P7LDjqugemva%2F71orlK0Bb1e62i9zZMfsKJ7x%2B8IYDgatFj5poeVHe%2BK3xLG%2F%2FWqblCVbt26ru7pqu6MBZz%2FrgVc65Ot2y68jq3gXLtVwbnXreBuOviMYRoV4n8Nzoc8c16AZM7xufKka3CBh2NVcTdwB9y%2Buu9S70b9ge3DUszxf74YpIO2mDUYhve%2BNEZqfhEd49EoJw1t1yCmwXjkHSCnNz455ZU%2FfNcOMpvzrszW%2FmBrn8hsnZvSNrSH2crvZA21TCjkr%2BM%2B3q3%2F%2FJTq9R%2FM7uI7)
 
 ---
+
+## 比較
+
+<table>
+<thead>
+<tr>
+<th><th>Google Code Prettify<th>Code Prettify for ES2
+<tbody>
+<tr>
+<th>サポートするブラウザの下限<td>IE6+, Gecko 1.8+, Opera 8+<td>IE5, Gecko 0.6+, Opera 7.0+
+<tr>
+<th>言語のサポート<td>ビルトイン以外は動的に追加する<td>ビルド時にサイトやページで使用する言語を選択する
+<tr>
+<th>言語拡張とテーマの動的追加<td>✔<td>✖
+<tr>
+<th>ファイルサイズ<td>KB<td>KB (基本的サポートと同等になる `web,c...` でビルドした場合 )
+<tr>
+<th>行番号<td>✔<td>✔ ビルド時に機能を無効に出来ます
+<tr>
+<th>コメントノードで指定<td>✔<td>✔ ビルド時に機能を無効に出来ます。コメントノードに非対応のブラウザがあります。
+<tr>
+<th>時分割で実行<td>マニュアル。<code>.prettify</code> 要素のハイライトを終えるタイミングで経過時間を計測してスケジュールする。<td>常に有効。正規表現インスタンスの生成やトークン作成、デコレーションの其々のタイミングで経過時間を計測してスケジュールする。
+</table>
+
+## ビルド
+
+
+
+~~~
+gulp js
+gulp js-web
+gulp sd
+gulp sd-web
+~~~
+
 
 # JavaScript code prettifier
 
