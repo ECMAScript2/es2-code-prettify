@@ -17,3 +17,11 @@ var CodeBlock = {
     decorateTime  : 0,
     updateDOMTime : 0
 };
+
+/**
+ * @constructor
+ * @extends RegExp
+ * @param {string} source 
+ * @param {string=} flags
+ */
+ function RegExpCompat( source, flags ){};
