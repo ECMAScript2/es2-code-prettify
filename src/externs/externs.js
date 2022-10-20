@@ -1,11 +1,12 @@
 var Benchmark = {
-    readyTime        : 0,
-    useRegExpCompat  : true,
-    initRegExpCount  : 0,
-    initRegExpTotal  : 0,
-    initRegExpMax    : 0,
-    initRegExpSource : '',
-    codeBlocks       : []
+    readyTime          : 0,
+    useRegExpCompat    : true,
+    initRegExpCount    : 0,
+    initRegExpTotal    : 0,
+    initRegExpMax      : 0,
+    initRegExpSource   : '',
+    initRegExpInstance : null,
+    codeBlocks         : []
 };
 
 var CodeBlock = {

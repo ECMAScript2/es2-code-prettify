@@ -77,8 +77,9 @@ function m_graduallyPrettify( lazyFunction, opt_param, opt_task, opt_forceLazy, 
                 benchmark.initRegExpCount++;
                 benchmark.initRegExpTotal += initTime;
                 if( benchmark.initRegExpMax < initTime ){
-                    benchmark.initRegExpMax    = initTime;
-                    benchmark.initRegExpSource = opt_regExp.toString();
+                    benchmark.initRegExpMax      = initTime;
+                    benchmark.initRegExpSource   = opt_regExp.toString();
+                    benchmark.initRegExpInstance = opt_regExp;
                 };
                 break;
             case TASK_IS_DECORATE :
