@@ -25,6 +25,7 @@
     "start": "node local-web-server.js"
   },
   "devDependencies": {
+    "es2-postprocessor": "^0.1.1",
     "express": "^4.17.3",
     "google-closure-compiler": "^20220405.0.0",
     "grunt-cli": "^1.4.3",

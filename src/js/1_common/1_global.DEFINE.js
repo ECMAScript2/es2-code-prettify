@@ -15,4 +15,6 @@ var /** @define {number} 0:常にOFF, 1:常にON, -1:ブラウザ毎 */
     /** @define {boolean} */
     DEFINE_CODE_PRETTIFY__NUMBER_LINE_SUPPORT  = true,
     /** @define {string} */
-    DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY = '';
+    DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY = '',
+    /** @define {string} */
+    DEFINE_CODE_PRETTIFY__REGEXPCOMPAT_FILENAME            = 'regexpcompat.js';

@@ -52,7 +52,7 @@ combinePrefixPatterns = function( regexs ){
         var regex = regexs[ i ];
         if( regex.ignoreCase ){
             ignoreCase = true;
-        } else if( RegExpProxy_test( reSmallAlphabet, RegExpProxy_replace( reUnicode, regex.source, '' ) ) ){
+        } else if( reSmallAlphabet.test( regex.source.replace( reUnicode, '' ) ) ){
             needToFoldCase = true;
             ignoreCase = false;
             break;
@@ -97,7 +97,7 @@ combinePrefixPatterns = function( regexs ){
     };
 
     function caseFoldCharset( charSet ){
-        var charsetParts = RegExpProxy_match( reCharsetParts, charSet.substring( 1, charSet.length - 1 ) );
+        var charsetParts = charSet.substring( 1, charSet.length - 1 ).match( reCharsetParts );
         var ranges = [];
         var inverse = charsetParts[ 0 ] === '^';
 
@@ -107,7 +107,7 @@ combinePrefixPatterns = function( regexs ){
         for( var i = inverse ? 1 : 0, n = charsetParts.length; i < n; ++i ){
             var p = charsetParts[ i ];
 
-            if( RegExpProxy_test( reNoMatchNamedGroup, p ) ){ // Don't muck with named groups.
+            if( reNoMatchNamedGroup.test( p ) ){ // Don't muck with named groups.
                 out.push( p );
             } else {
                 var start = decodeEscape( p );
@@ -170,7 +170,7 @@ combinePrefixPatterns = function( regexs ){
         // Split into character sets, escape sequences, punctuation strings
         // like ('(', '(?:', ')', '^'), and runs of characters that do not
         // include any of the above.
-        var parts = RegExpProxy_match( reParts, regex.source );
+        var parts = regex.source.match( reParts );
         var n = parts.length;
 
         // Maps captured group numbers to the number they will occupy in
@@ -240,9 +240,8 @@ combinePrefixPatterns = function( regexs ){
                     parts[ i ] = caseFoldCharset( p );
                 } else if( ch0 !== '\\' ){
                     // TODO: handle letters in numeric escapes.
-                    parts[ i ] = RegExpProxy_replace(
+                    parts[ i ] = p.replace(
                             reAlphabet,
-                            p,
                             function( ch ){
                                 var cc = ch.charCodeAt( 0 );
                                 return '[' + String.fromCharCode( cc & ~32, cc | 32 ) + ']';

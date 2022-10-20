@@ -2,7 +2,7 @@
   * @param {SimpleLexer} simpleLexer a function from source code to a list
   *      of decorations.  Takes a single argument job which describes the
   *      state of the computation and attaches the decorations to it.
-  * @param {Array.<string>} fileExtensions
+  * @param {!Array.<string>} fileExtensions
   */
 registerLangHandler = function( simpleLexer, fileExtensions ){
     for( var i = fileExtensions.length; --i >= 0; ){

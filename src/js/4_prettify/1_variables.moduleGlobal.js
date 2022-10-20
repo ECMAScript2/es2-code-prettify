@@ -10,19 +10,20 @@ function m_isString( test ){
 };
 
 /** @type {!function():number} */
-var m_getCurrentTime = Date.now ? Date.now : function (){
+var m_getCurrentTime = Date.now ? Date.now : function(){
     return + new Date;
 };
 
 /**
  * @typedef {{
- *   readyTime        : (number|undefined),
- *   useRegExpCompat  : boolean,
- *   initRegExpCount  : number,
- *   initRegExpTotal  : number,
- *   initRegExpMax    : number,
- *   initRegExpSource : string,
- *   codeBlocks       : !Array.<!{elm:Node, lang:string, readyTime:number, decorateCount:number, decorateTime:number, updateDOMTime:number}>
+ *   readyTime          : (number|undefined),
+ *   useRegExpCompat    : boolean,
+ *   initRegExpCount    : number,
+ *   initRegExpTotal    : number,
+ *   initRegExpMax      : number,
+ *   initRegExpSource   : string,
+ *   initRegExpInstance : (!RegExpCompat|undefined),
+ *   codeBlocks         : !Array.<!{elm:Node, lang:string, readyTime:number, decorateCount:number, decorateTime:number, updateDOMTime:number}>
  * }}
  */
 var Benchmark;
@@ -56,6 +57,42 @@ var TASK_IS_UPDATE_DOM  = 3;
 var CONTINUOUS_TIME_MS = p_Trident < 5    ? 60 :
                          p_Trident < 5.5  ?  0 :
                          USE_REGEXPCOMPAT ? 20 : 10;
+
+var m_loadRegExpCompat,
+    m_reIsMarkup,
+    m_reNotWhiteSpace,
+    m_reCommentLike,
+    m_reCorrectCommentAttrValue;
+
+var m_onReadyRegExp = function(){
+    if( DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP || DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE ){
+        m_reIsMarkup = RegExpProxy( "^\\s*<" );
+    };
+
+    m_reNotWhiteSpace = RegExpProxy( '\\S' );
+
+    if( DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ){
+        m_reCommentLike = RegExpProxy(  "^\\??prettify\\b" );
+        m_reCorrectCommentAttrValue = RegExpProxy( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
+    };
+};
+
+if( USE_REGEXPCOMPAT ){
+    m_loadRegExpCompat = function(){
+        window[ 'RegExpCompat' ] = function( RegExpCompat ){
+            window[ 'RegExpCompat' ] = RegExpCompat;
+
+            m_onReadyRegExp();
+            m_onReadyRegExp = m_loadRegExpCompat = undefined;
+            p_setTimer( applyPrettifyElementOne );
+        };
+
+        p_DOM_insertElement( p_body, 'script', { src : p_assetUrl + DEFINE_WEB_DOC_BASE__ASSET_DIR_TO_JS_DIR + '/' + DEFINE_CODE_PRETTIFY__REGEXPCOMPAT_FILENAME } );
+    };
+} else {
+    m_onReadyRegExp();
+    m_onReadyRegExp = undefined;
+};
 
 /**
  * @param {!Function} lazyFunction 

@@ -17,12 +17,6 @@ function applyDecorator(){
     };
 };
 
-var reIsMarkup;
-
-if( DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP || DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE ){
-    reIsMarkup = RegExpProxy( "^\\s*<" );
-};
-
 /**
  * @param {string|undefined} extension
  * @param {string} source
@@ -33,7 +27,7 @@ function unzipSimpleLexer( extension, source ){
         // Treat it as markup if the first non whitespace character is a < and
         // the last non-whitespace character is a >.
         if( DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP || DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE ){
-            extension = RegExpProxy_test( reIsMarkup, source )
+            extension = m_reIsMarkup.test( source )
                 ? ( DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP ? 'default-markup' : '' )
                 : ( DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE   ? 'default-code'   : '' );
         };
@@ -52,7 +46,7 @@ function tokenize(){
     var tokenizer   = /** @type {RegExp|RegExpCompat} */ (simpleLexer[ 1 ]);
     var sourceCode  = /** @type {string} */ (job.sourceCode);
 
-    job.tokens = RegExpProxy_match( tokenizer, sourceCode ) || [];
+    job.tokens = sourceCode.match( tokenizer ) || [];
 
     job.decorations.push( job.basePos, STYLE_PLAIN );
 
@@ -83,13 +77,13 @@ function decorate(){
         } else {
             var stylePattern = shortcuts[ token.charAt( 0 ) ];
             if( stylePattern ){
-                match = RegExpProxy_match( /** @type {RegExp|RegExpCompat} */ (stylePattern[ 1 ]), token );
+                match = token.match( /** @type {RegExp|RegExpCompat} */ (stylePattern[ 1 ]) );
                 style = /** @type {number|string} */ (stylePattern[ 0 ]);
             } else {
                 style = STYLE_PLAIN; // make sure that we make progress
 
                 for( var i = -1; stylePattern = fallthroughStylePatterns[ ++i ]; ){
-                    match = RegExpProxy_match( /** @type {RegExp|RegExpCompat} */ (stylePattern[ 1 ]), token );
+                    match = token.match( /** @type {RegExp|RegExpCompat} */ (stylePattern[ 1 ]) );
                     if( match ){
                         style = /** @type {number|string} */ (stylePattern[ 0 ]);
                         break;

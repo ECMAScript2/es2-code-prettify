@@ -1,5 +1,3 @@
-var notWs = RegExpProxy( '\\S' );
-
 /**
  * Given an element, if it contains only one child element and any text nodes
  * it contains contain only space characters, return the sole child element.
@@ -19,7 +17,7 @@ function childContentWrapper( element ){
         wrapper = ( type === 1 )  // Element Node
             ? ( wrapper ? element : c )
             : ( type === 3 )  // Text Node
-            ? ( RegExpProxy_test( notWs, c.nodeValue ) ? element : wrapper )
+            ? ( m_reNotWhiteSpace.test( c.nodeValue ) ? element : wrapper )
             : wrapper;
     };
     return wrapper === element ? undefined : wrapper;
@@ -68,13 +66,6 @@ function $prettyPrintOne( sourceCodeHtml, opt_langExtension, opt_numberLines ){
     return container.innerHTML;
 };
 
-if( DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ){
-    /** @type {RegExp|RegExpCompat} */
-    var reCommentLike = RegExpProxy(  "^\\??prettify\\b" );
-    /** @type {RegExp|RegExpCompat} */
-    var reCorrectCommentAttrValue = RegExpProxy( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
-};
-
 var prettifyElements = [];
 
 var prettifyElementTotal;
@@ -105,7 +96,12 @@ function prettyPrint(){
         };
     };
     prettifyElementTotal = prettifyElements.length;
-    p_setTimer( applyPrettifyElementOne );
+
+    if( USE_REGEXPCOMPAT ){
+        m_loadRegExpCompat();
+    } else {
+        p_setTimer( applyPrettifyElementOne );
+    };
 };
 
     // The loop is broken into a series of continuations to make sure that we
@@ -147,16 +143,15 @@ function prettyPrint(){
                 // like <!--?foo?-->, but in XML is a processing instruction
                 var value = ( nt === 7 || nt === 8 ) && preceder.nodeValue;
                 if( value
-                    ? !RegExpProxy_test( reCommentLike, value )
-                    : ( nt !== 3 || RegExpProxy_test( notWs, preceder.nodeValue ) ) ){
+                    ? !m_reCommentLike.test( value )
+                    : ( nt !== 3 || m_reNotWhiteSpace.test( preceder.nodeValue ) ) ){
                     // Skip over white-space text nodes but not others.
                     break;
                 };
                 if( value ){
                     attrs = {};
-                    RegExpProxy_replace(
-                        reCorrectCommentAttrValue,
-                        value,
+                    value.replace(
+                        m_reCorrectCommentAttrValue,
                         function( _, name, value ){
                             attrs[ name ] = value;
                         }

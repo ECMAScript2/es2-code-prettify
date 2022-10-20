@@ -8,6 +8,8 @@ const gulp            = require('gulp'),
 
 const numericKeyName = '-num';
 const simpleLexerRegistryFileName = '2__zippedSimpleLexerRegistry.generated.js';
+const regExpCompatFileName = 'regexpcompat.js';
+
 var isDebug, languageUsed;
 
 gulp.task( '__generate_simple_lexer_registry', gulp.series(
@@ -81,7 +83,7 @@ gulp.task( '__vanilla', gulp.series(
                         'DEFINE_REGEXP_COMPAT__DEBUG=false',
                         'DEFINE_REGEXP_COMPAT__MINIFY=true',
                         'DEFINE_REGEXP_COMPAT__NODEJS=false',
-                        'DEFINE_REGEXP_COMPAT__ES2018=false',
+                        'CONST_SUPPORT_ES2018=false',
                         'DEFINE_CODE_PRETTIFY__DEBUG=' + isDebug,
                         'DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY="' + numericKeyName + '"',
                         'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=' + ( isDebug ? 1 : -1 )
@@ -153,7 +155,7 @@ gulp.task( '__snowSaifuku', gulp.series(
                         language_in       : 'ECMASCRIPT3',
                         language_out      : 'ECMASCRIPT3',
                         output_wrapper    : 'ua=[];%output%',
-                        js_output_file    : 'global.js'
+                        js_output_file    : 'global.what-browser-am-i.js'
                     }
                 )
             ).pipe(gulp.dest( tempDir ));
@@ -162,12 +164,12 @@ gulp.task( '__snowSaifuku', gulp.series(
         return gulp.src(
             [
             // what-browser-am-i
-                tempDir + '/global.js',
+                tempDir + '/global.what-browser-am-i.js',
             // Snow daifuku
                 './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/0_global/*.js',
                '!./.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/0_global/7_conpare.js',
                 './.submodules/web-doc-base/src/js/**/*.js',
-               '!./.submodules/web-doc-base/src/js/1_packageGlobal/2_toEndOfScript.js',
+               // '!./.submodules/web-doc-base/src/js/1_packageGlobal/2_toEndOfScript.js',
                '!./.submodules/web-doc-base/src/js/3_DOM/nodeCleaner.js',
                '!./.submodules/web-doc-base/src/js/4_EventModule/imageReady.js',
                '!./.submodules/web-doc-base/src/js/4_EventModule/forcedColors.js',
@@ -179,9 +181,6 @@ gulp.task( '__snowSaifuku', gulp.series(
                '!./.submodules/web-doc-base/src/js/6_CanUse/**/*.js',
                '!./.submodules/web-doc-base/src/js/7_Patch/**/*.js',
                '!./.submodules/web-doc-base/src/js/8_Library/**/*.js',
-            // ReRe.js
-                '.submodules/rerejs/src.js/**/*.js',
-               '!.submodules/rerejs/src.js/0_global/2_polyfill.js',
             // Google Code Prettify
                 './src/js/1_common/*.js',
                 './src/js/4_prettify/*.js',
@@ -193,9 +192,9 @@ gulp.task( '__snowSaifuku', gulp.series(
                     labelPackageGlobal : '*', // for Gecko 0.7- ! https://twitter.com/itozyun/status/1488924003070742535
                     packageGlobalArgs : [ 'ua,window,emptyFunction,' + globalVariables + ',undefined', 'ua,this,function(){},' + globalVariables + ',void 0' ],
                     basePath          : [
-                        tempDir + '/', './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/',
+                        tempDir + '/',
+                        './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/',
                         './.submodules/web-doc-base/src/js/',
-                        '.submodules/rerejs/src.js/',
                         './src/'
                     ]
                 }
@@ -208,18 +207,11 @@ gulp.task( '__snowSaifuku', gulp.series(
                         './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js-externs/externs.js',
                         './.submodules/web-doc-base/.submodules/regexp-free-js-base64/src/js-externs/externs.js',
                         './.submodules/web-doc-base/src/js-externs/externs.js',
-                        // ReRe.js
-                        '.submodules/rerejs/src.externs/externs.generated.js',
                         // Google Code Prettify
                         './src/externs/externs_rere.js',
                         './src/externs/externs.js'
                     ],
                     define            : [
-                        // ReRE.js
-                        'DEFINE_REGEXP_COMPAT__DEBUG=false',
-                        'DEFINE_REGEXP_COMPAT__MINIFY=true',
-                        'DEFINE_REGEXP_COMPAT__NODEJS=false',
-                        'DEFINE_REGEXP_COMPAT__ES2018=false',
                         // Snow daifuku
                         'DEFINE_WHAT_BROWSER_AM_I__MINIFY=true',
                         'DEFINE_WEB_DOC_BASE__DEBUG=' + ( isDebug ? 1 : 0 ),
@@ -228,7 +220,8 @@ gulp.task( '__snowSaifuku', gulp.series(
                         'DEFINE_CODE_PRETTIFY__DEBUG=' + isDebug,
                         'DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT=' + isDebug,
                         'DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY="' + numericKeyName + '"',
-                        'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=' + ( isDebug ? 1 : -1 )
+                        'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=' + ( isDebug ? 1 : -1 ),
+                        'DEFINE_CODE_PRETTIFY__REGEXPCOMPAT_FILENAME=' + regExpCompatFileName
                     ],
                     compilation_level : 'ADVANCED',
                     // compilation_level : 'WHITESPACE_ONLY',
@@ -240,6 +233,53 @@ gulp.task( '__snowSaifuku', gulp.series(
                 }
             )
         ).pipe( gulp.dest( tempDir ) );
+    },
+    function(){
+        return gulp.src(
+            [
+            // ReRe.js
+                '.submodules/rerejs/src.js/**/*.js',
+               '!.submodules/rerejs/src.js/0_global/2_polyfill.js'
+            ]
+        ).pipe(
+            gulpDPZ(
+                {
+                    labelPackageGlobal : '*', // for Gecko 0.7- ! https://twitter.com/itozyun/status/1488924003070742535
+                    packageGlobalArgs : [ 'global,RegExp,String,Math,Infinity,undefined', 'this,this.RegExp,String,Math,1/0,void 0' ],
+                    basePath          : [
+                        '.submodules/rerejs/src.js/'
+                    ]
+                }
+            )
+        ).pipe(
+            closureCompiler(
+                {
+                    externs           : [
+                        // ReRe.js
+                        '.submodules/rerejs/src.externs/externs.generated.js'
+                    ],
+                    define            : [
+                        // ReRE.js
+                        'DEFINE_REGEXP_COMPAT__DEBUG=' + isDebug,
+                        'DEFINE_REGEXP_COMPAT__MINIFY=true',
+                        'DEFINE_REGEXP_COMPAT__NODEJS=false',
+                        'DEFINE_REGEXP_COMPAT__CLIENT_MIN_ES_VERSION=2',
+                        'DEFINE_REGEXP_COMPAT__ES_FEATURE_VERSION=3',
+                        'DEFINE_REGEXP_COMPAT__EXPORT_BY_CALL_REGEXPCOMPAT=true'
+                    ],
+                    // env               : 'CUSTOM',
+                    compilation_level : 'ADVANCED',
+                    // compilation_level : 'WHITESPACE_ONLY',
+                    // formatting        : isDebug ? 'PRETTY_PRINT' : 'SINGLE_QUOTES',
+                    warning_level     : 'VERBOSE',
+                    language_in       : 'ECMASCRIPT3',
+                    language_out      : 'ECMASCRIPT3',
+                    js_output_file    : regExpCompatFileName
+                }
+            )
+        ).pipe(
+            require('es2-postprocessor').gulp({minIEVersion : isDebug ? 5.5 : 5, minOperaVersion : 7})
+        ).pipe( gulp.dest( 'docs/js' ) );
     },
     function(){
         return gulp.src(
@@ -261,78 +301,7 @@ gulp.task( '__snowSaifuku', gulp.series(
         ).pipe( gulp.dest( 'docs/js' ) );
     },
     function( cb ){
-        // fs.unlink( 'src/js/4_prettify/' + simpleLexerRegistryFileName, cb );
-        cb();
-    },
-    function( cb ){
-        return cb();
-        // https://kitak.hatenablog.jp/entry/2014/11/15/233649
-        //   JSのASTを扱うライブラリをつかって、不要なeval呼び出しを除くコードを書いてみた
-        var esprima = require('esprima');
-        var estraverse = require('estraverse');
-        var escodegen = require('escodegen');
-
-        fs.readFile( './docs/prettify.snow.js',
-            function( err, source ){
-                if( err !== null ){
-                    return;
-                };
-                var ast = esprima.parse( source.toString() );
-
-                estraverse.traverse(
-                    ast,
-                    {
-                        enter : function( node, parent ){
-                            if( parent && parent.type === 'ObjectExpression' ){
-                                var prop = node;
-                                if( typeof prop.key.value === 'number' ){
-                                    console.log( '#', prop.key.raw )
-                                    prop.key.value = '' + prop.key.value;
-                                    prop.key.raw   = '"a' + prop.key.value + '"';
-                                };
-                            };
-                        }
-                    }
-                );
-                // console.log( escodegen.generate( ast ) );
-                var lastIndex = 0;
-                fs.writeFile( './docs/prettify.snow.js',
-                    escodegen.generate( ast,
-                        {
-                            // https://github.com/estools/escodegen/issues/1
-                            format: {
-                                renumber: true,
-                                hexadecimal: true,
-                                quotes: "auto",
-                                escapeless: false,
-                                // compact: true,
-                                space: '',
-                                indent: {
-                                    style: '',
-                                    base: 0,
-                                    adjustMultilineComment: false
-                                },
-                                parentheses: false,
-                                semicolons: false
-                            },
-                            // https://github.com/estools/escodegen/issues/231#issuecomment-96850400
-                            // If you really want to avoid Unicode escapes, use {format: {escapeless: true}} as your escodegen options.
-                            // But the only way to use the same escapes that you used in your original code is to use the {verbatim: "raw"} option.
-                            verbatim: "raw"
-                        }
-                    ).replace(
-                        /\n/g,
-                        function( newline, index, all ){
-                            if( 400 < index - lastIndex ){
-                                lastIndex = index;
-                                return newline;
-                            };
-                            return 0 <= '();,:?{}[]"\''.indexOf( all.charAt( index - 1 ) ) ||
-                                   0 <= '();,:?{}[]"\''.indexOf( all.charAt( index + 1 ) ) ? '' : ' ';
-                        }
-                    ), null, cb );
-            }
-        );
+        fs.unlink( 'src/js/4_prettify/' + simpleLexerRegistryFileName, cb );
     }
 ) );
 
