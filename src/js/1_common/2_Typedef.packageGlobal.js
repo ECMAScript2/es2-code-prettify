@@ -12,3 +12,6 @@ var StylePattern;
  * 2 : Array.<StylePattern>
  */
 var SimpleLexer;
+
+/** @type {!Object.<string,(!SimpleLexer|!ZippedSimpleLexer)|undefined>} Maps language-specific file extensions to handlers. */
+var simpleLexerRegistry;

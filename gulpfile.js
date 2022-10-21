@@ -1,6 +1,6 @@
 const gulp            = require('gulp'),
       gulpDPZ         = require('gulp-diamond-princess-zoning'),
-      closureCompiler = require('google-closure-compiler').gulp(),
+      ClosureCompiler = require('google-closure-compiler').gulp(),
       fs              = require('fs'),
       tempDir         = require('os').tmpdir() + '/google-code-prettify',
       globalVariables = 'document,parseFloat,Function,isFinite,setTimeout,clearTimeout',
@@ -23,7 +23,7 @@ gulp.task( '__generate_simple_lexer_registry', gulp.series(
             ]
 
         ).pipe(
-            closureCompiler(
+            ClosureCompiler(
                 {
                     define            : [
                         'DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP=' + true || isDebug,
@@ -64,7 +64,7 @@ gulp.task( '__snowSaifuku', gulp.series(
                     }
                 )
             ).pipe(
-                closureCompiler(
+                ClosureCompiler(
                     {
                         externs           : [
                             './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js-externs/externs.js'
@@ -116,17 +116,17 @@ gulp.task( '__snowSaifuku', gulp.series(
             gulpDPZ(
                 {
                     labelPackageGlobal : '*', // for Gecko 0.7- ! https://twitter.com/itozyun/status/1488924003070742535
-                    packageGlobalArgs : [ 'ua,window,emptyFunction,' + globalVariables + ',undefined', 'ua,this,function(){},' + globalVariables + ',void 0' ],
+                    packageGlobalArgs : [ 'ua,window,emptyFunction,RegExp,Date,' + globalVariables + ',undefined', 'ua,this,function(){},this.RegExp,Date,' + globalVariables + ',void 0' ],
                     basePath          : [
                         tempDir + '/',
                         './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/',
                         './.submodules/web-doc-base/src/js/',
-                        './src/'
+                        './src/js/'
                     ]
                 }
             )
         ).pipe(
-            closureCompiler(
+            ClosureCompiler(
                 {
                     externs           : [
                         // Snow daifuku
@@ -134,7 +134,7 @@ gulp.task( '__snowSaifuku', gulp.series(
                         './.submodules/web-doc-base/.submodules/regexp-free-js-base64/src/js-externs/externs.js',
                         './.submodules/web-doc-base/src/js-externs/externs.js',
                         // Google Code Prettify
-                        './src/externs/externs.js'
+                        './src/js-externs/externs.js'
                     ],
                     define            : [
                         // Snow daifuku
@@ -162,6 +162,25 @@ gulp.task( '__snowSaifuku', gulp.series(
     function(){
         return gulp.src(
             [
+                '.submodules/rerejs/src.js/0_global/2_polyfill.js',
+                tempDir + '/prettify.snow.withoutPolyfill.js'
+            ]
+        ).pipe(
+            ClosureCompiler(
+                {
+                    compilation_level : 'WHITESPACE_ONLY',
+                    formatting        : 'PRETTY_PRINT', // : 'SINGLE_QUOTES',
+                    language_in       : 'ECMASCRIPT3',
+                    language_out      : 'ECMASCRIPT3',
+                    output_wrapper    : '/** Code Preffity for ES2 [lang-' + ( languageUsed || 'all' ) + ( isDebug ? ' | Debug build' : '') + '](github.com/ECMAScript2/es2-code-prettify) */\n%output%',
+                    js_output_file    : 'prettify.lang-' + ( languageUsed || 'all' ) + '.js'
+                }
+            )
+        ).pipe( gulp.dest( 'docs/js' ) );
+    },
+    function(){
+        return gulp.src(
+            [
             // ReRe.js
                 '.submodules/rerejs/src.js/**/*.js',
                '!.submodules/rerejs/src.js/0_global/2_polyfill.js'
@@ -177,7 +196,7 @@ gulp.task( '__snowSaifuku', gulp.series(
                 }
             )
         ).pipe(
-            closureCompiler(
+            ClosureCompiler(
                 {
                     externs           : [
                         // ReRe.js
@@ -185,17 +204,17 @@ gulp.task( '__snowSaifuku', gulp.series(
                     ],
                     define            : [
                         // ReRE.js
-                        'DEFINE_REGEXP_COMPAT__DEBUG=' + isDebug,
+                        'DEFINE_REGEXP_COMPAT__DEBUG=false',
                         'DEFINE_REGEXP_COMPAT__MINIFY=true',
                         'DEFINE_REGEXP_COMPAT__NODEJS=false',
                         'DEFINE_REGEXP_COMPAT__CLIENT_MIN_ES_VERSION=2',
                         'DEFINE_REGEXP_COMPAT__ES_FEATURE_VERSION=3',
                         'DEFINE_REGEXP_COMPAT__EXPORT_BY_CALL_REGEXPCOMPAT=true'
                     ],
-                    // env               : 'CUSTOM',
+                    // env               : isDebug ? 'BROWSER' : 'CUSTOM',
                     compilation_level : 'ADVANCED',
                     // compilation_level : 'WHITESPACE_ONLY',
-                    // formatting        : isDebug ? 'PRETTY_PRINT' : 'SINGLE_QUOTES',
+                    formatting        : 'PRETTY_PRINT',
                     warning_level     : 'VERBOSE',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
@@ -204,25 +223,6 @@ gulp.task( '__snowSaifuku', gulp.series(
             )
         ).pipe(
             require('es2-postprocessor').gulp({minIEVersion : isDebug ? 5.5 : 5, minOperaVersion : 7})
-        ).pipe( gulp.dest( 'docs/js' ) );
-    },
-    function(){
-        return gulp.src(
-            [
-                '.submodules/rerejs/src.js/0_global/2_polyfill.js',
-                tempDir + '/prettify.snow.withoutPolyfill.js'
-            ]
-        ).pipe(
-            closureCompiler(
-                {
-                    compilation_level : 'WHITESPACE_ONLY',
-                    formatting        : isDebug ? 'PRETTY_PRINT' : 'SINGLE_QUOTES',
-                    language_in       : 'ECMASCRIPT3',
-                    language_out      : 'ECMASCRIPT3',
-                    output_wrapper    : '/** Code Preffity for ES2 [lang-' + ( isDebug ? 'all, Debug build' : languageUsed ) + '](https://githug.com/ECMAScript2/es2-code-prettify) */\n%output%',
-                    js_output_file    : 'prettify.lang-' + ( isDebug ? 'all' : 'web' ) + '.js'
-                }
-            )
         ).pipe( gulp.dest( 'docs/js' ) );
     },
     function( cb ){

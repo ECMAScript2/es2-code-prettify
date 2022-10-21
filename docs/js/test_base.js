@@ -315,17 +315,10 @@ function runTests(goldens) {
     };
   }
 
-  // for more accurate timing, no continuation.
-  // This file must be loaded after prettify.js for this to work.
-  window.PR_SHOULD_USE_CONTINUATION = false;
-
-  // time syntax highlighting
-
-  PR.prettyPrint && PR.prettyPrint();
 
   PR.registerCompleteHandler(
     function( benchmark ){
-      document.getElementById('report').innerHTML = 'レポートの作成中です...';
+      document.getElementById('report').innerHTML = 'The report is being generated.';
 
       setTimeout(
         function(){

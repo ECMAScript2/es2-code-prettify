@@ -28,7 +28,7 @@ var prettifyElements = [];
 var prettifyElementTotal;
 
 if( DEFINE_CODE_PRETTIFY__DEBUG ){
-    benchmark.readyTime = m_getCurrentTime() - m_startTime;
+    m_benchmark.readyTime = m_getCurrentTime() - m_startTime;
 };
 
 p_listenCssAvailabilityChange( function( cssAvailability ){
@@ -43,18 +43,24 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
 
     for( var i = 0; i < codeSegments.length; ++i ){
         for( var j = 0, n = codeSegments[ i ].length; j < n; ++j ){
-            prettifyElements.push( codeSegments[ i ][ j ] );
+            m_prettifyElement( codeSegments[ i ][ j ] );
         };
-    };
-    prettifyElementTotal = prettifyElements.length;
-
-    if( USE_REGEXPCOMPAT ){
-        m_loadRegExpCompat();
-    } else {
-        p_setTimer( applyPrettifyElementOne );
     };
     return true;
 } );
+
+m_prettifyElement = function( codeSegment ){
+    prettifyElements.push( codeSegment );
+    prettifyElementTotal = prettifyElements.length;
+
+    if( prettifyElementTotal === 1 ){
+        if( USE_REGEXPCOMPAT ){
+            p_setTimer( m_loadRegExpCompat );
+        } else {
+            p_setTimer( applyPrettifyElementOne );
+        };
+    };
+};
 
     // The loop is broken into a series of continuations to make sure that we
     // don't make the browser unresponsive when rewriting a large page.
@@ -65,15 +71,19 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
             return ( className.split( attr )[ 1 ] || ''  ).split( ' ' )[ 0 ];
         };
 
-        if( DEFINE_CODE_PRETTIFY__DEBUG && prettifyElementTotal !== prettifyElements.length ){
-            completeOneHandler && completeOneHandler( prettifyElementTotal - prettifyElements.length, prettifyElementTotal );
+        if( prettifyElementTotal !== prettifyElements.length ){
+            if( DEFINE_CODE_PRETTIFY__DEBUG || DEFINE_CODE_PRETTIFY__EXPORT_PR_OBJECT ){
+                m_completeOneHandler && m_completeOneHandler( prettifyElementTotal - prettifyElements.length, prettifyElementTotal );
+            };
         };
 
         var codeSegment = prettifyElements.shift();
 
         if( !codeSegment ){
             if( DEFINE_CODE_PRETTIFY__DEBUG ){
-                completeHandler && completeHandler( benchmark );
+                m_completeAllHandler && m_completeAllHandler( m_benchmark );
+            } else if( DEFINE_CODE_PRETTIFY__EXPORT_PR_OBJECT ){
+                m_completeAllHandler && m_completeAllHandler();
             };
             return;
         };
@@ -198,7 +208,7 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
                 };
 
                 if( DEFINE_CODE_PRETTIFY__DEBUG ){
-                    benchmark.codeBlocks.push(
+                    m_benchmark.codeBlocks.push(
                         {
                             elm           : codeSegment,
                             lang          : langExtension,
@@ -216,5 +226,3 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
         // finish up in a continuation
         m_graduallyPrettify( applyPrettifyElementOne, undefined, 0, true );
     };
-
-var prettyPrint;

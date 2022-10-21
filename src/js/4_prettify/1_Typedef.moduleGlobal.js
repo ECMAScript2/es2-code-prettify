@@ -57,4 +57,18 @@ var SourceSpansT;
  * 1 : (RegExp|RegExpCompat)
  * 2 : Array.<StylePattern>
  */
- var ZippedSimpleLexer;
+var ZippedSimpleLexer;
+
+/**
+ * @typedef {{
+ *   readyTime          : (number|undefined),
+ *   useRegExpCompat    : boolean,
+ *   initRegExpCount    : number,
+ *   initRegExpTotal    : number,
+ *   initRegExpMax      : number,
+ *   initRegExpSource   : string,
+ *   initRegExpInstance : (!RegExpCompat|undefined),
+ *   codeBlocks         : !Array.<!{elm:Node, lang:string, readyTime:number, decorateCount:number, decorateTime:number, updateDOMTime:number}>
+ * }}
+ */
+var Benchmark;

@@ -14,22 +14,28 @@ var m_getCurrentTime = Date.now ? Date.now : function(){
     return + new Date;
 };
 
+var USE_REGEXPCOMPAT = DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT === 1 ||
+    !RegExp ||
+    DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT === -1 && ( p_Gecko < 0.9 || p_Presto < 8 || p_Trident < 5.5 );
+
 /**
- * @typedef {{
- *   readyTime          : (number|undefined),
- *   useRegExpCompat    : boolean,
- *   initRegExpCount    : number,
- *   initRegExpTotal    : number,
- *   initRegExpMax      : number,
- *   initRegExpSource   : string,
- *   initRegExpInstance : (!RegExpCompat|undefined),
- *   codeBlocks         : !Array.<!{elm:Node, lang:string, readyTime:number, decorateCount:number, decorateTime:number, updateDOMTime:number}>
- * }}
+ * @constructor
+ * @extends RegExp
  */
-var Benchmark;
+var m_RegExpCompat;
+
+/**
+ * @param {string} source 
+ * @param {string=} flags
+ * @return {RegExp|RegExpCompat}
+ */
+function RegExpProxy( source, flags ){
+    return USE_REGEXPCOMPAT ? /** @type {RegExpCompat} */ (new m_RegExpCompat( source, flags )) :
+                              /** @type {RegExp} */ (new RegExp( source, flags ));
+};
 
 /** @type {!Benchmark} */
-var benchmark = { useRegExpCompat : USE_REGEXPCOMPAT, initRegExpTotal : 0, initRegExpMax : 0, initRegExpSource : '', initRegExpCount : 0, codeBlocks : [] };
+var m_benchmark = { useRegExpCompat : USE_REGEXPCOMPAT, initRegExpTotal : 0, initRegExpMax : 0, initRegExpSource : '', initRegExpCount : 0, codeBlocks : [] };
 
 /** @type {!number|undefined} */
 var m_startTime;
@@ -45,10 +51,13 @@ var m_currentTaskStartTime;
 var currentJob;
 
 /** @type {!Function|undefined} */
-var completeHandler;
+var m_prettifyElement;
 
 /** @type {!Function|undefined} */
-var completeOneHandler;
+var m_completeAllHandler;
+
+/** @type {!Function|undefined} */
+var m_completeOneHandler;
 
 var TASK_IS_INIT_REGEXP = 1;
 var TASK_IS_DECORATE    = 2;
@@ -80,7 +89,7 @@ var m_onReadyRegExp = function(){
 if( USE_REGEXPCOMPAT ){
     m_loadRegExpCompat = function(){
         window[ 'RegExpCompat' ] = function( RegExpCompat ){
-            window[ 'RegExpCompat' ] = RegExpCompat;
+            window[ 'RegExpCompat' ] = m_RegExpCompat = RegExpCompat;
 
             m_onReadyRegExp();
             m_onReadyRegExp = m_loadRegExpCompat = undefined;
@@ -102,7 +111,7 @@ if( USE_REGEXPCOMPAT ){
  * @param {!RegExp|!RegExpCompat=} opt_regExp
  */
 function m_graduallyPrettify( lazyFunction, opt_param, opt_task, opt_forceLazy, opt_regExp ){
-    var codeBlock = benchmark.codeBlocks[ benchmark.codeBlocks.length - 1 ];
+    var codeBlock = m_benchmark.codeBlocks[ m_benchmark.codeBlocks.length - 1 ];
 
     var currentTime = m_getCurrentTime(),
         task = opt_task || 0,
@@ -111,12 +120,12 @@ function m_graduallyPrettify( lazyFunction, opt_param, opt_task, opt_forceLazy, 
     if( DEFINE_CODE_PRETTIFY__DEBUG ){
         switch( task ){
             case TASK_IS_INIT_REGEXP :
-                benchmark.initRegExpCount++;
-                benchmark.initRegExpTotal += initTime;
-                if( benchmark.initRegExpMax < initTime ){
-                    benchmark.initRegExpMax      = initTime;
-                    benchmark.initRegExpSource   = opt_regExp.toString();
-                    benchmark.initRegExpInstance = opt_regExp;
+                m_benchmark.initRegExpCount++;
+                m_benchmark.initRegExpTotal += initTime;
+                if( m_benchmark.initRegExpMax < initTime ){
+                    m_benchmark.initRegExpMax      = initTime;
+                    m_benchmark.initRegExpSource   = opt_regExp.toString();
+                    m_benchmark.initRegExpInstance = opt_regExp;
                 };
                 break;
             case TASK_IS_DECORATE :
