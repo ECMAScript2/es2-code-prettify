@@ -36,13 +36,9 @@
 
 ## ビルド
 
-
-
 ~~~
-gulp js
-gulp js-web
-gulp sd
-gulp sd-web
+gulp all
+gulp web
 ~~~
 
 

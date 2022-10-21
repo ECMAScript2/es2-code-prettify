@@ -1,15 +1,15 @@
 {
-  "name": "code-prettify-for-es2",
-  "version": "0.0.0",
-  "description": "Code Prettify for ES2",
+  "name": "es2-code-prettify",
+  "version": "0.1.0",
+  "description": "Google Code Prettify for ES2",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/itozyun/regexp-free-code-prettify",
+  "homepage": "https://github.com/ECMAScript2/es2-code-prettify",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/itozyun/regexp-free-code-prettify.git"
+    "url": "git+https://github.com/ECMAScript2/es2-code-prettify.git"
   },
   "bugs": {
-    "url": "https://github.com/itozyun/regexp-free-code-prettify/issues"
+    "url": "https://github.com/ECMAScript2/es2-code-prettify/issues"
   },
   "keywords": [
     "syntax",
@@ -21,7 +21,7 @@
   ],
   "author": "itozyun",
   "scripts": {
-    "build": "gulp js",
+    "build": "gulp all",
     "start": "node local-web-server.js"
   },
   "devDependencies": {

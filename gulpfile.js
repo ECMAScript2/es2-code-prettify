@@ -219,7 +219,7 @@ gulp.task( '__snowSaifuku', gulp.series(
                     formatting        : isDebug ? 'PRETTY_PRINT' : 'SINGLE_QUOTES',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
-                    output_wrapper    : '/** Code Preffity for ES2 [lang-' + ( isDebug ? 'all, Debug build' : languageUsed ) + '](https://githug.com/itozyun/regexp-free-code-prettify) */\n%output%',
+                    output_wrapper    : '/** Code Preffity for ES2 [lang-' + ( isDebug ? 'all, Debug build' : languageUsed ) + '](https://githug.com/ECMAScript2/es2-code-prettify) */\n%output%',
                     js_output_file    : 'prettify.lang-' + ( isDebug ? 'all' : 'web' ) + '.js'
                 }
             )
