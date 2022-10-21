@@ -26,10 +26,7 @@ gulp.task( '__generate_simple_lexer_registry', gulp.series(
             ClosureCompiler(
                 {
                     define            : [
-                        'DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP=' + true || isDebug,
-                        'DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE=' + isDebug,
-                        'DEFINE_CODE_PRETTIFY__LANGUAGES_USED="' + languageUsed + '"',
-                        'DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT=0'
+                        'DEFINE_CODE_PRETTIFY__LANGUAGES_USED="' + languageUsed + '"'
                     ],
                     // compilation_level : 'ADVANCED',
                     // compilation_level : 'WHITESPACE_ONLY', // Snow Daifuku の変数が未定義エラーになるので ADVANCED は使えない...!
@@ -172,8 +169,8 @@ gulp.task( '__snowSaifuku', gulp.series(
                     formatting        : 'PRETTY_PRINT', // : 'SINGLE_QUOTES',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
-                    output_wrapper    : '/** Code Preffity for ES2 [lang-' + ( languageUsed || 'all' ) + ( isDebug ? ' | Debug build' : '') + '](github.com/ECMAScript2/es2-code-prettify) */\n%output%',
-                    js_output_file    : 'prettify.lang-' + ( languageUsed || 'all' ) + '.js'
+                    output_wrapper    : '/** Code Preffity for ES2 [lang-' + languageUsed + ( isDebug ? ' | Debug build' : '') + '](github.com/ECMAScript2/es2-code-prettify) */\n%output%',
+                    js_output_file    : 'prettify.lang-' + languageUsed.split( ',' ).join( '.' ) + '.js'
                 }
             )
         ).pipe( gulp.dest( 'docs/js' ) );
@@ -232,7 +229,7 @@ gulp.task( '__snowSaifuku', gulp.series(
 
 gulp.task( 'all',
     gulp.series(
-        function( cb ){ isDebug = true; languageUsed = ''; cb() },
+        function( cb ){ isDebug = true; languageUsed = 'all'; cb() },
         '__snowSaifuku'
     )
 );

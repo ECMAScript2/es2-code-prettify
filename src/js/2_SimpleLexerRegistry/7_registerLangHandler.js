@@ -19,7 +19,11 @@ registerLangHandler = function( simpleLexer, fileExtensions ){
     function use( language ){
         var langs = DEFINE_CODE_PRETTIFY__LANGUAGES_USED.toLowerCase().split( ',' );
 
-        if( !DEFINE_CODE_PRETTIFY__LANGUAGES_USED || 0 <= langs.indexOf( language ) ){
+        if( !DEFINE_CODE_PRETTIFY__LANGUAGES_USED ||
+             DEFINE_CODE_PRETTIFY__LANGUAGES_USED === 'all' ||
+             DEFINE_CODE_PRETTIFY__LANGUAGES_USED === '*'   ||
+             0 <= langs.indexOf( language )
+        ){
             return true;
         };
         switch( language ){
