@@ -1,11 +1,11 @@
-function applyDecorator(){
+m_applyDecorator = function(){
     var job = /** @type {!JobT} */ (currentJob);
     var opt_langExtension = job.langExtension;
     
     // TODO ie4dom
 
     // Extract tags, and convert the source code to plain text.
-    var sourceAndSpans = extractSourceSpans( job.sourceNode, job.pre );
+    var sourceAndSpans = m_extractSourceSpans( job.sourceNode, job.pre );
     /** Plain text. @type {string} */
     var source = job.sourceCode = sourceAndSpans.sourceCode;
                  job.spans      = sourceAndSpans.spans;
@@ -13,7 +13,7 @@ function applyDecorator(){
     if( !unzipSimpleLexer( /** @type {string} */ (opt_langExtension), source ) ){
         currentJob = undefined;
         // finish up in a continuation
-        m_graduallyPrettify( applyPrettifyElementOne, undefined, 0, true );
+        m_graduallyPrettify( m_applyPrettifyElementOne, undefined, 0, true );
     };
 };
 
@@ -35,12 +35,12 @@ function unzipSimpleLexer( extension, source ){
     var existSimpleLexer = !!simpleLexerRegistry[ extension ];
 
     if( existSimpleLexer ){
-        m_graduallyPrettify( unzipOptimaizedSimpleLexer, extension, 0, true );
+        m_graduallyPrettify( m_unzipOptimaizedSimpleLexer, extension, 0, true );
     };
     return existSimpleLexer;
 };
 
-function tokenize(){
+m_tokenize = function(){
     var job         = currentJob;
     var simpleLexer = job.simpleLexer;
     var tokenizer   = /** @type {RegExp|RegExpCompat} */ (simpleLexer[ 1 ]);
@@ -151,7 +151,7 @@ function decorate(){
             };
             if( !nextTaskIsUnzipSimpleLexer ){
                 if( currentJob !== job ){
-                    m_graduallyPrettify( tokenize, undefined, TASK_IS_DECORATE );
+                    m_graduallyPrettify( m_tokenize, undefined, TASK_IS_DECORATE );
                 } else {
                     m_graduallyPrettify( decorate, undefined, TASK_IS_DECORATE );
                 };
@@ -159,11 +159,11 @@ function decorate(){
         };
     } else {
         if( !job.parentJob ){
-            m_graduallyPrettify( recombineTagsAndDecorations, undefined, TASK_IS_DECORATE );
+            m_graduallyPrettify( m_recombineTagsAndDecorations, undefined, TASK_IS_DECORATE );
         } else {
             currentJob = job.parentJob.childJobs.shift();
             if( currentJob ){
-                m_graduallyPrettify( tokenize, undefined, TASK_IS_DECORATE );
+                m_graduallyPrettify( m_tokenize, undefined, TASK_IS_DECORATE );
             } else {
                 currentJob = job.parentJob;
                 m_graduallyPrettify( decorate, undefined, TASK_IS_DECORATE );
@@ -184,7 +184,6 @@ function decorate(){
             job.childJobs.push(
                 /** @type {JobT} */
                 ({
-
                     parentJob   : job,
                     sourceNode  : job.sourceNode,
                     pre         : 1,

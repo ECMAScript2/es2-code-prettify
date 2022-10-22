@@ -3,7 +3,7 @@
  * {@code job.decorations} and modifies {@code job.sourceNode} in place.
  * @private
  */
-function recombineTagsAndDecorations(){
+m_recombineTagsAndDecorations = function(){
     var job = currentJob;
     var source = job.sourceCode;
     var sourceLength = source.length;
@@ -111,5 +111,5 @@ function recombineTagsAndDecorations(){
 
     currentJob = undefined;
     // finish up in a continuation
-    m_graduallyPrettify( applyPrettifyElementOne, undefined, TASK_IS_UPDATE_DOM, true );
+    m_graduallyPrettify( m_applyPrettifyElementOne, undefined, TASK_IS_UPDATE_DOM, true );
 };

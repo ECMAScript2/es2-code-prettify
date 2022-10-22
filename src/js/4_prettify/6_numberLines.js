@@ -13,7 +13,7 @@
  * @param {boolean} isPreformatted true iff white-space in text nodes should
  *     be treated as significant.
  */
-function numberLines( node, startLineNum, isPreformatted ){
+m_numberLines = function( node, startLineNum, isPreformatted ){
     var li = document.createElement( 'li' );
     while( node.firstChild ){
         li.appendChild( node.firstChild );

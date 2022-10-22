@@ -53,6 +53,14 @@ var currentJob;
 /** @type {!Function|undefined} */
 var m_prettifyElement;
 
+var m_applyDecorator,
+    m_tokenize,
+    m_unzipOptimaizedSimpleLexer,
+    m_extractSourceSpans,
+    m_numberLines,
+    m_recombineTagsAndDecorations,
+    m_applyPrettifyElementOne;
+
 /** @type {!Function|undefined} */
 var m_completeAllHandler;
 
@@ -93,7 +101,7 @@ if( USE_REGEXPCOMPAT ){
 
             m_onReadyRegExp();
             m_onReadyRegExp = m_loadRegExpCompat = undefined;
-            p_setTimer( applyPrettifyElementOne );
+            p_setTimer( m_applyPrettifyElementOne );
         };
 
         p_DOM_insertElement( p_body, 'script', { src : p_assetUrl + DEFINE_WEB_DOC_BASE__ASSET_DIR_TO_JS_DIR + '/' + DEFINE_CODE_PRETTIFY__REGEXPCOMPAT_FILENAME } );

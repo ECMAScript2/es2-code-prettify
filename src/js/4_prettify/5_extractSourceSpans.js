@@ -43,7 +43,7 @@
  *    text nodes should be considered significant.
  * @return {SourceSpansT} source code and the nodes in which they occur.
  */
-function extractSourceSpans( node, isPreformatted ){
+ m_extractSourceSpans = function( node, isPreformatted ){
     var chunks = [];
     var length = 0;
     var spans = [];

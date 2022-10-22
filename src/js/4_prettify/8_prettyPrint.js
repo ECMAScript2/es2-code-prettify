@@ -57,14 +57,14 @@ m_prettifyElement = function( codeSegment ){
         if( USE_REGEXPCOMPAT ){
             p_setTimer( m_loadRegExpCompat );
         } else {
-            p_setTimer( applyPrettifyElementOne );
+            p_setTimer( m_applyPrettifyElementOne );
         };
     };
 };
 
     // The loop is broken into a series of continuations to make sure that we
     // don't make the browser unresponsive when rewriting a large page.
-    function applyPrettifyElementOne(){
+    m_applyPrettifyElementOne = function(){
         if( currentJob ) return;
 
         function getAttributeValueFromClassName( className, attr ){
@@ -192,7 +192,7 @@ m_prettifyElement = function( codeSegment ){
                         lineNums = lineNums.length ? +lineNums : lineNums;
                     };
                     if( lineNums ){
-                        numberLines( codeSegment, lineNums, preformatted );
+                        m_numberLines( codeSegment, lineNums, preformatted );
                     };
                 };
 
@@ -219,10 +219,10 @@ m_prettifyElement = function( codeSegment ){
                         }
                     );
                 };
-                m_graduallyPrettify( applyDecorator );
+                m_graduallyPrettify( m_applyDecorator );
                 return;
             };
         };
         // finish up in a continuation
-        m_graduallyPrettify( applyPrettifyElementOne, undefined, 0, true );
+        m_graduallyPrettify( m_applyPrettifyElementOne, undefined, 0, true );
     };
