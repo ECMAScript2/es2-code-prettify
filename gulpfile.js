@@ -29,7 +29,7 @@ gulp.task( '__generate_simple_lexer_registry', gulp.series(
                         'DEFINE_CODE_PRETTIFY__LANGUAGES_USED="' + languageUsed + '"'
                     ],
                     // compilation_level : 'ADVANCED',
-                    // compilation_level : 'WHITESPACE_ONLY', // Snow Daifuku の変数が未定義エラーになるので ADVANCED は使えない...!
+                    // compilation_level : 'WHITESPACE_ONLY',
                     // formatting        : 'PRETTY_PRINT',
                     warning_level     : 'VERBOSE',
                     language_in       : 'ECMASCRIPT3',
@@ -159,7 +159,7 @@ gulp.task( '__snowSaifuku', gulp.series(
     function(){
         return gulp.src(
             [
-                '.submodules/rerejs/src.js/0_global/2_polyfill.js',
+                '.submodules/rerejs/src.js/1_global/2_polyfill.js',
                 tempDir + '/prettify.snow.withoutPolyfill.js'
             ]
         ).pipe(
@@ -180,7 +180,7 @@ gulp.task( '__snowSaifuku', gulp.series(
             [
             // ReRe.js
                 '.submodules/rerejs/src.js/**/*.js',
-               '!.submodules/rerejs/src.js/0_global/2_polyfill.js'
+               '!.submodules/rerejs/src.js/1_global/2_polyfill.js'
             ]
         ).pipe(
             gulpDPZ(
@@ -215,11 +215,19 @@ gulp.task( '__snowSaifuku', gulp.series(
                     warning_level     : 'VERBOSE',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
-                    js_output_file    : regExpCompatFileName
+                    js_output_file    : '_' + regExpCompatFileName
                 }
             )
         ).pipe(
-            require('es2-postprocessor').gulp({minIEVersion : isDebug ? 5.5 : 5, minOperaVersion : 7})
+            require('C:/Users/itozyun/WebProject/es2-postprocessor').gulp({minIEVersion : isDebug ? 5.5 : 5, minOperaVersion : 7})
+        ).pipe(
+            ClosureCompiler(
+                {
+                    compilation_level : 'WHITESPACE_ONLY',
+                    // formatting        : 'PRETTY_PRINT',
+                    js_output_file    : regExpCompatFileName
+                }
+            )
         ).pipe( gulp.dest( 'docs/js' ) );
     },
     function( cb ){

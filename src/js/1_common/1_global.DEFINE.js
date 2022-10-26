@@ -1,5 +1,5 @@
 var /** @define {number} 0:常にOFF, 1:常にON, -1:ブラウザ毎 */
-    DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT                 = 0, // __generate_simple_lexer_registry で nodejs 用に WHITESPACE_ONLY でビルドする為、初期値はソレ用。
+    DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT                 = -1,
     /** @define {boolean} */
     DEFINE_CODE_PRETTIFY__EXPORT_PR_OBJECT                 = true,
     /** @define {boolean} */
@@ -15,6 +15,6 @@ var /** @define {number} 0:常にOFF, 1:常にON, -1:ブラウザ毎 */
     /** @define {boolean} */
     DEFINE_CODE_PRETTIFY__NUMBER_LINE_SUPPORT              = true,
     /** @define {string} */
-    DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY = '',
+    DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY = '-num',
     /** @define {string} */
     DEFINE_CODE_PRETTIFY__REGEXPCOMPAT_FILENAME            = 'regexpcompat.js';
