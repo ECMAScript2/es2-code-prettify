@@ -10,9 +10,7 @@ function m_isString( test ){
 };
 
 /** @type {!function():number} */
-var m_getCurrentTime = Date.now ? Date.now : function(){
-    return + new Date;
-};
+var m_getCurrentTime = Date.now || function(){ return + new Date; };
 
 var USE_REGEXPCOMPAT = DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT === 1 ||
     !RegExp ||
