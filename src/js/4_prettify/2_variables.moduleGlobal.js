@@ -12,10 +12,6 @@ function m_isString( test ){
 /** @type {!function():number} */
 var m_getCurrentTime = Date.now || function(){ return + new Date; };
 
-var USE_REGEXPCOMPAT = DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT === 1 ||
-    !RegExp ||
-    DEFINE_CODE_PRETTIFY__USE_REGEXPCOMPAT === -1 && ( p_Gecko < 0.9 || p_Presto < 8 || p_Trident < 5.5 );
-
 /**
  * @constructor
  * @extends RegExp
@@ -73,40 +69,35 @@ var CONTINUOUS_TIME_MS = p_Trident < 5    ? 60 :
                          p_Trident < 5.5  ?  0 :
                          USE_REGEXPCOMPAT ? 20 : 10;
 
-var m_loadRegExpCompat,
-    m_reIsMarkup,
+var m_reIsMarkup,
     m_reNotWhiteSpace,
     m_reCommentLike,
     m_reCorrectCommentAttrValue;
 
-var m_onReadyRegExp = function(){
-    if( DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP || DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE ){
-        m_reIsMarkup = RegExpProxy( "^\\s*<" );
-    };
-
-    m_reNotWhiteSpace = RegExpProxy( '\\S' );
-
-    if( DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ){
-        m_reCommentLike = RegExpProxy(  "^\\??prettify\\b" );
-        m_reCorrectCommentAttrValue = RegExpProxy( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
-    };
-};
-
-if( USE_REGEXPCOMPAT ){
-    m_loadRegExpCompat = function(){
-        window[ 'RegExpCompat' ] = function( RegExpCompat ){
-            window[ 'RegExpCompat' ] = m_RegExpCompat = RegExpCompat;
-
-            m_onReadyRegExp();
-            m_onReadyRegExp = m_loadRegExpCompat = undefined;
-            p_setTimer( m_applyPrettifyElementOne );
+p_onRegExpCompatReadyCallbacks = [
+    function(){
+        if( DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP || DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE ){
+            m_reIsMarkup = RegExpProxy( "^\\s*<" );
         };
 
-        p_DOM_insertElement( p_body, 'script', { src : p_assetUrl + DEFINE_WEB_DOC_BASE__ASSET_DIR_TO_JS_DIR + '/' + DEFINE_CODE_PRETTIFY__REGEXPCOMPAT_FILENAME } );
-    };
+        m_reNotWhiteSpace = RegExpProxy( '\\S' );
+
+        if( DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT ){
+            m_reCommentLike = RegExpProxy(  "^\\??prettify\\b" );
+            m_reCorrectCommentAttrValue = RegExpProxy( "\\b(\\w+)=([\\w:.%+-]+)", 'g' );
+        };
+    }
+];
+
+if( USE_REGEXPCOMPAT ){
+    p_onRegExpCompatReadyCallbacks.unshift(
+        function( RegExpCompat ){
+            window[ 'RegExpCompat' ] = m_RegExpCompat = RegExpCompat;
+        }
+    );
 } else {
-    m_onReadyRegExp();
-    m_onReadyRegExp = undefined;
+    p_onRegExpCompatReadyCallbacks[ 0 ]();
+    p_onRegExpCompatReadyCallbacks = undefined;
 };
 
 /**

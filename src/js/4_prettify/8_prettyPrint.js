@@ -54,8 +54,10 @@ m_prettifyElement = function( codeSegment ){
     prettifyElementTotal = prettifyElements.length;
 
     if( prettifyElementTotal === 1 ){
-        if( USE_REGEXPCOMPAT ){
-            p_setTimer( m_loadRegExpCompat );
+        if( p_loadRegExpCompat ){
+            p_setTimer( p_loadRegExpCompat, m_applyPrettifyElementOne );
+        } else if( p_onRegExpCompatReadyCallbacks ){
+            p_onRegExpCompatReadyCallbacks.push( function(){ p_setTimer( m_applyPrettifyElementOne ); } );
         } else {
             p_setTimer( m_applyPrettifyElementOne );
         };
