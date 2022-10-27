@@ -335,7 +335,9 @@ function runTests(goldens) {
             document.getElementById('report').innerHTML = report.html.join('\n');
         }, 16
       );
-      console.dir( benchmark.initRegExpInstance )
+      if( window.console ){
+        console.dir( benchmark.initRegExpInstance )
+      };
     },
     function( done, total ){
       document.getElementById('report').innerHTML = done + '/' + total;
