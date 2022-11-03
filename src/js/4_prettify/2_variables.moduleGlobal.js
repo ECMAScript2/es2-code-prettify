@@ -75,6 +75,9 @@ var m_reIsMarkup,
     m_reCorrectCommentAttrValue;
 
 p_onRegExpCompatReadyCallbacks = [
+    function( RegExpCompat ){
+        window[ 'RegExpCompat' ] = m_RegExpCompat = RegExpCompat;
+    },
     function(){
         if( DEFINE_CODE_PRETTIFY__USE_DEFAULT_MARKUP || DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE ){
             m_reIsMarkup = RegExpProxy( "^\\s*<" );
@@ -89,14 +92,8 @@ p_onRegExpCompatReadyCallbacks = [
     }
 ];
 
-if( USE_REGEXPCOMPAT ){
-    p_onRegExpCompatReadyCallbacks.unshift(
-        function( RegExpCompat ){
-            window[ 'RegExpCompat' ] = m_RegExpCompat = RegExpCompat;
-        }
-    );
-} else {
-    p_onRegExpCompatReadyCallbacks[ 0 ]();
+if( !USE_REGEXPCOMPAT ){
+    p_onRegExpCompatReadyCallbacks[ 1 ]();
     p_onRegExpCompatReadyCallbacks = undefined;
 };
 

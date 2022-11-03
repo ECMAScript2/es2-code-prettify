@@ -1,5 +1,5 @@
 if( USE_REGEXPCOMPAT ){
-    if( !DYNAMIC_SCRIPT_LOADING ){
+    if( !p_canUseDynamicExternalScript ){
         window[ 'RegExpCompat' ] = function( RegExpCompat ){
             var callback;
 
@@ -7,9 +7,10 @@ if( USE_REGEXPCOMPAT ){
                 callback( RegExpCompat );
             };
             p_onRegExpCompatReadyCallbacks = undefined;
-        };
 
-        document.write( '<script src="' + p_assetUrl + DEFINE_WEB_DOC_BASE__ASSET_DIR_TO_JS_DIR + '/' + DEFINE_CODE_PRETTIFY__REGEXPCOMPAT_FILENAME + '"></script>' );
+            p_setExternalScriptIsLoaded( p_assetUrl + DEFINE_WEB_DOC_BASE__ASSET_DIR_TO_JS_DIR + '/' + DEFINE_CODE_PRETTIFY__REGEXPCOMPAT_FILENAME );
+        };
+        p_loadExternalScript( p_assetUrl + DEFINE_WEB_DOC_BASE__ASSET_DIR_TO_JS_DIR + '/' + DEFINE_CODE_PRETTIFY__REGEXPCOMPAT_FILENAME );
     } else {
         p_loadRegExpCompat = function( applyPrettifyElementOne ){
             window[ 'RegExpCompat' ] = function( RegExpCompat ){
@@ -21,11 +22,13 @@ if( USE_REGEXPCOMPAT ){
                 p_onRegExpCompatReadyCallbacks = undefined;
 
                 p_setTimer( applyPrettifyElementOne );
+
+                p_setExternalScriptIsLoaded( p_assetUrl + DEFINE_WEB_DOC_BASE__ASSET_DIR_TO_JS_DIR + '/' + DEFINE_CODE_PRETTIFY__REGEXPCOMPAT_FILENAME );
             };
 
             p_loadRegExpCompat = undefined;
 
-            p_DOM_insertElement( p_head, 'script', { src : p_assetUrl + DEFINE_WEB_DOC_BASE__ASSET_DIR_TO_JS_DIR + '/' + DEFINE_CODE_PRETTIFY__REGEXPCOMPAT_FILENAME } );
+            p_loadExternalScript( p_assetUrl + DEFINE_WEB_DOC_BASE__ASSET_DIR_TO_JS_DIR + '/' + DEFINE_CODE_PRETTIFY__REGEXPCOMPAT_FILENAME );
         };
     };
 };

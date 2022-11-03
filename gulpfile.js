@@ -105,6 +105,7 @@ gulp.task( '__snowSaifuku', gulp.series(
                '!./.submodules/web-doc-base/src/js/6_CanUse/**/*.js',
                '!./.submodules/web-doc-base/src/js/7_Patch/**/*.js',
                '!./.submodules/web-doc-base/src/js/8_Library/**/*.js',
+                './.submodules/web-doc-base/src/js/8_Library/ExternalScriptLoader.js',
             // Google Code Prettify
                 './src/js/1_common/*.js',
                 './src/js/4_prettify/*.js'
