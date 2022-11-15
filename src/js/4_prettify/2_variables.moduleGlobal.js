@@ -21,7 +21,7 @@ var m_RegExpCompat;
 /**
  * @param {string} source 
  * @param {string=} flags
- * @return {RegExp|RegExpCompat}
+ * @return {!RegExp|!RegExpCompat}
  */
 function RegExpProxy( source, flags ){
     return USE_REGEXPCOMPAT ? /** @type {RegExpCompat} */ (new m_RegExpCompat( source, flags )) :
@@ -136,7 +136,7 @@ function m_graduallyPrettify( lazyFunction, opt_param, opt_task, opt_forceLazy, 
         m_currentTaskStartTime = currentTime;
         return lazyFunction( opt_param );
     };
-    p_setTimer( graduallyPrettify, { func : lazyFunction, param : opt_param } );
+    p_setTimer( /** @type {!function(*=)} */ (graduallyPrettify), { func : lazyFunction, param : opt_param } );
 };
 
 function graduallyPrettify( callback ){

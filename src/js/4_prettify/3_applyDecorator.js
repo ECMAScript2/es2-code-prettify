@@ -32,7 +32,7 @@ function unzipSimpleLexer( extension, source ){
                 : ( DEFINE_CODE_PRETTIFY__USE_DEFAULT_CODE   ? 'default-code'   : '' );
         };
     };
-    var existSimpleLexer = !!simpleLexerRegistry[ extension ];
+    var existSimpleLexer = !!simpleLexerRegistry[ /** @type {string} */ (extension) ];
 
     if( existSimpleLexer ){
         m_graduallyPrettify( m_unzipOptimaizedSimpleLexer, extension, 0, true );
@@ -43,7 +43,7 @@ function unzipSimpleLexer( extension, source ){
 m_tokenize = function(){
     var job         = currentJob;
     var simpleLexer = job.simpleLexer;
-    var tokenizer   = /** @type {RegExp|RegExpCompat} */ (simpleLexer[ 1 ]);
+    var tokenizer   = /** @type {!RegExp|!RegExpCompat} */ (simpleLexer[ 1 ]);
     var sourceCode  = /** @type {string} */ (job.sourceCode);
 
     job.tokens = sourceCode.match( tokenizer ) || [];
@@ -56,7 +56,7 @@ m_tokenize = function(){
 function decorate(){
     var job         = currentJob;
     var simpleLexer = /** @type {!SimpleLexer} */ (job.simpleLexer);
-    var shortcuts   = /** @type {!Object<string,StylePattern>} */ (simpleLexer[ 0 ]);
+    var shortcuts   = /** @type {!Object<string,!StylePattern>} */ (simpleLexer[ 0 ]);
     var fallthroughStylePatterns = /** @type {!Array.<!StylePattern>} */ (simpleLexer[ 2 ]);
     var basePos     = job.basePos;
     /** Even entries are positions in source in ascending order.  Odd enties
@@ -77,13 +77,13 @@ function decorate(){
         } else {
             var stylePattern = shortcuts[ token.charAt( 0 ) ];
             if( stylePattern ){
-                match = token.match( /** @type {RegExp|RegExpCompat} */ (stylePattern[ 1 ]) );
+                match = token.match( /** @type {!RegExp|!RegExpCompat} */ (stylePattern[ 1 ]) );
                 style = /** @type {number|string} */ (stylePattern[ 0 ]);
             } else {
                 style = STYLE_PLAIN; // make sure that we make progress
 
                 for( var i = -1; stylePattern = fallthroughStylePatterns[ ++i ]; ){
-                    match = token.match( /** @type {RegExp|RegExpCompat} */ (stylePattern[ 1 ]) );
+                    match = token.match( /** @type {!RegExp|!RegExpCompat} */ (stylePattern[ 1 ]) );
                     if( match ){
                         style = /** @type {number|string} */ (stylePattern[ 0 ]);
                         break;
@@ -98,7 +98,7 @@ function decorate(){
             };
 
             if( !isEmbedded ){
-                styleCache[ token ] = style;
+                styleCache[ token ] = /** @type {string} */ (style);
             };
         };
 
@@ -131,7 +131,7 @@ function decorate(){
                 token.substr( 0, embeddedSourceStart ),
                 simpleLexer
             );
-            if( embeddedSourceLength && unzipSimpleLexer( lang, embeddedSource ) ){
+            if( embeddedSourceLength && unzipSimpleLexer( /** @type {string} */ (lang), embeddedSource ) ){
                 // Decorate the embedded source
                 appendChildJob(
                     basePos + tokenStart + embeddedSourceStart,

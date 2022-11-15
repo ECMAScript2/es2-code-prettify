@@ -1,8 +1,8 @@
-/** @type {RegExp|RegExpCompat} */
+/** @type {!RegExp|!RegExpCompat} */
 var reSmallAlphabet = RegExpProxy( '[a-z]', 'i' );
-/** @type {RegExp|RegExpCompat} */
+/** @type {!RegExp|!RegExpCompat} */
 var reUnicode = RegExpProxy( '\\\\u[0-9a-f]{4}|\\\\x[0-9a-f]{2}|\\\\[^ux]', 'gi' );
-/** @type {RegExp|RegExpCompat} */
+/** @type {!RegExp|!RegExpCompat} */
 var reCharsetParts = RegExpProxy(
         '\\\\u[0-9A-Fa-f]{4}'
         + '|\\\\x[0-9A-Fa-f]{2}'
@@ -11,9 +11,9 @@ var reCharsetParts = RegExpProxy(
         + '|\\\\[\\s\\S]'
         + '|-'
         + '|[^-\\\\]', 'g' );
-/** @type {RegExp|RegExpCompat} */
+/** @type {!RegExp|!RegExpCompat} */
 var reNoMatchNamedGroup = RegExpProxy( '\\\\[bdsw]', 'i' );
-/** @type {RegExp|RegExpCompat} */
+/** @type {!RegExp|!RegExpCompat} */
 var reParts = RegExpProxy(
         '(?:'
         + '\\[(?:[^\\x5C\\x5D]|\\\\[\\s\\S])*\\]'  // a character set
@@ -25,7 +25,7 @@ var reParts = RegExpProxy(
         + '|[\\(\\)\\^]'  // start/end of a group, or line start
         + '|[^\\x5B\\x5C\\(\\)\\^]+'  // run of other characters
         + ')', 'g');
-/** @type {RegExp|RegExpCompat} */
+/** @type {!RegExp|!RegExpCompat} */
 var reAlphabet = RegExpProxy( '[a-zA-Z]', 'g' );
 
 /**
@@ -40,7 +40,7 @@ var reAlphabet = RegExpProxy( '[a-zA-Z]', 'g' );
  * 結合の目的では無視されます。
  * 
  * @param {Array.<RegExp|RegExpCompat>} regexs non multiline, non-global regexs.
- * @return {RegExp|RegExpCompat} a global regex.
+ * @return {!RegExp|!RegExpCompat} a global regex.
  */
 combinePrefixPatterns = function( regexs ){
     var capturedGroupIndex = 0;

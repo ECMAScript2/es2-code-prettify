@@ -84,7 +84,7 @@ m_recombineTagsAndDecorations = function(){
             if( p_Trident < 9 ){
                 styledText = styledText.split( '\n' ).join( '\r' );
             };
-            var span = p_DOM_insertElementBefore( textNode, 'span', { className : storeClasses[ decorations[ decorationIndex + 1 ] ] }, styledText );
+            var span = p_DOM_insertElementBefore( textNode, 'span', { className : storeClasses[ /** @type {number} */ (decorations[ decorationIndex + 1 ]) ] }, styledText );
             p_DOM_remove( textNode );
 
             if( sourceIndex < spanEnd ){  // Split off a text node.

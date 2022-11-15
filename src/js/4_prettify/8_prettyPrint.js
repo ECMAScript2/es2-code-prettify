@@ -55,7 +55,7 @@ m_prettifyElement = function( codeSegment ){
 
     if( prettifyElementTotal === 1 ){
         if( p_loadRegExpCompat ){
-            p_setTimer( p_loadRegExpCompat, m_applyPrettifyElementOne );
+            p_setTimer(/** @type {!function()} */ (p_loadRegExpCompat), m_applyPrettifyElementOne );
         } else if( p_onRegExpCompatReadyCallbacks ){
             p_onRegExpCompatReadyCallbacks.push( function(){ p_setTimer( m_applyPrettifyElementOne ); } );
         } else {

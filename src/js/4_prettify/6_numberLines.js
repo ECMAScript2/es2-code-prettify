@@ -2,7 +2,7 @@
  * Given a DOM subtree, wraps it in a list, and puts each line into its own
  * list item.
  *
- * @param {Node} node modified in place.  Its content is pulled into an
+ * @param {!Element} node modified in place.  Its content is pulled into an
  *     HTMLOListElement, and each line is moved into a separate list item.
  *     This requires cloning elements, so the input might not have unique
  *     IDs after numbering.

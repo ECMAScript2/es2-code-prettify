@@ -160,7 +160,7 @@ gulp.task( '__snowSaifuku', gulp.series(
     function(){
         return gulp.src(
             [
-                '.submodules/rerejs/src.js/1_global/2_polyfill.js',
+                '.submodules/rerejs/src/js/1_global/2_polyfill.js',
                 tempDir + '/prettify.snow.withoutPolyfill.js'
             ]
         ).pipe(
@@ -180,16 +180,16 @@ gulp.task( '__snowSaifuku', gulp.series(
         return gulp.src(
             [
             // ReRe.js
-                '.submodules/rerejs/src.js/**/*.js',
-               '!.submodules/rerejs/src.js/1_global/2_polyfill.js'
+                '.submodules/rerejs/src/js/**/*.js',
+               '!.submodules/rerejs/src/js/1_global/2_polyfill.js'
             ]
         ).pipe(
             gulpDPZ(
                 {
-                    labelPackageGlobal : '*', // for Gecko 0.7- ! https://twitter.com/itozyun/status/1488924003070742535
+                    labelPackageGlobal : 'moduleGlobal',
                     packageGlobalArgs : [ 'global,RegExp,String,Math,Infinity,undefined', 'this,this.RegExp,String,Math,1/0,void 0' ],
                     basePath          : [
-                        '.submodules/rerejs/src.js/'
+                        '.submodules/rerejs/src/js/'
                     ]
                 }
             )
@@ -198,7 +198,8 @@ gulp.task( '__snowSaifuku', gulp.series(
                 {
                     externs           : [
                         // ReRe.js
-                        '.submodules/rerejs/src.externs/externs.generated.js'
+                        './node_modules/google-closure-compiler/contrib/nodejs/globals.js',
+                        '.submodules/rerejs/src/js-externs/externs.generated.js'
                     ],
                     define            : [
                         // ReRE.js
@@ -209,7 +210,7 @@ gulp.task( '__snowSaifuku', gulp.series(
                         'DEFINE_REGEXP_COMPAT__ES_FEATURE_VERSION=3',
                         'DEFINE_REGEXP_COMPAT__EXPORT_BY_CALL_REGEXPCOMPAT=true'
                     ],
-                    // env               : isDebug ? 'BROWSER' : 'CUSTOM',
+                    env               : /* isDebug ? 'BROWSER' : */ 'CUSTOM',
                     compilation_level : 'ADVANCED',
                     // compilation_level : 'WHITESPACE_ONLY',
                     formatting        : 'PRETTY_PRINT',
@@ -220,12 +221,12 @@ gulp.task( '__snowSaifuku', gulp.series(
                 }
             )
         ).pipe(
-            require('C:/Users/itozyun/WebProject/es2-postprocessor').gulp({minIEVersion : isDebug ? 5.5 : 5, minOperaVersion : 7})
+            require('es2-postprocessor').gulp({minIEVersion : isDebug ? 5.5 : 5, minOperaVersion : 7, minGeckoVersion : 0.6})
         ).pipe(
             ClosureCompiler(
                 {
                     compilation_level : 'WHITESPACE_ONLY',
-                    // formatting        : 'PRETTY_PRINT',
+                    formatting        : 'PRETTY_PRINT',
                     js_output_file    : regExpCompatFileName
                 }
             )
