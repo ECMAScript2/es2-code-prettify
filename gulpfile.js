@@ -4,7 +4,7 @@ const gulp            = require('gulp'),
       fs              = require('fs'),
       tempDir         = require('os').tmpdir() + '/google-code-prettify',
       globalVariables = 'document,parseFloat,Function,isFinite,setTimeout,clearTimeout',
-      gulpCreateSimpleRexerRegistry = require('./js-buildtools/gulp-createSimpleLexerRegistry.js');
+      gulpCreateSimpleRexerRegistry = require('./src/js-buildtools/gulp-createSimpleLexerRegistry.js');
 
 const numericKeyName = '-num';
 const simpleLexerRegistryFileName = '2__zippedSimpleLexerRegistry.generated.js';
@@ -16,7 +16,7 @@ gulp.task( '__generate_simple_lexer_registry', gulp.series(
     function(){
         return gulp.src(
             [
-            // Google Code Prettify
+            // ES2 Code Prettify
                 './src/js/1_common/*.js',
                 './src/js/2_SimpleLexerRegistry/*.js',
                 './src/js/3_langs/*.js'
@@ -106,7 +106,7 @@ gulp.task( '__snowSaifuku', gulp.series(
                '!./.submodules/web-doc-base/src/js/7_Patch/**/*.js',
                '!./.submodules/web-doc-base/src/js/8_Library/**/*.js',
                 './.submodules/web-doc-base/src/js/8_Library/ExternalScriptLoader.js',
-            // Google Code Prettify
+            // ES2 Code Prettify
                 './src/js/1_common/*.js',
                 './src/js/4_prettify/*.js'
             ]
@@ -129,9 +129,9 @@ gulp.task( '__snowSaifuku', gulp.series(
                     externs           : [
                         // Snow daifuku
                         './.submodules/web-doc-base/.submodules/what-browser-am-i/src/js-externs/externs.js',
-                        './.submodules/web-doc-base/.submodules/regexp-free-js-base64/src/js-externs/externs.js',
+                        './.submodules/web-doc-base/.submodules/es2-base64/src/js-externs/externs.js',
                         './.submodules/web-doc-base/src/js-externs/externs.js',
-                        // Google Code Prettify
+                        // ES2 Code Prettify
                         './src/js-externs/externs.js'
                     ],
                     define            : [
@@ -139,7 +139,7 @@ gulp.task( '__snowSaifuku', gulp.series(
                         'DEFINE_WHAT_BROWSER_AM_I__MINIFY=true',
                         'DEFINE_WEB_DOC_BASE__DEBUG=' + ( isDebug ? 1 : 0 ),
                         'DEFINE_WEB_DOC_BASE__LOGGER_ELEMENT_ID="logger"',
-                        // Google Code Prettify
+                        // ES2 Code Prettify
                         'DEFINE_CODE_PRETTIFY__DEBUG=' + isDebug,
                         'DEFINE_CODE_PRETTIFY__COMMENT_ATTR_SUPPORT=' + isDebug,
                         'DEFINE_CODE_PRETTIFY__NUMERIC_STYLE_PATTERN_OBJECT_KEY="' + numericKeyName + '"',
@@ -226,11 +226,11 @@ gulp.task( '__snowSaifuku', gulp.series(
             ClosureCompiler(
                 {
                     compilation_level : 'WHITESPACE_ONLY',
-                    formatting        : 'PRETTY_PRINT',
-                    js_output_file    : regExpCompatFileName
+                    formatting        : isDebug ? 'PRETTY_PRINT' : 'SINGLE_QUOTES',
+                    js_output_file    : isDebug ? regExpCompatFileName : regExpCompatFileName.replace( '.js', '.min.js' )
                 }
             )
-        ).pipe( gulp.dest( 'docs/js' ) );
+        ).pipe( gulp.dest( isDebug ? 'docs/js' : 'dist' ) );
     },
     function( cb ){
         fs.unlink( 'src/js/4_prettify/' + simpleLexerRegistryFileName, cb );

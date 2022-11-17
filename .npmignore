@@ -1,0 +1,12 @@
+.submodules
+docs
+node_modules
+.gitignore
+.gitmodules
+.npmignore
+CHANGES.md
+COPYING
+gulpfile.js
+local-web-server.js
+package-lock.json
+TODO.md
