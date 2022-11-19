@@ -1,6 +1,7 @@
 const gulp            = require('gulp'),
       gulpDPZ         = require('gulp-diamond-princess-zoning'),
       ClosureCompiler = require('google-closure-compiler').gulp(),
+      postProcessor   = require('es2-postprocessor'),
       fs              = require('fs'),
       tempDir         = require('os').tmpdir() + '/google-code-prettify',
       globalVariables = 'document,parseFloat,Function,isFinite,setTimeout,clearTimeout',
@@ -9,6 +10,7 @@ const gulp            = require('gulp'),
 const numericKeyName = '-num';
 const simpleLexerRegistryFileName = '2__zippedSimpleLexerRegistry.generated.js';
 const regExpCompatFileName = 'regexpcompat.js';
+const resultObject = {};
 
 var isDebug, languageUsed;
 
@@ -152,17 +154,17 @@ gulp.task( '__snowSaifuku', gulp.series(
                     warning_level     : 'VERBOSE',
                     language_in       : 'ECMASCRIPT3',
                     language_out      : 'ECMASCRIPT3',
-                    js_output_file    : 'prettify.snow.withoutPolyfill.js'
+                    js_output_file    : 'temp.js'
                 }
             )
-        ).pipe( gulp.dest( tempDir ) );
-    },
-    function(){
-        return gulp.src(
-            [
-                '.submodules/rerejs/src/js/1_global/2_polyfill.js',
-                tempDir + '/prettify.snow.withoutPolyfill.js'
-            ]
+        ).pipe(
+            postProcessor.gulp(
+                {
+                    minIEVersion    : 5,
+                    minOperaVersion : 7,
+                    minGeckoVersion : 0.6
+                }
+            )
         ).pipe(
             ClosureCompiler(
                 {
@@ -174,14 +176,21 @@ gulp.task( '__snowSaifuku', gulp.series(
                     js_output_file    : 'prettify.lang-' + languageUsed.split( ',' ).join( '.' ) + '.js'
                 }
             )
+        ).pipe(
+            postProcessor.gulp(
+                {
+                    minIEVersion   : 5,
+                    resultObject   : resultObject,
+                    embedPolyfills : true
+                }
+            )
         ).pipe( gulp.dest( 'docs/js' ) );
     },
     function(){
         return gulp.src(
             [
             // ReRe.js
-                '.submodules/rerejs/src/js/**/*.js',
-               '!.submodules/rerejs/src/js/1_global/2_polyfill.js'
+                '.submodules/rerejs/src/js/**/*.js'
             ]
         ).pipe(
             gulpDPZ(
@@ -221,13 +230,27 @@ gulp.task( '__snowSaifuku', gulp.series(
                 }
             )
         ).pipe(
-            require('es2-postprocessor').gulp({minIEVersion : isDebug ? 5.5 : 5, minOperaVersion : 7, minGeckoVersion : 0.6})
+            postProcessor.gulp(
+                {
+                    minIEVersion    : 5,
+                    minOperaVersion : 7,
+                    minGeckoVersion : 0.6
+                }
+            )
         ).pipe(
             ClosureCompiler(
                 {
                     compilation_level : 'WHITESPACE_ONLY',
                     formatting        : isDebug ? 'PRETTY_PRINT' : 'SINGLE_QUOTES',
                     js_output_file    : isDebug ? regExpCompatFileName : regExpCompatFileName.replace( '.js', '.min.js' )
+                }
+            )
+        ).pipe(
+            postProcessor.gulp(
+                {
+                    minIEVersion       : 5,
+                    skipEmbedPolyfills : resultObject.embeddedPolyfills,
+                    embedPolyfills     : true
                 }
             )
         ).pipe( gulp.dest( isDebug ? 'docs/js' : 'dist' ) );
