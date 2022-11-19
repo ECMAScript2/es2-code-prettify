@@ -1,3 +1,5 @@
+/*@cc_on Function.prototype.apply||(Function.prototype.apply=function(d,f){var b=null!=d?d:window,a=f||[],e=a.length,c=0;b.__apply=this;b.__apply||(b.constructor.prototype.__apply=this);switch(e){case 0:a=b.__apply();break;case 1:a=b.__apply(a[0]);break;case 2:a=b.__apply(a[0],a[1]);break;case 3:a=b.__apply(a[0],a[1],a[2]);break;case 4:a=b.__apply(a[0],a[1],a[2],a[3]);break;case 5:a=b.__apply(a[0],a[1],a[2],a[3],a[4]);break;case 6:a=b.__apply(a[0],a[1],a[2],a[3],a[4],a[5]);break;case 7:a=b.__apply(a[0],a[1],
+a[2],a[3],a[4],a[5],a[6]);break;case 8:a=b.__apply(a[0],a[1],a[2],a[3],a[4],a[5],a[6],a[7]);break;case 9:a=b.__apply(a[0],a[1],a[2],a[3],a[4],a[5],a[6],a[7],a[8]);break;default:for(a=[];c<e;++c)a[c]="y["+c+"]";a=eval("x.__apply("+a.join(",")+")")}b.__apply?b===window?b.__apply=void 0:delete b.__apply:delete b.constructor.prototype.__apply;return a}); @*/
 (function(aa, V, D, ba, N, I) {
   function O(v) {
     return 2147483647 >= v ? v | 0 : ba.floor(v);
