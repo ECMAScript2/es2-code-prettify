@@ -716,7 +716,7 @@ var Fa;
   var Vb = function(a) {
     Ib ? la("[DynamicScvriptLoader] " + a + " loaded.") : a === Kb ? Jb(xb.shift()) : Fa(a + " <> " + Kb);
   };
-  var Ib = !wb, bc = wb && 7.5 > va || 5 >= K, Kb;
+  var Ib = !wb, bc = wb && 7.5 > va, Kb;
   if (!Ib) {
     wb = !0;
     var xb = [];
