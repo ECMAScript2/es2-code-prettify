@@ -2,6 +2,7 @@ const gulp            = require('gulp'),
       gulpDPZ         = require('gulp-diamond-princess-zoning'),
       ClosureCompiler = require('google-closure-compiler').gulp(),
       postProcessor   = require('es2-postprocessor'),
+      es2ToEs3        = require('es2-to-es3'),
       fs              = require('fs'),
       tempDir         = require('os').tmpdir() + '/google-code-prettify',
       globalVariables = 'document,parseFloat,Function,isFinite,setTimeout,clearTimeout',
@@ -177,11 +178,10 @@ gulp.task( '__snowSaifuku', gulp.series(
                 }
             )
         ).pipe(
-            postProcessor.gulp(
+            es2ToEs3.gulp(
                 {
-                    minIEVersion   : 5,
-                    resultObject   : resultObject,
-                    embedPolyfills : true
+                    minIEVersion : 5,
+                    resultObject : resultObject
                 }
             )
         ).pipe( gulp.dest( 'docs/js' ) );
@@ -246,11 +246,10 @@ gulp.task( '__snowSaifuku', gulp.series(
                 }
             )
         ).pipe(
-            postProcessor.gulp(
+            es2ToEs3.gulp(
                 {
                     minIEVersion       : 5,
-                    skipEmbedPolyfills : resultObject.embeddedPolyfills,
-                    embedPolyfills     : true
+                    skipEmbedPolyfills : resultObject.embeddedPolyfills
                 }
             )
         ).pipe( gulp.dest( isDebug ? 'docs/js' : 'dist' ) );
