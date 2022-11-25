@@ -24,4 +24,4 @@ var CodeBlock = {
  * @param {string} source 
  * @param {string=} flags
  */
- function RegExpCompat( source, flags ){};
+function RegExpCompat( source, flags ){};
