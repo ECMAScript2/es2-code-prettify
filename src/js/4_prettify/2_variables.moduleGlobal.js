@@ -24,8 +24,8 @@ var m_RegExpCompat;
  * @return {!RegExp|!RegExpCompat}
  */
 function RegExpProxy( source, flags ){
-    return USE_REGEXPCOMPAT ? /** @type {RegExpCompat} */ (new m_RegExpCompat( source, flags )) :
-                              /** @type {RegExp} */ (new RegExp( source, flags ));
+    return USE_REGEXPCOMPAT ? /** @type {!RegExpCompat} */ (new m_RegExpCompat( source, flags )) :
+                              /** @type {!RegExp} */ (new RegExp( source, flags ));
 };
 
 /** @type {!Benchmark} */

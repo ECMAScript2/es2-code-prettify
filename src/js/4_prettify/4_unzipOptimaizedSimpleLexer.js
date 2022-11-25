@@ -1,9 +1,9 @@
-/** @type {Array.<number>} */
+/** @const {!Array.<number>} */
 var lazyCreateRegExpList = [];
 
 m_unzipOptimaizedSimpleLexer = function( extension ){
     var job       = currentJob;
-    var simpleLexer = /** @type {SimpleLexer|string} */ (simpleLexerRegistry[ extension ]);
+    var simpleLexer = /** @type {!SimpleLexer|string} */ (simpleLexerRegistry[ extension ]);
 
     if( m_isString( simpleLexer ) ){
         simpleLexer = simpleLexerRegistry[ extension ] = simpleLexerRegistry[ /** @type {string} */ (simpleLexer) ];

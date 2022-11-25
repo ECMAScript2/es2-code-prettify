@@ -66,7 +66,7 @@ m_recombineTagsAndDecorations = function(){
 
         var end = Math.min( spanEnd, decEnd );
 
-        var textNode = /** @type {Node} */ (spans[ spanIndex + 1 ]);
+        var textNode = /** @type {!Node} */ (spans[ spanIndex + 1 ]);
         var styledText;
         if( textNode.nodeType !== 1  // Don't muck with <BR>s or <LI>s
             // Don't introduce spans around empty text nodes.

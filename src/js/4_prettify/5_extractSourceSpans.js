@@ -38,10 +38,10 @@
  * Substrings continue until the next index or the end of the source.
  * </p>
  *
- * @param {Node} node an HTML DOM subtree containing source-code.
+ * @param {!Node} node an HTML DOM subtree containing source-code.
  * @param {boolean|number} isPreformatted truthy if white-space in
  *    text nodes should be considered significant.
- * @return {SourceSpansT} source code and the nodes in which they occur.
+ * @return {!SourceSpansT} source code and the nodes in which they occur.
  */
  m_extractSourceSpans = function( node, isPreformatted ){
     var chunks = [];
