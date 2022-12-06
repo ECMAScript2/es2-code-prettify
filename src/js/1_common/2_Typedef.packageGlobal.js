@@ -9,7 +9,7 @@ var StylePattern;
  * @typedef {!Array.<!Object.<string,!StylePattern>|!RegExp|!RegExpCompat|!Array.<!StylePattern>>|undefined}
  * 0 : Object.<string,!StylePattern>
  * 1 : (RegExp|RegExpCompat)
- * 2 : Array.<StylePattern>
+ * 2 : Array.<!StylePattern>
  */
 var SimpleLexer;
 

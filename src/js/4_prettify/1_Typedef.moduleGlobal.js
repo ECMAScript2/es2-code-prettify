@@ -52,10 +52,10 @@ var JobT;
 var SourceSpansT;
 
 /**
- * @typedef {Array.<number|Array.<number>>}
- * 0 : Object.<string,Array.<StylePattern>>
- * 1 : (RegExp|RegExpCompat)
- * 2 : Array.<StylePattern>
+ * @typedef {!Array.<number|!Array.<number>>}
+ * 0 : number => Object.<string,Array.<StylePattern>>
+ * 1 : number => (RegExp|RegExpCompat)
+ * 2 : Array.<number> => Array.<StylePattern>
  */
 var ZippedSimpleLexer;
 
@@ -68,7 +68,7 @@ var ZippedSimpleLexer;
  *   initRegExpMax      : number,
  *   initRegExpSource   : string,
  *   initRegExpInstance : (!RegExpCompat|undefined),
- *   codeBlocks         : !Array.<!{elm:Node, lang:string, readyTime:number, decorateCount:number, decorateTime:number, updateDOMTime:number}>
+ *   codeBlocks         : !Array.<!{elm:!Node, lang:string, readyTime:number, decorateCount:number, decorateTime:number, updateDOMTime:number}>
  * }}
  */
 var Benchmark;

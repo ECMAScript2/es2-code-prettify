@@ -23,6 +23,7 @@ function childContentWrapper( element ){
     return wrapper === element ? undefined : wrapper;
 };
 
+/** @const {!Array.<!Element>} */
 var prettifyElements = [];
 
 var prettifyElementTotal;
@@ -48,14 +49,16 @@ p_listenCssAvailabilityChange( function( cssAvailability ){
     };
     return true;
 } );
-
+/**
+ * @param {!Element} codeSegment
+ */
 m_prettifyElement = function( codeSegment ){
     prettifyElements.push( codeSegment );
     prettifyElementTotal = prettifyElements.length;
 
     if( prettifyElementTotal === 1 ){
         if( p_loadRegExpCompat ){
-            p_setTimer(/** @type {!function()} */ (p_loadRegExpCompat), m_applyPrettifyElementOne );
+            p_setTimer(/** @type {!function(*=)} */ (p_loadRegExpCompat), m_applyPrettifyElementOne );
         } else if( p_onRegExpCompatReadyCallbacks ){
             p_onRegExpCompatReadyCallbacks.push( function(){ p_setTimer( m_applyPrettifyElementOne ); } );
         } else {
@@ -134,7 +137,7 @@ m_prettifyElement = function( codeSegment ){
         ){
             // make sure this is not nested in an already prettified element
             var nested = false;
-            for( var p = codeSegment.parentNode; p !== p_body; p = p.parentNode ){
+            for( var p = /** @type {!Element} */ (codeSegment.parentNode); p !== p_body; p = /** @type {!Element} */ (p.parentNode) ){
                 var tn = p_DOM_getTagName( p );
                 if( ( tn === 'PRE' || tn === 'XMP' || tn === 'CODE' ) && p_DOM_hasClassName( p, 'prettyprint' ) ){
                     nested = true;
