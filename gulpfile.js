@@ -24,7 +24,6 @@ gulp.task( '__generate_simple_lexer_registry', gulp.series(
                 './src/js/2_SimpleLexerRegistry/*.js',
                 './src/js/3_langs/*.js'
             ]
-
         ).pipe(
             ClosureCompiler(
                 {
@@ -98,12 +97,12 @@ gulp.task( '__snowSaifuku', gulp.series(
                '!./.submodules/web-doc-base/.submodules/what-browser-am-i/src/js/0_global/7_conpare.js',
                 './.submodules/web-doc-base/src/js/**/*.js',
                '!./.submodules/web-doc-base/src/js/3_DOM/nodeCleaner.js',
-               '!./.submodules/web-doc-base/src/js/4_EventModule/imageReady.js',
-               '!./.submodules/web-doc-base/src/js/4_EventModule/forcedColors.js',
-               '!./.submodules/web-doc-base/src/js/4_EventModule/prefersColorScheme.js',
-               '!./.submodules/web-doc-base/src/js/4_EventModule/print.js',
-               '!./.submodules/web-doc-base/src/js/4_EventModule/resize.js',
-               '!./.submodules/web-doc-base/src/js/4_EventModule/scroll.js',
+               '!./.submodules/web-doc-base/src/js/4_EventModule/*.js',
+                './.submodules/web-doc-base/src/js/4_EventModule/1_packageGlobal.js',
+                './.submodules/web-doc-base/src/js/4_EventModule/2_moduleGlobal.js',
+                './.submodules/web-doc-base/src/js/4_EventModule/3_EventTarget.js',
+                './.submodules/web-doc-base/src/js/4_EventModule/4_loadAndUnloadEvent.js',
+                './.submodules/web-doc-base/src/js/4_EventModule/cssAvailability.js',
                '!./.submodules/web-doc-base/src/js/5_CSSOM/**/*.js',
                '!./.submodules/web-doc-base/src/js/6_CanUse/**/*.js',
                '!./.submodules/web-doc-base/src/js/7_Patch/**/*.js',
