@@ -405,9 +405,7 @@ ua.conpare = function(W, p) {
     var b = a || event;
     a = D[b.type];
     var e = -1, d, g;
-    K ? (b.preventDefault = function() {
-      b.returnValue = !1;
-    }, b.stopPropagation = function() {
+    K ? (b.preventDefault = bz, b.stopPropagation = function() {
       b.cancelBubble = !0;
     }) : fa && (b.C = b.stopPropagation, b.stopPropagation = function() {
       g = !0;
@@ -419,6 +417,10 @@ ua.conpare = function(W, p) {
       return b.preventDefault = b.stopPropagation = w, b.returnValue;
     }
     fa && (b.defaultPrevented && "click" === b.type && "A" === b.target.tagName && (mb = !0), g && !mb && b.C(), b.C = b.stopPropagation = w);
+    function bz() {
+      b.returnValue = !1;
+    }
+    bz = !1;
   }
   function Xa() {
     var a = 9 === kb.offsetWidth;
@@ -973,16 +975,18 @@ ua.conpare = function(W, p) {
   if (nb) {
     if (yb) {
       var Eb = function(a) {
-        p.RegExpCompat = function(b) {
+        p.RegExpCompat = bz;
+        Eb = w;
+        Nb(ra + "js/regexpcompat.js");
+        function bz(b) {
           for (var e; e = Da.shift();) {
             e(b);
           }
           Da = w;
           ja(a);
           Ob(ra + "js/regexpcompat.js");
-        };
-        Eb = w;
-        Nb(ra + "js/regexpcompat.js");
+        }
+        bz = !1;
       };
     } else {
       p.RegExpCompat = function(a) {

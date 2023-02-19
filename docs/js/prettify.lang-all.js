@@ -407,9 +407,7 @@ var Fa;
     var b = a || event;
     a = fb[b.type];
     var d = -1, e, h;
-    K ? (b.preventDefault = function() {
-      b.returnValue = !1;
-    }, b.stopPropagation = function() {
+    K ? (b.preventDefault = bz, b.stopPropagation = function() {
       b.cancelBubble = !0;
     }) : pb && (b.M = b.stopPropagation, b.stopPropagation = function() {
       h = !0;
@@ -421,6 +419,10 @@ var Fa;
       return b.preventDefault = b.stopPropagation = x, b.returnValue;
     }
     pb && (b.defaultPrevented && "click" === b.type && "A" === b.target.tagName && (qb = !0), h && !qb && b.M(), b.M = b.stopPropagation = x);
+    function bz() {
+      b.returnValue = !1;
+    }
+    bz = !1;
   }
   function cb() {
     var a = 9 === I.offsetWidth;
@@ -1109,9 +1111,7 @@ var Fa;
   tb(function() {
     var a;
     (a = t("logger")) || alert("#logger not found!");
-    a ? (la = function(b) {
-      A(a, "P", x, b);
-    }, Fa = function(b) {
+    a ? (la = bz, Fa = function(b) {
       A(a, "P", {style:{color:"red"}}, b);
     }, p.onerror = function(b, d, e) {
       Fa(b + ", " + d + ", " + e);
@@ -1124,6 +1124,10 @@ var Fa;
       la(Ma.shift());
     }
     Sa = Ma = x;
+    function bz(b) {
+      A(a, "P", x, b);
+    }
+    bz = !1;
   });
   6.1 > ea && W(p, "scroll", Ab);
   Tb(H);
@@ -1131,16 +1135,18 @@ var Fa;
   Tb(Na);
   if (Hb) {
     var Ob = function(a) {
-      p.RegExpCompat = function(b) {
+      p.RegExpCompat = bz;
+      Ob = x;
+      Ub(ka + "js/regexpcompat.js");
+      function bz(b) {
         for (var d; d = Za.shift();) {
           d(b);
         }
         Za = x;
         ca(a);
         Vb(ka + "js/regexpcompat.js");
-      };
-      Ob = x;
-      Ub(ka + "js/regexpcompat.js");
+      }
+      bz = !1;
     };
   } else {
     p.RegExpCompat = function(a) {

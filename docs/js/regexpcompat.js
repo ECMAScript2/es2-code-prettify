@@ -551,6 +551,7 @@ y[1],y[2],y[3],y[4],y[5],y[6]);break;case 8:r=x.__apply(y[0],y[1],y[2],y[3],y[4]
                 }
               }
             }bz(this);
+            bz = !1;
             break;
           default:
             this.a += d.length;
