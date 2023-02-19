@@ -26,7 +26,7 @@ Language files are fully compatible with [Google Code Prettify][5].
 <tr>
 <th>File size<td>🌸14.551 bytes<td>50,042 bytes(+24KB: RegExp ponyfill), Build with <code>"web,c,cs,java,bash,python,perl,ruby,coffee"</code>.
 <tr>
-<th>Dependency<td>🌸none<td><a href="https://github.com/itozyun/web-doc-base">web-doc-base</a>, <a href="https://github.com/itozyun/what-browser-am-i">what-browser-am-i</a>, <a href="https://github.com/itozyun/rerejs">ReRE.js for ES2</a>
+<th>Dependency<td>🌸none<td><a href="https://github.com/itozyun/web-doc-base">web-doc-base</a>, <a href="https://github.com/itozyun/what-browser-am-i">what-browser-am-i</a>, <a href="https://github.com/ECMAScript2/es2-regexpcompat">ES2 RegExpCompat</a>
 <tr>
 <th>Line Numbering<td>✔<td>✔ (You can disable the function at build time.)
 <tr>
@@ -202,7 +202,7 @@ li.L5, li.L6, li.L7, li.L8 {
 
 ES2 Code Prettify is licensed under [Apache License 2.0](https://github.com/googlearchive/code-prettify/blob/master/COPYING)
 
-(c) 2022 [itozyun](https://github.com/itozyun)
+(C) 2022-2023 [itozyun](https://github.com/itozyun)([outcloud.blogspot.com](//outcloud.blogspot.com/))
 
 [1]: https://raw.githack.com/google/code-prettify/master/styles/index.html
 [2]: https://ecmascript2.github.io/es2-code-prettify/
