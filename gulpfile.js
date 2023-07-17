@@ -4,7 +4,7 @@ const gulp            = require('gulp'),
       postProcessor   = require('es2-postprocessor'),
       es2ToEs3        = require('es2-to-es3'),
       fs              = require('fs'),
-      tempDir         = require('os').tmpdir() + '/google-code-prettify',
+      tempDir         = require('os').tmpdir() + '/es2-code-prettify',
       globalVariables = 'document,parseFloat,Function,isFinite,setTimeout,clearTimeout',
       gulpCreateSimpleRexerRegistry = require('./src/js-buildtools/gulp-createSimpleLexerRegistry.js');
 
@@ -112,6 +112,8 @@ gulp.task( '__snowSaifuku', gulp.series(
                 './src/js/1_common/*.js',
                 './src/js/4_prettify/*.js'
             ]
+        ).pipe(
+            require( 'gulp-connecting-room' )( require( './.submodules/web-doc-base/common.json' ) )
         ).pipe(
             gulpDPZ(
                 {
