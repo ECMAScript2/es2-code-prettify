@@ -1,6 +1,6 @@
 {
   "name": "es2-code-prettify",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Google Code Prettify for ES2",
   "license": "Apache-2.0",
   "homepage": "https://github.com/ECMAScript2/es2-code-prettify",
